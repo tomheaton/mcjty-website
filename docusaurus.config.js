@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Mcjty',
-  tagline: 'Mcjty Mods',
+  title: 'Mcjty Wiki',
+  tagline: 'The Official McJty Wiki!',
   url: 'https://mcjty.tomheaton.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -28,17 +28,13 @@ const config = {
         // TODO: add mods and tutorials as docs
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/tomheaton/mcjty-website/tree/main/',
         },
         blog: false, /*{
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/tomheaton/mcjty-website/tree/main/',
         },*/
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
