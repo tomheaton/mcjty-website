@@ -40,13 +40,13 @@ const config = {
           editUrl:
             'https://github.com/tomheaton/mcjty-website/tree/main/packages/create-docusaurus/templates/shared/',
         },
-        blog: {
+        blog: false, /*{
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
+        },*/
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -68,11 +68,15 @@ const config = {
             type: 'doc',
             docId: 'intro',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Docs',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          /*{
+            to: '/blog',
+            label: 'Blog',
+            position: 'left'
+          },*/
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/mcjtymods',
             label: 'GitHub',
             position: 'right',
           },
@@ -94,34 +98,34 @@ const config = {
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'YouTube',
+                href: 'https://www.youtube.com/channel/UCYMg1JQw3syJBgPeW6m68lA',
               },
               {
                 label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                href: 'https://discord.com/invite/YaWr7Zb',
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://twitter.com/McJty',
               },
             ],
           },
           {
             title: 'More',
             items: [
-              {
+              /*{
                 label: 'Blog',
                 to: '/blog',
-              },
+              },*/
               {
-                label: 'GitHub',
+                label: 'Source Code',
                 href: 'https://github.com/tomheaton/mcjty-website',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} McJty. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
