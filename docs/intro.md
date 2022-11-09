@@ -4,50 +4,49 @@ sidebar_position: 1
 
 # Intro
 
-Let's discover **Docusaurus in less than 5 minutes**.
+<strong>Minecraft Modding Knowledge Base</strong>
 
-## Getting Started
+This wiki is all about making your own mods for Minecraft with Forge.
+This wiki was started by McJty (twitter https://twitter.com/McJty)
 
-Get started by **creating a new site**.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
-
-:::danger
-
-tests
-
-:::
-
-### What you'll need
-
-- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
+'''Supporting McJty'''
+* If you want to support McJty and his tutorials and mods then there is a Patreon at https://www.patreon.com/McJty
+* Direct donations to PayPal are also possible (jorrit.tyberghein@pandora.be)
+* Thanks!
+```
+'''Tutorials'''
+{| class="wikitable"
+| style="border-left:solid 3px black;border-right:solid 3px black;border-top:solid 3px black;border-bottom:solid 3px black;background-color:#7799dd;" |<small>'''Version'''
+| style="border-left:solid 3px black;border-right:solid 3px black;border-top:solid 3px black;border-bottom:solid 3px black;background-color:#7799dd;" |<small>'''Link'''
+|-
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |1.12
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |[[YouTube-Tutorials-12|YouTube 1.12 tutorial step-by-step]]
+|-
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |1.14, 1.15, and 1.16
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |[[YouTube-Tutorials|YouTube tutorial step-by-step]]
+|-
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |1.17
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |[[YouTube-Tutorials-17|YouTube 1.17 tutorial step-by-step]]
+|-
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |1.18
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |[[YouTube-Tutorials-18|YouTube 1.18 tutorial step-by-step]]
+|-
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |1.19
+| style="border-left:solid 1px black;border-right:solid 1px black;border-top:solid 1px black;border-bottom:solid 1px black;background-color:#66dddd;" |[[YouTube-Tutorials-19|YouTube 1.19 tutorial step-by-step]]
+|}
 ```
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+<!--
+||| Commented out so it doesn't show, but so editors can still access it should needs be |||
+== Getting started ==
+* [//www.mediawiki.org/wiki/Special:MyLanguage/Manual:Configuration_settings Configuration settings list]
+* [//www.mediawiki.org/wiki/Special:MyLanguage/Manual:FAQ MediaWiki FAQ]
+* [https://lists.wikimedia.org/mailman/listinfo/mediawiki-announce MediaWiki release mailing list]
+* [//www.mediawiki.org/wiki/Special:MyLanguage/Localisation#Translation_resources Localise MediaWiki for your language]
+-->
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+===Special Subjects===
 
-## Start your site
+* [[Multi-Mod-Project|How to setup a Multi-Mod project using IDEA]]
 
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
