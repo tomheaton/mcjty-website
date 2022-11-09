@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Mcjty Wiki',
-  tagline: 'The Official McJty Wiki!',
+  tagline: 'Maker of RFTools, McJtyLib, Deep Resonance, and Gear Swapper.',
   url: 'https://mcjty.tomheaton.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -97,6 +97,14 @@ const config = {
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/McJty',
+              },
+              {
+                label: 'Reddit',
+                href: 'https://www.reddit.com/user/McJty',
+              },
+              {
+                label: 'Twitch',
+                href: 'https://www.twitch.tv/McJty',
               },
             ],
           },
