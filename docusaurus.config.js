@@ -114,7 +114,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} McJty. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} McJty`,
       },
       prism: {
         theme: lightCodeTheme,
