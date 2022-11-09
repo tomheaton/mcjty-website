@@ -1,6 +1,8 @@
 {
   "name": "mcjty-website",
+  "description": "mcjty-website",
   "version": "1.0.0",
+  "author": "tomheaton",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",

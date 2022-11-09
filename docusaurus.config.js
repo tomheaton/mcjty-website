@@ -6,16 +6,15 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Mcjty Wiki',
+  title: 'Mcjty',
   tagline: 'Maker of RFTools, McJtyLib, Deep Resonance, and Gear Swapper.',
   url: 'https://mcjty.tomheaton.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
+  organizationName: 'tomheaton',
+  projectName: 'mcjty-website',
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -57,8 +56,15 @@ const config = {
             type: 'doc',
             docId: 'intro',
             position: 'left',
-            label: 'Docs',
+            label: 'Tutorials',
           },
+          // TODO: add mod docs
+          /*{
+            type: 'doc',
+            docId: 'intro',
+            position: 'left',
+            label: 'Mod Docs',
+          },*/
           /*{
             to: '/blog',
             label: 'Blog',
@@ -75,12 +81,37 @@ const config = {
         style: 'dark',
         links: [
           {
+            title: 'Tutorials',
+            items: [
+              {
+                label: '1.19',
+                to: '/docs/1.19',
+              },
+              {
+                label: '1.18',
+                to: '/docs/1.18',
+              },
+              {
+                label: '1.17',
+                to: '/docs/1.17',
+              },
+              {
+                label: '1.14-1.15-1.16',
+                to: '/docs/1.14-1.15-1.16',
+              },
+              {
+                label: '1.12',
+                to: '/docs/1.12',
+              },
+            ],
+          },
+          {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
+                label: 'TODO: mod docs',
                 to: '/docs/intro',
-              },
+              }
             ],
           },
           {
