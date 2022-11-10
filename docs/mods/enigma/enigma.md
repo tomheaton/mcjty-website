@@ -80,8 +80,8 @@ So what does that mean in practice? Use 'setup' when you want to set up things t
 
 Here are a few references for EnigmaScript:
 
-* [Commands](./enigma/commands): A list of all commands and what they do
-* [Functions](./enigma/functions): A list of all functions and what they do
+* [Commands](./commands): A list of all commands and what they do
+* [Functions](./functions): A list of all functions and what they do
 
 ## Console commands
 
