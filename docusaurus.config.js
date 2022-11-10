@@ -17,14 +17,15 @@ const config = {
   projectName: 'mcjty-website',
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: [
+        'en'
+    ],
   },
   presets: [
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        // TODO: add mods and tutorials as docs
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
@@ -58,13 +59,14 @@ const config = {
             position: 'left',
             label: 'Tutorials',
           },
-          // TODO: add mod docs
-          /*{
-            type: 'doc',
-            docId: 'intro',
+          {
+            // type: 'doc',
+            // docId: 'mods/mods',
+            type: 'docSidebar',
+            sidebarId: 'mods',
             position: 'left',
             label: 'Mod Docs',
-          },*/
+          },
           /*{
             to: '/blog',
             label: 'Blog',
@@ -109,8 +111,8 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'TODO: mod docs',
-                to: '/docs/intro',
+                label: 'Mod Documentation',
+                to: '/docs/mods',
               }
             ],
           },
@@ -153,7 +155,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} McJty`,
+        copyright: `Copyright &copy; ${new Date().getFullYear()} McJty`,
       },
       prism: {
         theme: lightCodeTheme,
