@@ -111,7 +111,7 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Mod Documentation',
+                label: 'Mod Docs',
                 to: '/docs/mods',
               }
             ],

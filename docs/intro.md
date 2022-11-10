@@ -7,7 +7,7 @@ sidebar_position: 0
 ## Minecraft Modding Knowledge Base
 
 This wiki is all about making your own mods for Minecraft with Forge.
-This wiki was started by McJty (Twitter https://twitter.com/McJty)
+This wiki was started by McJty ([Twitter](https://twitter.com/McJty))
 
 ## Supporting McJty
 * If you want to support McJty and his tutorials and mods then there is a Patreon at https://www.patreon.com/McJty
