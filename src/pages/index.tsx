@@ -41,9 +41,15 @@ export default function Home(): JSX.Element {
       description="Description will go into a meta tag in <head />"
     >
       <HomepageHeader />
-      {/*<main>
-        <HomepageFeatures />
-      </main>*/}
+      <main>
+        {/*<HomepageFeatures />*/}
+        <p>
+          Hello, I'm McJty.
+          I'm a Minecraft mod developer, modpack developer and YouTuber!
+          I've made several mods for your and my pleasure and also like to help out other members in the community.
+          I'm also a member of the popular server group ForgeCraft.
+        </p>
+      </main>
     </Layout>
   );
 }
