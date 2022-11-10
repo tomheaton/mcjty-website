@@ -20,4 +20,4 @@ It was created with the help of Jared:
 
 ### Approach three (use the Forge!): [Single Forge Approach](./single-forge)
 
-The third approach was created together with KingLemmings. It is the least automated to set up but it is VERY efficient and works really well with AT's:
+The third approach was created together with KingLemmings. It is the least automated to set up, but it is VERY efficient and works really well with AT's:

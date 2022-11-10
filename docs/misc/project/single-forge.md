@@ -1,36 +1,39 @@
-=== Introduction ===
+# Single Forge Approach
+
+### Introduction
 
 In this approach we don't use the build.gradle's from any of the mods. This is all done with manual IDEA project setup. To accomplish this we actually clone a local version of Forge itself.
 
-=== Setting up Forge ===
+### Setting up Forge
 
 The first thing you need to do is to make a new directory that will host your project and in that directory you clone Minecraft Forge like this:
-```
- <nowiki>
+
+```shell
 git clone https://github.com/MinecraftForge/MinecraftForge.git
-</nowiki>
 ```
-Now you need to copy all AT files from all your mods inside 'MinecraftForge/src/main/resources/assets'. Or alternatively you can make a single file (like common_at.cfg or something) containing the combination of all your AT's.
 
-Then go inside the 'MinecraftForge' directory and type 'gradlew setupForge'. After a while this will have configured and build forge. This is the *last* time you'll use gradle for anything! No more setupDecompWorkspace or anything. This makes this approach really efficient and fast.
+Now you need to copy all AT files from all your mods inside `MinecraftForge/src/main/resources/assets`.
+Or alternatively you can make a single file (like `common_at.cfg` or something) containing the combination of all your AT's.
 
-=== Clone all your mods ===
+Then go inside the 'MinecraftForge' directory and type `gradlew setupForge`. After a while this will have configured and build forge.
+This is the *last* time you'll use gradle for anything! No more setupDecompWorkspace or anything. This makes this approach really efficient and fast.
+
+### Clone all your mods
 
 Then inside your project directory (the directory that contains MinecraftForge) you clone all the mods you want to use:
-```
- <nowiki>
+
+```shell
 git clone https://github.com/SuperModder/SuperMod.git
 git clone https://github.com/SuperModder/SplendidMod.git
 git clone https://github.com/SuperModder/ExcellentMod.git
-</nowiki>
 ```
-=== Prepare the workspace ===
+
+### Prepare the workspace
 
 Now make a new 'Workspace' directory. Here we will put all the IDEA related things.
 
 Go in that directory and for every mod make an 'iml' file called 'SuperMod.iml', 'SplendidMod.iml', and so on. You can make these from within IDEA but it may be easier to just use this template:
-```
- <nowiki>
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -46,13 +49,13 @@ Go in that directory and for every mod make an 'iml' file called 'SuperMod.iml',
     <orderEntry type="module" module-name="SuperMod" />
   </component>
 </module>
-</nowiki>
 ```
+
 In this example you can also add your dependencies between mods already. You can also do this from within IDEA later.
 
 You also need an iml file for MinecraftForge. For this you can use the following template:
-```
- <nowiki>
+
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <module relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -580,15 +583,16 @@ You also need an iml file for MinecraftForge. For this you can use the following
     <orderEntry type="module" module-name="ExcellentMod" scope="RUNTIME" />
   </component>
 </module>
-</nowiki>
 ```
-=== Fetching additional dependencies ===
+
+### Fetching additional dependencies
 
 If you have other dependencies like JEI, WAILA, TOP, ... you have to download the normal release jars from Curse and put them in the 'Workspace/libs' folder.
 
-=== Creating the IDEA project ===
+### Creating the IDEA project
 
-Make a normal IDEA java project and in de 'Project Structure' window import all the iml files you just created (MinecraftForge.iml and all your mod imls). Double check that all dependencies are ok:
+Make a normal IDEA java project and in de 'Project Structure' window import all the iml files you just created (`MinecraftForge.iml` and all your mod imls).
+Double check that all dependencies are ok:
 
 * MinecraftForge needs 'runtime' dependencies on all your mods that you actually want to use at runtime (using this you can leave out mods that you want to have in your project but don't want to use at runtime)
 * MinecraftForge needs 'compile' dependencies for all mods you put in Workspace/libs
@@ -596,9 +600,10 @@ Make a normal IDEA java project and in de 'Project Structure' window import all 
 * All mods need a 'compile' dependency on MinecraftForge
 * All mods need a 'compile' dependency on other mods that they depend on
 
-=== Setting up the run configuration ===
+### Setting up the run configuration
 
-Create a new 'Application' type run configuration and call it 'Client' (or whatever you like). As working directory you can use Workspace/run or any other directory. I recommend to keep it inside 'run' or some other directory to have a cleaner directory structure. The run configuration should use the classpath of the 'MinecraftForge' module.
+Create a new 'Application' type run configuration and call it 'Client' (or whatever you like). As working directory you can use Workspace/run or any other directory.
+I recommend to keep it inside 'run' or some other directory to have a cleaner directory structure. The run configuration should use the classpath of the 'MinecraftForge' module.
 
 Note: you may need to set 'Shorten command line' to 'none'. Forge can have trouble detecting mods otherwise.
 

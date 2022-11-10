@@ -1,3 +1,5 @@
+# Older Multi-Mod Project
+
 === Preparations ===
 
 To make things easier it might be a good idea to prepare the build.gradle of all your projects before you start with this. If the mods you plan to include in this multi-mod project depend on each other you might want to do some special setup because presumably your build.gradle files will fetch these dependencies from some maven. In the multi-mod project setup you don't want to do that because then you would a) get duplicates and b) it wouldn't work against the local version of that dependency. One way to solve this is with a build.gradle like this (this code was copied from EnderIO build.gradle):
