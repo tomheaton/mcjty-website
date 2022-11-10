@@ -25,7 +25,7 @@ Expect more content in the near future as we are working on this.
 * [XNet](./xnet)
 * [The One Probe](./the-one-probe)
 * [The Lost Cities](./lost-cities)
-* [Control Mods (In Control! and Fx Control!)](./control-mods/control-mods)
+* [Control Mods (In Control! and Fx Control!)](./control-mods)
 * [Enigma](./engima)
 * [Elemental Dimensions](./elemental-dimensions)
 * [Quest Utilities](./quest-utilities)
