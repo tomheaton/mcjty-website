@@ -1,7 +1,7 @@
 # FX Control
 
 :::danger Outdated
-THIS IS OBSOLETE: Use [The New Documentation](./control-mods) instead!
+THIS IS OBSOLETE: Use [The New Documentation](./control-mods.md) instead!
 :::
 
 This is a simple mod that gives you full control on player effects depending on various conditions. It is based on a rule system. The rule file is located in config/fxcontrol.

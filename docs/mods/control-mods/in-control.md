@@ -1,7 +1,7 @@
 # In Control
 
 :::danger Outdated
-THIS IS OBSOLETE: Use [The New Documentation](./control-mods) instead!
+THIS IS OBSOLETE: Use [The New Documentation](./control-mods.md) instead!
 :::
 
 This is a simple mod that gives you full control on where mobs are allowed to spawn.
