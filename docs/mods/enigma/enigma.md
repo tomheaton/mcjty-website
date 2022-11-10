@@ -4,54 +4,55 @@ Enigma is a mod that is all about stories and adventures in Minecraft.
 It gives you a simple programming language (called EnigmaScript) with which you can listen to various events and take control of various things in Minecraft.
 Using this mod you can do various things but the most important purpose of this mod is to enable people to write scripts for stories and adventures.
 
-==Introduction==
+## Introduction
 
 To give a good idea of what is possible here is a list of some of the more important features:
 
-* '''Block interaction''': intercept interaction with blocks (right click/left click) and perform alternative actions when the player does this
-* '''Item interaction''': same for items
-* '''Playing sounds''': play sounds at specific times
-* '''Particle systems''': show particle systems
-* '''Player control''': move and rotate the player
-* '''Multiplayer support''': supports adventures for multiple players
-* '''Flexible language''': EngimaScript is simple but still pretty flexible
-* '''World interaction''': break and set blocks in the world
-* '''Minecraft commands''': perform Minecraft console commands
-* '''Animation''': do various kinds of client side animations
-* '''Spawn mobs''': spawn mobs and give them armor and weapons
+* `Block interaction`: intercept interaction with blocks (right click/left click) and perform alternative actions when the player does this
+* `Item interaction`: same for items
+* `Playing sounds`: play sounds at specific times
+* `Particle systems`: show particle systems
+* `Player control`: move and rotate the player
+* `Multiplayer support`: supports adventures for multiple players
+* `Flexible language`: EngimaScript is simple but still pretty flexible
+* `World interaction`: break and set blocks in the world
+* `Minecraft commands`: perform Minecraft console commands
+* `Animation`: do various kinds of client side animations
+* `Spawn mobs`: spawn mobs and give them armor and weapons
 
 And much more.
 
-==EnigmaScript==
+## EnigmaScript
 
 The core of Enigma is the EngimaScript programming language.
 This language is where you program all the rules that form your adventure.
 As a language it resembles Python in some ways (but not all).
 
-===Basic Principles===
+### Basic Principles
 
-* '''Syntax''': the basic syntax of EnigmaScript is like Python. That means that indentation is important to distinguish blocks of code. It is important to note that (just like Python) an actual tab character will go to the next multiple of 8. In general it is recommended to use spaces as that is less confusing since a space is a space on any editor but tabs may be visualized differently.
-* '''Scopes''': the main control structure of EnigmaScript is a scope. In the next section we will explain scopes in more detail.
-* '''Events''': whenever something happens in Minecraft this can cause an event. In EnigmaScript you can listen to those events and perform some action based on those.
-* '''Types''': objects and variables are typed but EnigmaScript will almost always try to automatically convert types to the desired end result so you usually don't have to bother about them.
-* '''States''': it is often handy to structure an adventure with 'states'. For example, each room of your world can be represented by a state. Or for each progress event in your adventure you can have a different state. There are global states that are valid for all players and there are states (called 'pstates') that are local to a player.
-* '''Persistent Objects''': there are various objects that are persistently stored with the world. That means that when you set them they will keep that value even if you quit and restart Minecraft. These objects are: states, positions, itemstacks, blocks, variables, and particle systems. For every player there are also player states and player variables.
-* '''Variables''': variables are one of the persistent objects. That means they are global and kept with the world. Variables can currently have five different types: integer, double, boolean, string, or position.
-* '''Player Variables''': player variables are like variables, but they are local to a player.
-* '''Local Variables''': there are also local variables that are only relevant in a single block of code. When that block stops executing those variables are lost.
-* '''Current Player''': various functions and commands need a player to work on. If there is no player they will fail. A player is only available in an event or scope if the event or scope is related to a player. For example, the event to right click a block has a player since it will be a player that is doing that interaction. Therefor you can use player based functions and commands in the event handler for that. However, an activation event for a non-player scope typically has no player since those scopes are activated globally.
+* `Syntax`: the basic syntax of EnigmaScript is like Python. That means that indentation is important to distinguish blocks of code. It is important to note that (just like Python) an actual tab character will go to the next multiple of 8. In general it is recommended to use spaces as that is less confusing since a space is a space on any editor but tabs may be visualized differently.
+* `Scopes`: the main control structure of EnigmaScript is a scope. In the next section we will explain scopes in more detail.
+* `Events`: whenever something happens in Minecraft this can cause an event. In EnigmaScript you can listen to those events and perform some action based on those.
+* `Types`: objects and variables are typed but EnigmaScript will almost always try to automatically convert types to the desired end result so you usually don't have to bother about them.
+* `States`: it is often handy to structure an adventure with 'states'. For example, each room of your world can be represented by a state. Or for each progress event in your adventure you can have a different state. There are global states that are valid for all players and there are states (called 'pstates') that are local to a player.
+* `Persistent Objects`: there are various objects that are persistently stored with the world. That means that when you set them they will keep that value even if you quit and restart Minecraft. These objects are: states, positions, itemstacks, blocks, variables, and particle systems. For every player there are also player states and player variables.
+* `Variables`: variables are one of the persistent objects. That means they are global and kept with the world. Variables can currently have five different types: integer, double, boolean, string, or position.
+* `Player Variables`: player variables are like variables, but they are local to a player.
+* `Local Variables`: there are also local variables that are only relevant in a single block of code. When that block stops executing those variables are lost.
+* `Current Player`: various functions and commands need a player to work on. If there is no player they will fail. A player is only available in an event or scope if the event or scope is related to a player. For example, the event to right click a block has a player since it will be a player that is doing that interaction. Therefor you can use player based functions and commands in the event handler for that. However, an activation event for a non-player scope typically has no player since those scopes are activated globally.
 
-===Expressions===
+### Expressions
 
-The expression parser in EnigmaScript is pretty general. Here are a few example expressions to clarify what it can do:
+The expression parser in EnigmaScript is pretty general.
+Here are a few example expressions to clarify what it can do:
 
 * Basic expressions: `(3.14 * 2) / 10`
-* Using global and local variables: `100 + $var`. Note that when evaluating a variable local variables will be checked first, then player variables and finally global variables. Keep that in mind when chosing variable names.
+* Using global and local variables: `100 + $var`. Note that when evaluating a variable local variables will be checked first, then player variables and finally global variables. Keep that in mind when choosing variable names.
 * Using functions: `sqrt(16) + max(1,10)`
 * String expressions: `"testing" + fmt_green() + " (hello)"`
 * Supported operators: `<, >, <=, >=, ==, !=, +, -, *, /, %, ^`
 
-===Scopes===
+### Scopes
 
 Scopes are the most important concept in EnigmaScript. There are global scopes and player scopes. Every scope has a unique identifier (just a name) and a condition. So first a few rules:
 
@@ -65,24 +66,24 @@ So scopes are a way to control when some parts of your script should run and whe
 
 However, if you have a door that you only want to open when the player is ready for it then you can put the event handling for right clicking that door in a scope that is only active when a certain state is set to a certain value.
 
-===Scope Activation===
+### Scope Activation
 
 Whenever a scope becomes active there are three possible initialization events that can occur. Note that this is also valid for player scopes but there these events are considered per player/scope combination:
 
-* '''init''': this is called every time the scope is activated but only once per session. So if the player exits MC and starts playing again the 'init' events for active scopes will be called again. For the root scope this is called every time the game is loaded.
-* '''setup''': this is called the very first time a scope is activated. So for every scope (or every player/scope combination) this will be executed exactly once. For the root scope this will be called the very first time the game is loaded but not anymore after that.
-* '''activate''': this is called every time a scope is activated. For the root scope that is actually the same as 'setup' since the root scope is only activated once. Scopes that were active when the game is closed will remain active when the game is loaded again but the activate event will not be called again!
+* `init`: this is called every time the scope is activated but only once per session. So if the player exits MC and starts playing again the 'init' events for active scopes will be called again. For the root scope this is called every time the game is loaded.
+* `setup`: this is called the very first time a scope is activated. So for every scope (or every player/scope combination) this will be executed exactly once. For the root scope this will be called the very first time the game is loaded but not anymore after that.
+* `activate`: this is called every time a scope is activated. For the root scope that is actually the same as 'setup' since the root scope is only activated once. Scopes that were active when the game is closed will remain active when the game is loaded again but the activate event will not be called again!
 
 So what does that mean in practice? Use 'setup' when you want to set up things that start at a given value but may end up changing during the game. Since setup is not called again they will keep whatever value they are set at (states are a good example of this). Use 'init' for things that you want to initialize in every session and use 'activate' for things that you want to happen every time the scope becomes active. An example of this is a message that you want to tell to the player.
 
-===References===
+### References
 
 Here are a few references for EnigmaScript:
 
-* [[Commands]] A list of all commands and what they do
-* [[Functions]] A list of all functions and what they do
+* [Commands](./enigma/commands): A list of all commands and what they do
+* [Functions](./enigma/functions): A list of all functions and what they do
 
-==Console commands==
+## Console commands
 
 Enigma has a number of console commands to help you debug and develop your stories:
 
@@ -95,17 +96,20 @@ Enigma has a number of console commands to help you debug and develop your stori
 * `e_eval <expression>`: evalulate an EnigmaScript expression. This way you can expect variables, states and so on
 * `e_action <action> <parameters...>`: execute an EnigmaScript action. Only state, pstate, var, pvar, give, setting, setblock, teleport, and kill are supported here.
 
-==The 'enigma' directory==
+## The `enigma` directory
 
-You can keep story specific information in your world folder in the 'enigma' directory. For example an 'autostart.esc' script which is loaded and executed when your world loads and you can also store snapshots there.
+You can keep story specific information in your world folder in the `enigma` directory.
+For example an `autostart.esc` script which is loaded and executed when your world loads, and you can also store snapshots there.
 
-==Built-in items and sounds==
+## Built-in items and sounds
 
 Todo!
 
-==Examples==
+## Examples
 
-The following example is very simple game. When you click a start block you get teleported to a maze where you have to collect as many diamond blocks as possible before the time runs out. This example only supports a single player as it keeps the score global. See the next example where this is expanded for multiple players:
+The following example is very simple game.
+When you click a start block you get teleported to a maze where you have to collect as many diamond blocks as possible before the time runs out.
+This example only supports a single player as it keeps the score global. See the next example where this is expanded for multiple players:
 
 ```python
 on setup:
@@ -142,7 +146,14 @@ scope "theend" state(main) == theend:
         message fmt_green() + "You got a score of: " + fmt_blue() + $score + "!" 300
 ```
 
-Here is a version that supports multiple players. A special trick is used here with a nested player scope. As soon as one of the active players on the server right clicks the start block the game will start for everyone. This is because when the main state goes to 'game' state the game scope will activate. The nested player_start scope will also activate because it has a 'true' condition that is always true (obviously). So that means that upon activation of the game scope the player_start scope will also activate for every online player. So this is a way to loop over all players. The same happens at the end when all players will get a message with their final score:
+Here is a version that supports multiple players.
+A special trick is used here with a nested player scope.
+As soon as one of the active players on the server right-clicks the start block the game will start for everyone.
+This is because when the main state goes to `game` state the game scope will activate.
+The nested `player_start` scope will also activate because it has a `true` condition that is always true (obviously).
+So that means that upon activation of the game scope the `player_start` scope will also activate for every online player.
+So this is a way to loop over all players.
+The same happens at the end when all players will get a message with their final score:
 
 ```python
 on setup:
