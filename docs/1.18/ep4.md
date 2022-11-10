@@ -1,10 +1,16 @@
-==Links==
+---
+sidebar_position: 4
+---
 
-* Video: [https://www.youtube.com/watch?v=ydM7x27L2VM&ab_channel=JorritTyberghein Parchment, Entity]
-* [[YouTube-Tutorials-18|Back to 1.18 Tutorial Index]]
-* [https://github.com/McJty/TutorialV3 Tutorial GitHub]
+# Episode 4
 
-==Introduction==
+## Links
+
+* Video: [Parchment, Entity](https://www.youtube.com/watch?v=ydM7x27L2VM&ab_channel=JorritTyberghein)
+* [Back to 1.18 Tutorial Index](./1.18.md)
+* [Tutorial GitHub](https://github.com/McJty/TutorialV3)
+
+## Introduction
 
 First we fix a bug in our previous tutorials regarding block drops. After that we explain how you can switch to Parchment for better named parameters. The main part of this tutorial will be about a custom entity.
 

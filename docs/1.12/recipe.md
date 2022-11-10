@@ -1,4 +1,4 @@
-The recipe system has changed a lot in 1.12. This is not a complete tutorial but should show you a few basics. The information here is not yet included in the ModTut github and needs to be worked out more.
+The recipe system has changed a lot in 1.12. This is not a complete tutorial but should show you a few basics. The information here is not yet included in the ModTut GitHub and needs to be worked out more.
 
 More information on recipes can be found at the official forge documentation: https://mcforge.readthedocs.io/en/latest/utilities/recipes/
 

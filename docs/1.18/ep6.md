@@ -1,24 +1,30 @@
-==Links==
+---
+sidebar_position: 6
+---
 
-* [https://www.youtube.com/watch?v=e8CdEqQ4hRM&ab_channel=JorritTyberghein Configuration]
-* [[YouTube-Tutorials-18|Back to 1.18 Tutorial Index]]
-* [https://github.com/McJty/TutorialV3 Tutorial GitHub]
+# Episode 6
 
-==Introduction==
+## Links
+
+* Video: [Configuration](https://www.youtube.com/watch?v=e8CdEqQ4hRM&ab_channel=JorritTyberghein)
+* [Back to 1.18 Tutorial Index](./1.18.md)
+* [Tutorial GitHub](https://github.com/McJty/TutorialV3)
+
+## Introduction
 
 In this tutorial we explain how you can allow users to configure your mod. The Forge config system uses toml files for configuration. There are three types of configuration:
 
-* Client: client side configs are only relevant for the client. They are usually related to rendering, sound, and other things that are pure client side. The server doesn't know about these. These config files can be found in the config directoryof the Minecraft instance and so are global over all worlds (single and multi player)
+* Client: client side configs are only relevant for the client. They are usually related to rendering, sound, and other things that are pure client side. The server doesn't know about these. These config files can be found in the config directory of the Minecraft instance and so are global over all worlds (single and multiplayer)
 * Common: common configs are loaded on both the server and the client and are also stored in the global config directory. They are NOT synced which means that the client side version of these configs can differ from the server side version
 * Server: server configs are stored with the server instance (or with the world). They are stored in each `<world>/serverconfig` directory. Server configs are synced to the clients during connection but a client cannot override them. Note that all configs in the global defaultconfigs directory are automatically used for any new world
 
-So when do you choose common and when do you choose server? Basically server should be the default because that way configs can be different depending on which server you play on. It's the most flexible technique. However for things like worldgen you need to put it in common since server side config doesn't exist yet when the world is first created.
+So when do you choose common and when do you choose server? Basically server should be the default because that way configs can be different depending on which server you play on. It's the most flexible technique. However, for things like worldgen you need to put it in common since server side config doesn't exist yet when the world is first created.
 
-===Basic Setup===
+### Basic Setup
 
-There are many ways to setup configuration for your mod. In this tutorial we present you one option. Start by making a Config class in the setup package ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/Config.java Config.java on Github]). In this class we use the ForgeConfigSpec helper from Forge to generate configs for client, common, and server. We also split the actual setup of the configuration keys for each module in a separate file for clarity:
-```
- <syntaxhighlight lang="java">
+There are many ways to set up configuration for your mod. In this tutorial we present you one option. Start by making a Config class in the setup package ([`Config.java` on GitHub](https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/Config.java)). In this class we use the `ForgeConfigSpec` helper from Forge to generate configs for client, common, and server. We also split the actual setup of the configuration keys for each module in a separate file for clarity:
+
+```java
 public class Config {
 
     public static void register() {
@@ -46,35 +52,48 @@ public class Config {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_BUILDER.build());
     }
 }
-</syntaxhighlight>
 ```
-In our main mod file we call Config.register like this:
+
+In our main mod file we call `Config.register` like this:
+
+```java
+public TutorialV3() {
+
+    Registration.init();
+    Config.register();
+
+    ...
+}
 ```
- <syntaxhighlight lang="java">
-    public TutorialV3() {
 
-        Registration.init();
-        Config.register();
+A very important note about order here.
+Even though there seems to be an order here. i.e. first we call `Registration.init()` and then we call `Config.register()` that order is actually not important.
+The only thing both setup methods do is make sure that registration and configuration will kick in at the right time during mod setup.
+It's up to Forge to decide when this happens.
+And configuration occurs AFTER registration.
+This means that you should not use configuration to enable or disable registration of certain objects in your mod.
+Always register all objects.
+If you need a config to disable something then either do that through datapacks (disabling the recipe) or perhaps use conditional recipes (more on that in a possible future tutorial).
 
-        ...
-    }
-</syntaxhighlight>
-```
-A very important note about order here. Even though there seems to be an order here. i.e. first we call Registration.init() and then we call Config.register() that order is actually not important. The only thing both setup methods do is make sure that registration and configuration will kick in at the right time during mod setup. It's up to Forge to decide when this happens. And configuration occurs AFTER registration. This means that you should not use configuration to enable or disable registration of certain objects in your mod. Always register all objects. If you need a config to disable something then either do that through datapacks (disabling the recipe) or perhaps use conditional recipes (more on that in a possible future tutorial).
+:::danger Warning
+Configuration happens AFTER registration but BEFORE FMLCommonSetupEvent!
+:::
 
-{{warning|1=Configuration happens AFTER registration but BEFORE FMLCommonSetupEvent!}}
+:::danger Warning
+Server type configuration happens AFTER the world is loaded!
+:::
 
-{{warning|1=Server type configuration happens AFTER the world is loaded!}}
-
-===Config Modules===
+### Config Modules
 
 In this section we will describe the different config modules:
 
-====Powergen Config====
+#### Powergen Config
 
-The powergen configuration ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/blocks/PowergenConfig.java PowergenConfig.java on Github]) has server config values and one client side config value. To declare these you use `ForgeConfigSpec.<Xxx>Value`. Toml files are structured. For every module we use 'push' and 'pop' to better structure our config file and make sure that settings that belong together are in the same section:
-```
- <syntaxhighlight lang="java">
+The powergen configuration ([`PowergenConfig.java` on GitHub](https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/blocks/PowergenConfig.java)) has server config values and one client side config value.
+To declare these you use `ForgeConfigSpec.<Xxx>Value`. Toml files are structured.
+For every module we use 'push' and 'pop' to better structure our config file and make sure that settings that belong together are in the same section:
+
+```java
 public class PowergenConfig {
 
     public static ForgeConfigSpec.IntValue POWERGEN_CAPACITY;
@@ -109,23 +128,23 @@ public class PowergenConfig {
         CLIENT_BUILDER.pop();
     }
 }
-</syntaxhighlight>
 ```
-====Others====
 
-It's similar in the other modules. Check the github for those.
+#### Others
 
-===Using the config===
+It's similar in the other modules. Check the GitHub for those.
 
-To actually use the config you just need to do .get() on the config value like this:
+### Using the config
+
+To actually use the config you just need to do `.get()` on the config value like this:
+
+```java
+public void tickServer() {
+    if (counter > 0) {
+        energyStorage.addEnergy(PowergenConfig.POWERGEN_GENERATE.get());
+        counter--;
+        setChanged();
+    }
 ```
- <syntaxhighlight lang="java">
-    public void tickServer() {
-        if (counter > 0) {
-            energyStorage.addEnergy(PowergenConfig.POWERGEN_GENERATE.get());
-            counter--;
-            setChanged();
-        }
-</syntaxhighlight>
-```
-Note that you can also use .set() to set a value and this will automatically update the config file.
+
+Note that you can also use `.set()` to set a value and this will automatically update the config file.

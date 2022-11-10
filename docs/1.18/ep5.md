@@ -1,16 +1,22 @@
-==Links==
+---
+sidebar_position: 5
+---
 
-* [https://www.youtube.com/watch?v=rilsGp8dFJA&ab_channel=JorritTyberghein Oregen, Structures, Custom Dimension]
-* [[YouTube-Tutorials-18|Back to 1.18 Tutorial Index]]
-* [https://github.com/McJty/TutorialV3 Tutorial GitHub]
-* [https://github.com/TelepathicGrunt/StructureTutorialMod Structure Tutorial by TelepathicGrunt]
-* [https://minecraft.fandom.com/wiki/Custom_dimension Minecraft Wiki with information on custom dimensions]
+# Episode 5
 
-==Introduction==
+## Links
+
+* Video: [Oregen, Structures, Custom Dimension](https://www.youtube.com/watch?v=rilsGp8dFJA&ab_channel=JorritTyberghein )
+* [Back to 1.18 Tutorial Index](./1.18.md)
+* [Tutorial GitHub](https://github.com/McJty/TutorialV3)
+* [Structure Tutorial by TelepathicGrunt](https://github.com/TelepathicGrunt/StructureTutorialMod)
+* [Minecraft Wiki with information on custom dimensions](https://minecraft.fandom.com/wiki/Custom_dimension)
+
+## Introduction
 
 {{warning|1=Structures and oregeneration have changed heavily in 1.18.2! This explanation is only useful for 1.18.1. See episode 8 for porting to 1.18.2}}
 
-{{warning|1=For the 1.19.2 version of this code I recommend you look at the 1.19 github as this has also changed considerably}}
+{{warning|1=For the 1.19.2 version of this code I recommend you look at the 1.19 GitHub as this has also changed considerably}}
 
 This is a more advanced tutorial explaining various worldgen related subjects. You can safely skip this tutorial if you don't want to bother with worldgen right now or don't need it for your mod. This tutorial is based on the structure tutorial by TelepathicGrunt (link above). His tutorial goes a little bit more in-depth so feel free to check that out if you want to go further with this.
 

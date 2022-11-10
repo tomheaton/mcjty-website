@@ -1,137 +1,150 @@
-==Links==
+---
+sidebar_position: 2
+---
 
-* Video: [https://www.youtube.com/watch?v=tv6oFjC8sq8&ab_channel=JorritTyberghein Items, smelting, powergenerator, capabilities, gui]
-* [[YouTube-Tutorials-18|Back to 1.18 Tutorial Index]]
-* [https://github.com/McJty/TutorialV3 Tutorial GitHub]
+# Episode 2
 
-==Introduction==
+## Links
 
-In this tutorial we start by adding the raw chunk and ingot items as well as smelting recipes for them. After that we will cover a more advanced power generator.
+* Video: [Items, smelting, powergenerator, capabilities, gui](https://www.youtube.com/watch?v=tv6oFjC8sq8&ab_channel=JorritTyberghein)
+* [Back to 1.18 Tutorial Index](./1.18.md)
+* [Tutorial GitHub](https://github.com/McJty/TutorialV3)
 
-===Adding the raw chunk and ingot===
+## Introduction
 
-We want to handle the ore the same way as Vanilla. That means that breaking the ore block should give us raw chunks and these can be melted to ingots:
+In this tutorial we start by adding the raw chunk and ingot items as well as smelting recipes for them.
+After that we will cover a more advanced power generator.
+
+### Adding the raw chunk and ingot
+
+We want to handle the ore the same way as Vanilla.
+That means that breaking the ore block should give us raw chunks and these can be melted to ingots:
 
 Add the following things to Registration:
-```
- <syntaxhighlight lang="java">
-    public static final RegistryObject<Item> RAW_MYSTERIOUS_CHUNK = ITEMS.register("raw_mysterious_chunk", () -> new Item(ITEM_PROPERTIES));
-    public static final RegistryObject<Item> MYSTERIOUS_INGOT = ITEMS.register("mysterious_ingot", () -> new Item(ITEM_PROPERTIES));
 
-    public static final TagKey<Block> MYSTERIOUS_ORE = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(TutorialV3.MODID, "mysterious_ore"));
-    public static final TagKey<Item> MYSTERIOUS_ORE_ITEM = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(TutorialV3.MODID, "mysterious_ore"));
-</syntaxhighlight>
+```java
+public static final RegistryObject<Item> RAW_MYSTERIOUS_CHUNK = ITEMS.register("raw_mysterious_chunk", () -> new Item(ITEM_PROPERTIES));
+public static final RegistryObject<Item> MYSTERIOUS_INGOT = ITEMS.register("mysterious_ingot", () -> new Item(ITEM_PROPERTIES));
+
+public static final TagKey<Block> MYSTERIOUS_ORE = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(TutorialV3.MODID, "mysterious_ore"));
+public static final TagKey<Item> MYSTERIOUS_ORE_ITEM = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(TutorialV3.MODID, "mysterious_ore"));
 ```
-The first two lines are just normal items for our raw chunk and ingot. The two others are tags that we will use to group the four different variants of our ore into a single tag.
+
+The first two lines are just normal items for our raw chunk and ingot.
+The two others are tags that we will use to group the four different variants of our ore into a single tag.
 
 Then we need to extend our datagenerators:
-```
- <syntaxhighlight lang="java">
+
+```java
 public class TutItemModels extends ItemModelProvider {
-        ...
-        singleTexture(Registration.RAW_MYSTERIOUS_CHUNK.getId().getPath(),
-                mcLoc("item/generated"),
-                "layer0", modLoc("item/raw_mysterious_chunk"));
-        singleTexture(Registration.MYSTERIOUS_INGOT.getId().getPath(),
-                mcLoc("item/generated"),
-                "layer0", modLoc("item/mysterious_ingot"));
-        ...
+    ...
+    singleTexture(Registration.RAW_MYSTERIOUS_CHUNK.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/raw_mysterious_chunk"));
+    singleTexture(Registration.MYSTERIOUS_INGOT.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/mysterious_ingot"));
+    ...
 }
 
 
 public class TutBlockTags extends BlockTagsProvider {
-...
-tag(Registration.MYSTERIOUS_ORE)
-.add(Registration.MYSTERIOUS_ORE_OVERWORLD.get())
-.add(Registration.MYSTERIOUS_ORE_NETHER.get())
-.add(Registration.MYSTERIOUS_ORE_END.get())
-.add(Registration.MYSTERIOUS_ORE_DEEPSLATE.get());
-...
+    ...
+    tag(Registration.MYSTERIOUS_ORE)
+        .add(Registration.MYSTERIOUS_ORE_OVERWORLD.get())
+        .add(Registration.MYSTERIOUS_ORE_NETHER.get())
+        .add(Registration.MYSTERIOUS_ORE_END.get())
+        .add(Registration.MYSTERIOUS_ORE_DEEPSLATE.get());
+    ...
 }
 
 
 public class TutItemTags extends ItemTagsProvider {
-...
-tag(Registration.MYSTERIOUS_ORE_ITEM)
-.add(Registration.MYSTERIOUS_ORE_OVERWORLD_ITEM.get())
-.add(Registration.MYSTERIOUS_ORE_NETHER_ITEM.get())
-.add(Registration.MYSTERIOUS_ORE_END_ITEM.get())
-.add(Registration.MYSTERIOUS_ORE_DEEPSLATE_ITEM.get());
-...
+    ...
+    tag(Registration.MYSTERIOUS_ORE_ITEM)
+        .add(Registration.MYSTERIOUS_ORE_OVERWORLD_ITEM.get())
+        .add(Registration.MYSTERIOUS_ORE_NETHER_ITEM.get())
+        .add(Registration.MYSTERIOUS_ORE_END_ITEM.get())
+        .add(Registration.MYSTERIOUS_ORE_DEEPSLATE_ITEM.get());
+    ...
 }
 
 
 public class TutLanguageProvider extends LanguageProvider {
-...
-add(Registration.RAW_MYSTERIOUS_CHUNK.get(), "Mysterious Raw Chunk");
-add(Registration.MYSTERIOUS_INGOT.get(), "Mysterious Ingot");
-...
+    ...
+    add(Registration.RAW_MYSTERIOUS_CHUNK.get(), "Mysterious Raw Chunk");
+    add(Registration.MYSTERIOUS_INGOT.get(), "Mysterious Ingot");
+    ...
 }
 
 
 public class TutRecipes extends RecipeProvider {
-...
-SimpleCookingRecipeBuilder.smelting(Ingredient.of(Registration.MYSTERIOUS_ORE_ITEM),
-Registration.MYSTERIOUS_INGOT.get(), 1.0f, 100)
-.unlockedBy("has_ore", has(Registration.MYSTERIOUS_ORE_ITEM))
-.save(consumer, "mysterious_ingot1");
-SimpleCookingRecipeBuilder.smelting(Ingredient.of(Registration.RAW_MYSTERIOUS_CHUNK.get()),
-Registration.MYSTERIOUS_INGOT.get(), 0.0f, 100)
-.unlockedBy("has_chunk", has(Registration.RAW_MYSTERIOUS_CHUNK.get()))
-.save(consumer, "mysterious_ingot2");
-...
+    ...
+    SimpleCookingRecipeBuilder.smelting(Ingredient.of(Registration.MYSTERIOUS_ORE_ITEM),
+    Registration.MYSTERIOUS_INGOT.get(), 1.0f, 100)
+        .unlockedBy("has_ore", has(Registration.MYSTERIOUS_ORE_ITEM))
+        .save(consumer, "mysterious_ingot1");
+    SimpleCookingRecipeBuilder.smelting(Ingredient.of(Registration.RAW_MYSTERIOUS_CHUNK.get()),
+    Registration.MYSTERIOUS_INGOT.get(), 0.0f, 100)
+        .unlockedBy("has_chunk", has(Registration.RAW_MYSTERIOUS_CHUNK.get()))
+        .save(consumer, "mysterious_ingot2");
+    ...
 }
 
 
 public class TutLootTables extends BaseLootTableProvider {
-...
-lootTables.put(Registration.MYSTERIOUS_ORE_OVERWORLD.get(), createSilkTouchTable("mysterious_ore_overworld", Registration.MYSTERIOUS_ORE_OVERWORLD.get(), Registration.RAW_MYSTERIOUS_CHUNK.get(), 1, 3));
-lootTables.put(Registration.MYSTERIOUS_ORE_NETHER.get(), createSilkTouchTable("mysterious_ore_nether", Registration.MYSTERIOUS_ORE_NETHER.get(), Registration.RAW_MYSTERIOUS_CHUNK.get(), 1, 3));
-lootTables.put(Registration.MYSTERIOUS_ORE_END.get(), createSilkTouchTable("mysterious_ore_end", Registration.MYSTERIOUS_ORE_END.get(), Registration.RAW_MYSTERIOUS_CHUNK.get(), 1, 3));
-lootTables.put(Registration.MYSTERIOUS_ORE_DEEPSLATE.get(), createSilkTouchTable("mysterious_ore_deepslate", Registration.MYSTERIOUS_ORE_DEEPSLATE.get(), Registration.RAW_MYSTERIOUS_CHUNK.get(), 1, 3));
-...
+    ...
+    lootTables.put(Registration.MYSTERIOUS_ORE_OVERWORLD.get(), createSilkTouchTable("mysterious_ore_overworld", Registration.MYSTERIOUS_ORE_OVERWORLD.get(), Registration.RAW_MYSTERIOUS_CHUNK.get(), 1, 3));
+    lootTables.put(Registration.MYSTERIOUS_ORE_NETHER.get(), createSilkTouchTable("mysterious_ore_nether", Registration.MYSTERIOUS_ORE_NETHER.get(), Registration.RAW_MYSTERIOUS_CHUNK.get(), 1, 3));
+    lootTables.put(Registration.MYSTERIOUS_ORE_END.get(), createSilkTouchTable("mysterious_ore_end", Registration.MYSTERIOUS_ORE_END.get(), Registration.RAW_MYSTERIOUS_CHUNK.get(), 1, 3));
+    lootTables.put(Registration.MYSTERIOUS_ORE_DEEPSLATE.get(), createSilkTouchTable("mysterious_ore_deepslate", Registration.MYSTERIOUS_ORE_DEEPSLATE.get(), Registration.RAW_MYSTERIOUS_CHUNK.get(), 1, 3));
+    ...
 }
 
-</syntaxhighlight>
 ```
 Run 'runData' again to generate the needed files. Note how our recipe is using the tags to be able to work with the four different variants easily.
 
-Note: mcLoc is a shortcut for new ResourceLocation("minecraft", ...) while modLoc is a shortcut for new ResourceLocation(MODID, ...). ResourceLocation is the global key that is used in Minecraft to uniquely identify objects as well as assets.
+Note: `mcLoc` is a shortcut for `new ResourceLocation("minecraft", ...)` while modLoc is a shortcut for `new ResourceLocation(MODID, ...)`.
+ResourceLocation is the global key that is used in Minecraft to uniquely identify objects as well as assets.
 
-For the loot table we use a createSilkTouchTable() method that is defined in the BaseLootTableProvider (see github).
+For the loot table we use a `createSilkTouchTable()` method that is defined in the `BaseLootTableProvider` (see GitHub).
 
-===The PowerGenerator===
+### The PowerGenerator
 
 The power generator is the block on the right of this image. It's currently generating power which is why it is red and also has a star rendered on top:
 
-https://i.imgur.com/rNHnnjH.png
+![image](https://i.imgur.com/rNHnnjH.png)
 
 First add the following to the Registration class:
+
+```java
+private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+
+public static void init() {
+    IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    BLOCKS.register(bus);
+    ITEMS.register(bus);
+    BLOCK_ENTITIES.register(bus);
+    CONTAINERS.register(bus);
+}
+
+public static final RegistryObject<PowergenBlock> POWERGEN = BLOCKS.register("powergen", PowergenBlock::new);
+public static final RegistryObject<Item> POWERGEN_ITEM = fromBlock(POWERGEN);
+public static final RegistryObject<BlockEntityType<PowergenBE>> POWERGEN_BE = BLOCK_ENTITIES.register("powergen", () -> BlockEntityType.Builder.of(PowergenBE::new, POWERGEN.get()).build(null));
+public static final RegistryObject<MenuType<PowergenContainer>> POWERGEN_CONTAINER = CONTAINERS.register("powergen", () -> IForgeMenuType.create((windowId, inv, data) -> new PowergenContainer(windowId, data.readBlockPos(), inv, inv.player)));
 ```
- <syntaxhighlight lang="java">
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
-    public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
-        BLOCK_ENTITIES.register(bus);
-        CONTAINERS.register(bus);
-    }
+Basically our power generator will be more than just a block and an item.
+We also need a block entity.
+This will be responsible for holding the inventory (the items that we want to burn for power) as well as the actual power that is being generated.
+In addition, it will also need to 'tick' (a tick is 1/20 second).
+It is during this tick that our block entity can do something.
 
-    public static final RegistryObject<PowergenBlock> POWERGEN = BLOCKS.register("powergen", PowergenBlock::new);
-    public static final RegistryObject<Item> POWERGEN_ITEM = fromBlock(POWERGEN);
-    public static final RegistryObject<BlockEntityType<PowergenBE>> POWERGEN_BE = BLOCK_ENTITIES.register("powergen", () -> BlockEntityType.Builder.of(PowergenBE::new, POWERGEN.get()).build(null));
-    public static final RegistryObject<MenuType<PowergenContainer>> POWERGEN_CONTAINER = CONTAINERS.register("powergen",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new PowergenContainer(windowId, data.readBlockPos(), inv, inv.player)));
-</syntaxhighlight>
-```
-Basically our power generator will be more then just a block and an item. We also need a block entity. This will be responsible for holding the inventory (the items that we want to burn for power) as well as the actual power that is being generated. In addition it will also need to 'tick' (a tick is 1/20 second). It is during this tick that our block entity can do something.
+We also need a container.
+The container acts like a bridge between the server and the client.
+When the user opens the gui for a certain block this actually happens on the server side.
+A container instance for the block will be made, and it will set up communication to the client.
+At that point the client will also open the same container and together with that the associated screen.
+This will be explained more in the section about containers.
 
-We also need a container. The container acts like a bridge between the server and the client. When the user opens the gui for a certain block this actually happens on the server side. A container instance for the block will be made and it will set up communication to the client. At that point the client will also open the same container and together with that the associated screen. This will be explained more in the section about containers.
-
-===The Powergen Block===
+### The Powergen Block
 
 The first thing we want to create is the actual power generator block. A few notes about this block:
 
@@ -140,11 +153,15 @@ The first thing we want to create is the actual power generator block. A few not
 * We make the occlusion shape of our block slightly smaller so that the block will not hide faces of adjacent other blocks (which would create 'holes' in the world)
 * We use translatable messages for our tooltip (appendHoverText)
 
-The 'use' method requires a bit more explanation. Basically use is called on both sides (server and client) whenever the player right clicks our block. We want the user interface to open whenever the player does that. Earlier we explained that opening a gui is typically done by opening the container on the server. That's why we only do something in 'use' when we are on the server.
+The 'use' method requires a bit more explanation.
+Basically use is called on both sides (server and client) whenever the player right-clicks our block.
+We want the user interface to open whenever the player does that. Earlier we explained that opening a gui is typically done by opening the container on the server.
+That's why we only do something in 'use' when we are on the server.
 
-We use NetworkHooks.openGui() which is a conveniance function made by forge that will open the container for us and also initialize an extra packet that is sent to the client for additional data. In this case that packet is used to send over the position of our block entity so that the client also knows for what block entity the container is being opened.
-```
- <syntaxhighlight lang="java">
+We use NetworkHooks.openGui() which is a convenience function made by forge that will open the container for us and also initialize an extra packet that is sent to the client for additional data.
+In this case that packet is used to send over the position of our block entity so that the client also knows for what block entity the container is being opened.
+
+```java
 public class PowergenBlock extends Block implements EntityBlock {
 
     public static final String MESSAGE_POWERGEN = "message.powergen";
@@ -230,12 +247,13 @@ public class PowergenBlock extends Block implements EntityBlock {
         return InteractionResult.SUCCESS;
     }
 }
-</syntaxhighlight>
 ```
-https://i.imgur.com/o7hgFpp.png
-Use Component.translatable() instead of new TranslatableComponent()
 
-===The Powergen Block Entity===
+:::info 1.19
+Use `Component.translatable()` instead of `new TranslatableComponent()`
+:::
+
+### The Powergen Block Entity
 
 The powergenerator Block Entity is responsible for actually generating power from fuel items. In order to do that it needs an inventory (to hold the items to generate power from) and power. It also needs to tick so that it can actually do the processing required to generate power and also to send out power to adjacent blocks.
 
@@ -250,11 +268,11 @@ A few notes:
 * Our item handler and energy storage implementations make sure that setChanged() is called on the block entity whenever there is a change in the items or energy.
 
 Let's explain tickServer() a bit in more detail. It has the following parts:
-* Part One: if counter is greater then zero it means we are busy burning a fuel item and generating powrer.
-* Part Two: if the counter reaches zero then our fuel item is consumed. We then check if our only input slot contains a burnable item and we get the actual burntime from it using ForgeHooks.getBurnTime. We extract the fuel item and initialize our counter to that time. Next tick we will start generating power from this.
+* Part One: if counter is greater than zero it means we are busy burning a fuel item and generating power.
+* Part Two: if the counter reaches zero then our fuel item is consumed. We then check if our only input slot contains a burnable item, and we get the actual burntime from it using ForgeHooks.getBurnTime. We extract the fuel item and initialize our counter to that time. Next tick we will start generating power from this.
 * Part Three: if we have power available then we need to distribute it to all adjacent blocks that need power. To do that we will iterate over all six sides and check if there is a block there that implements Forge Energy. Because getCapability() returns a LazyOptional we need to call map() to actually process it (functional). The AtomicInteger is needed because a normal integer can't be modified from inside a lambda.
-```
- <syntaxhighlight lang="java">
+
+```java
 public class PowergenBE extends BlockEntity {
 
     public static final int POWERGEN_CAPACITY = 50000; // Max capacity
@@ -405,9 +423,9 @@ public class PowergenBE extends BlockEntity {
         return super.getCapability(cap, side);
     }
 }
-</syntaxhighlight>
 ```
-===The Powergen Block Container===
+
+### The Powergen Block Container 
 
 As said before the Container is responsible for communicating between the server and the client when the player has opened a gui. It does this by adding 'slots' for every item that you want to be synchronized. Typically this is all the items of our block entity (the single fuel item slot) and the items of the player inventory.
 
@@ -417,9 +435,11 @@ Some notes:
 * In addition to the item slots we also want to communicate the current power from the server to the client so that we can display that in the gui. Minecraft supports sending over 16-bit integers for this purpose. Our power is 32-bit however so we need to split it in two data slots.
 * quickMoveStack() is used whenever the player shift-clicks an item in our gui. In this method we need to decide what to do whenever a certain item in a certain slot is shift-clicked. In this implementation we make sure that fuel items get put in the fuel slot.
 
-{{warning|1=Don't forget that integer data slots only hold 16-bits of data!}}
-```
- <syntaxhighlight lang="java">
+:::danger Warning
+Don't forget that integer data slots only hold 16-bits of data!
+:::
+
+```java
 public class PowergenContainer extends AbstractContainerMenu {
 
     private BlockEntity blockEntity;
@@ -526,8 +546,6 @@ public class PowergenContainer extends AbstractContainerMenu {
         return itemstack;
     }
 
-
-
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
             addSlot(new SlotItemHandler(handler, index, x, y));
@@ -554,17 +572,21 @@ public class PowergenContainer extends AbstractContainerMenu {
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
 }
-</syntaxhighlight>
 ```
-===The Powergen Screen===
 
-When the user right clicks the power generator the following gui will open:
+### The Powergen Screen 
 
-https://i.imgur.com/mCeqOEQ.png
+When the user right-clicks the power generator the following gui will open:
 
-Here is the code for this screen. The GUI represents the background of our user interface. There are various methods to override depending on the time when you want to render something. In renderLabels() we actually render the current energy which is in the container. Like explained earlier our container implementation makes sure that the current energy level is correctly synced from server to client for all clients that have an open container:
-```
- <syntaxhighlight lang="java">
+![image](https://i.imgur.com/mCeqOEQ.png)
+
+Here is the code for this screen.
+The GUI represents the background of our user interface.
+There are various methods to override depending on the time when you want to render something.
+In `renderLabels()` we actually render the current energy which is in the container.
+Like explained earlier our container implementation makes sure that the current energy level is correctly synced from server to client for all clients that have an open container:
+
+```java
 public class PowergenScreen extends AbstractContainerScreen<PowergenContainer> {
 
     private final ResourceLocation GUI = new ResourceLocation(TutorialV3.MODID, "textures/gui/powergen_gui.png");
@@ -593,15 +615,26 @@ public class PowergenScreen extends AbstractContainerScreen<PowergenContainer> {
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
     }
 }
-</syntaxhighlight>
 ```
-We also need to register this screen. For that purpose we have to attach our container to the screen on the client. This is done by MenuScreens.register in ClientSetup. Also note that we are setting the render layer for our power generator to RenderType.translucent(). Render types will be explained more in depth in future tutorials but here we use the builtin render type to mark our object as being translucent. That's required because our block has a transparent texture.
 
-Note that we use event.enqueueWork. This ensures that the code is run in the main thread. FMLCommonSetupEvent and FMLClientSetupEvent can potentially run in parallel (on different threads). However, many Vanilla structures are not thread-safe. That means you should only access them from the main thread. event.enqueueWork() ensures that's the case:
+We also need to register this screen. For that purpose we have to attach our container to the screen on the client.
+This is done by `MenuScreens.register` in `ClientSetup`.
+Also note that we are setting the render layer for our power generator to `RenderType.translucent()`.
+Render types will be explained more in depth in future tutorials but here we use the builtin render type to mark our object as being translucent.
+That's required because our block has a transparent texture.
 
-{{warning|1=Don't forget event.enqueueWork() whenever you are registering something on a vanilla subsystem}}
-```
- <syntaxhighlight lang="java">
+Note that we use `event.enqueueWork`.
+This ensures that the code is run in the main thread.
+`FMLCommonSetupEvent` and `FMLClientSetupEvent` can potentially run in parallel (on different threads).
+However, many Vanilla structures are not thread-safe.
+That means you should only access them from the main thread.
+`event.enqueueWork()` ensures that's the case:
+
+:::danger Warning
+Don't forget `event.enqueueWork()` whenever you are registering something on a vanilla subsystem
+:::
+
+```java
 public class ClientSetup {
 
     public static void init(FMLClientSetupEvent event) {
@@ -611,13 +644,13 @@ public class ClientSetup {
         });
     }
 }
-</syntaxhighlight>
 ```
-===Powergen Datageneration===
+### Powergen Datageneration
 
-Just like with the other blocks and items we need to add datagen. Add the following lines to the various datagen classes:
-```
- <syntaxhighlight lang="java">
+Just like with the other blocks and items we need to add datagen.
+Add the following lines to the various datagen classes:
+
+```java
 public class TutBlockStates extends BlockStateProvider {
 
     @Override
@@ -687,59 +720,60 @@ public class TutBlockStates extends BlockStateProvider {
 }
 
 public class TutItemModels extends ItemModelProvider {
-...
-withExistingParent(Registration.POWERGEN_ITEM.get().getRegistryName().getPath(), modLoc("block/powergen/main"));
-...
+    ...
+    withExistingParent(Registration.POWERGEN_ITEM.get().getRegistryName().getPath(), modLoc("block/powergen/main"));
+    ...
 }
 
 
 public class TutBlockTags extends BlockTagsProvider {
-...
-tag(BlockTags.MINEABLE_WITH_PICKAXE)
-.add(Registration.POWERGEN.get())
-...
-tag(BlockTags.NEEDS_IRON_TOOL)
-.add(Registration.POWERGEN.get())
-...
-...
+    ...
+    tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .add(Registration.POWERGEN.get())
+        ...
+    tag(BlockTags.NEEDS_IRON_TOOL)
+        .add(Registration.POWERGEN.get())
+        ...
+    ...
 }
 
 
 public class TutLanguageProvider extends LanguageProvider {
-...
-add(MESSAGE_POWERGEN, "Power generator generating %s per tick!");
-add(SCREEN_TUTORIAL_POWERGEN, "Power generator");
-
-        add(Registration.POWERGEN.get(), "Power generator");
-        ...
+    ...
+    add(MESSAGE_POWERGEN, "Power generator generating %s per tick!");
+    add(SCREEN_TUTORIAL_POWERGEN, "Power generator");
+    add(Registration.POWERGEN.get(), "Power generator");
+    ...
 }
 
 
 
 public class TutLootTables extends BaseLootTableProvider {
-...
-lootTables.put(Registration.POWERGEN.get(), createStandardTable("powergen", Registration.POWERGEN.get(), Registration.POWERGEN_BE.get()));
-...
+    ...
+    lootTables.put(Registration.POWERGEN.get(), createStandardTable("powergen", Registration.POWERGEN.get(), Registration.POWERGEN_BE.get()));
+    ...
 }
 
 
 public class TutRecipes extends RecipeProvider {
-...
-ShapedRecipeBuilder.shaped(Registration.POWERGEN.get())
-.pattern("mmm")
-.pattern("x#x")
-.pattern("#x#")
-.define('x', Tags.Items.DUSTS_REDSTONE)
-.define('#', Tags.Items.INGOTS_IRON)
-.define('m', Registration.MYSTERIOUS_INGOT.get())
-.group("tutorialv3")
-.unlockedBy("mysterious", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.MYSTERIOUS_INGOT.get()))
-.save(consumer);
-...
+    ...
+    ShapedRecipeBuilder.shaped(Registration.POWERGEN.get())
+        .pattern("mmm")
+        .pattern("x#x")
+        .pattern("#x#")
+        .define('x', Tags.Items.DUSTS_REDSTONE)
+        .define('#', Tags.Items.INGOTS_IRON)
+        .define('m', Registration.MYSTERIOUS_INGOT.get())
+        .group("tutorialv3")
+        .unlockedBy("mysterious", InventoryChangeTrigger.TriggerInstance.hasItems(Registration.MYSTERIOUS_INGOT.get()))
+        .save(consumer);
+    ...
 }
-</syntaxhighlight>
 ```
-The blockstate generator is the most complicated thing here. Basically the code presented here will generate a multipart model where some parts are conditional depending on being powered or not.
 
-https://i.imgur.com/o7hgFpp.png
-Add frame.renderType("translucent") at the end of registerPowergen()
+The blockstate generator is the most complicated thing here.
+Basically the code presented here will generate a multipart model where some parts are conditional depending on being powered or not.
+
+:::info 1.19
+Add `frame.renderType("translucent")` at the end of `registerPowergen()`
+:::

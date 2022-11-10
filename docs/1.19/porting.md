@@ -263,7 +263,7 @@ Instead, make a model like this:
 #### Baked Models
 
 There have been a lot of render related changes.
-To get some idea of this you can look at [this notion site](https://forge-render-refactor.notion.site/forge-render-refactor/ecd69011d01042c48a0fca80696cb4da?v=dd40865450614d9c9130c3dedcd085e5.
+To get some idea of this you can look at [this notion site](https://forge-render-refactor.notion.site/forge-render-refactor/ecd69011d01042c48a0fca80696cb4da?v=dd40865450614d9c9130c3dedcd085e5).
 Here is a summary:
 
 `BakedQuadBuilder` has been replaced with `QuadBakingVertexConsumer`. You use it as follows:

@@ -1,16 +1,22 @@
-==Links==
+---
+sidebar_position: 7
+---
 
-* [https://www.youtube.com/watch?v=prqMxqUtj-0&ab_channel=JorritTyberghein World Data, Player Capabilities, Networking, Overlay]
-* [[YouTube-Tutorials-18|Back to 1.18 Tutorial Index]]
-* [https://github.com/McJty/TutorialV3 Tutorial GitHub]
+# Episode 7
 
-==Introduction==
+## Links
+
+* Video: [World Data, Player Capabilities, Networking, Overlay](https://www.youtube.com/watch?v=prqMxqUtj-0&ab_channel=JorritTyberghein)
+* [Back to 1.18 Tutorial Index](./1.18.md)
+* [Tutorial GitHub](https://github.com/McJty/TutorialV3)
+
+## Introduction
 
 In this tutorial we explain various ways that you can store data and also communicate that data to the client. We will cover world data, player capabilities, and networking. In addition we also cover a new way to make render overlays (HUD's)
 
 ===Key Bindings===
 
-In this tutorial we want a key binding that the player can press to gather mana from the chunk. How we will store and make this mana is for later but let's first make the key binding. First add the class to actually define the key binding ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/client/KeyBindings.java KeyBindings.java on Github]). In this class we make a new keymapping which by default is assigned to the period key. The player can reconfigure this in the standard Minecraft options screen:
+In this tutorial we want a key binding that the player can press to gather mana from the chunk. How we will store and make this mana is for later but let's first make the key binding. First add the class to actually define the key binding ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/client/KeyBindings.java KeyBindings.java on GitHub]). In this class we make a new keymapping which by default is assigned to the period key. The player can reconfigure this in the standard Minecraft options screen:
 
 https://i.imgur.com/pLm4syY.png
 ```
@@ -49,7 +55,7 @@ public class KeyBindings {
 ```
 https://i.imgur.com/pLm4syY.png
 
-We also need to call this method. We do that in ClientSetup.init() ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/ClientSetup.java ClientSetup.java on Github]):
+We also need to call this method. We do that in ClientSetup.init() ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/ClientSetup.java ClientSetup.java on GitHub]):
 ```
  <syntaxhighlight lang="java">
     public static void init(FMLClientSetupEvent event) {
@@ -99,7 +105,7 @@ We also need to call this method. We do that in ClientSetup.init():
 ```
 ===Networking===
 
-Whenever a key is pressed on the client we need to send a message to the server. The reason for that is that actual logic and the mana system will live on the server. To support networking add the following class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/Messages.java Messages.java on Github]). This class is the main entry point for networking. It basically makes use of a SimpleChannel which is a helper class from Forge:
+Whenever a key is pressed on the client we need to send a message to the server. The reason for that is that actual logic and the mana system will live on the server. To support networking add the following class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/Messages.java Messages.java on GitHub]). This class is the main entry point for networking. It basically makes use of a SimpleChannel which is a helper class from Forge:
 ```
  <syntaxhighlight lang="java">
 public class Messages {
@@ -143,7 +149,7 @@ public class Messages {
 }
 </syntaxhighlight>
 ```
-And we also need the actual message ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/network/PacketGatherMana.java PacketGatherMana.java on Github]). This message is sent from the client to the server and otherwise contains no data. That's why the toBytes() and constructors are empty. The handle() method is currently empty because we don't have the mana system yet:
+And we also need the actual message ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/network/PacketGatherMana.java PacketGatherMana.java on GitHub]). This message is sent from the client to the server and otherwise contains no data. That's why the toBytes() and constructors are empty. The handle() method is currently empty because we don't have the mana system yet:
 ```
  <syntaxhighlight lang="java">
 public class PacketGatherMana {
@@ -170,7 +176,7 @@ public class PacketGatherMana {
 }
 </syntaxhighlight>
 ```
-We also need to register our Messages class. Do that by calling Messages.register() from ModSetup ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/ModSetup.java ModSetup on Github]):
+We also need to register our Messages class. Do that by calling Messages.register() from ModSetup ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/ModSetup.java ModSetup on GitHub]):
 ```
  <syntaxhighlight lang="java">
     public static void init(FMLCommonSetupEvent event) {
@@ -181,7 +187,7 @@ We also need to register our Messages class. Do that by calling Messages.registe
 ```
 ===Saved Data (ManaManager)===
 
-In this tutorial we want to keep mana in every chunk. This mana is generated randomly for every chunk so we need to store it somewhere. You could use capabilities for this but because we will already be using capabilities for attaching mana to the player we're going to use another technique for storing it in the world. Minecraft has the SavedData class that you can use for this. It's basically a way to attach arbitrary data to a level which is also going to be persisted. Here is our ManaManager class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/ManaManager.java ManaManager.java on Github]). See the comments in this class for some explanation:
+In this tutorial we want to keep mana in every chunk. This mana is generated randomly for every chunk so we need to store it somewhere. You could use capabilities for this but because we will already be using capabilities for attaching mana to the player we're going to use another technique for storing it in the world. Minecraft has the SavedData class that you can use for this. It's basically a way to attach arbitrary data to a level which is also going to be persisted. Here is our ManaManager class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/ManaManager.java ManaManager.java on GitHub]). See the comments in this class for some explanation:
 
 {{warning|1=SavedData is local to each level (dimension). If you want global data it's recommended to attach it to the overworld since it's easy to access that at all times}}
 
@@ -314,7 +320,7 @@ public class Mana {
 ```
 ====PacketSyncManaToClient====
 
-We need a new packet to sync the mana to our clients ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/network/PacketSyncManaToClient.java PacketSyncManaToClient.java on Github]). This packet has two integers (the player mana and the mana from the current chunk where the player is located) so we need to actually encode and decode this data on the byte buffer. This byte buffer is what is eventually used to send over the network:
+We need a new packet to sync the mana to our clients ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/network/PacketSyncManaToClient.java PacketSyncManaToClient.java on GitHub]). This packet has two integers (the player mana and the mana from the current chunk where the player is located) so we need to actually encode and decode this data on the byte buffer. This byte buffer is what is eventually used to send over the network:
 
 {{warning|1=Network packets typically need to work on two sides (client and server). So be very careful to avoid the usage of client-only classes here (like Minecraft) as these classes don't exist on a server and can make your code break}}
 
@@ -399,7 +405,7 @@ And finally we need to register our new packet in Messages.java:
 
 Capabilities are a system added by Forge that allows arbitrary data to be attached to various Minecraft objects. We already saw how it was being used for forge energy and items (in episode 2). In that tutorial we were using standard capabilities defined by Forge. Here we will make our own capability to attach data to the player.
 
-We want to store the mana that the player has gathered. For this we will define a new capability and attach it to the player. First add the PlayerMana class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/PlayerMana.java PlayerMana.java on Github]). It's basically a simple class holding a single integer but it also has code to save and load this data to NBT (which will later get added to the player through the capability system):
+We want to store the mana that the player has gathered. For this we will define a new capability and attach it to the player. First add the PlayerMana class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/PlayerMana.java PlayerMana.java on GitHub]). It's basically a simple class holding a single integer but it also has code to save and load this data to NBT (which will later get added to the player through the capability system):
 ```
  <syntaxhighlight lang="java">
 public class PlayerMana {
@@ -435,7 +441,7 @@ public class PlayerMana {
 ```
 ====Capability Provider====
 
-Because we want this data to be stored on the player as a capability we need a capability provider ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/PlayerManaProvider.java PlayerManaProvider.java on Github]):
+Because we want this data to be stored on the player as a capability we need a capability provider ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/PlayerManaProvider.java PlayerManaProvider.java on GitHub]):
 
 {{warning|1=Capabilities are not automatically synced to the client!}}
 ```
@@ -486,7 +492,7 @@ public class PlayerManaProvider implements ICapabilityProvider, INBTSerializable
 ```
 ====Capability Events====
 
-We need to register this capability which is done with RegisterCapabilitiesEvent. Because we also need other events for our player capability we're goint to add a new ManaEvents class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/ManaEvents.java ManaEvents.java on Github]):
+We need to register this capability which is done with RegisterCapabilitiesEvent. Because we also need other events for our player capability we're goint to add a new ManaEvents class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/ManaEvents.java ManaEvents.java on GitHub]):
 ```
  <syntaxhighlight lang="java">
     // Whenever a new object of some type is created the AttachCapabilitiesEvent will fire. In our case we want to know
@@ -532,7 +538,7 @@ We also need to setup these events in ModSetup. Because ManaEvents::onAttachCapa
 ```
 ===Tying Things Together===
 
-Let's fix a few things. First we need to fix PacketGatherMana so that it actually gets mana out of the current chunk and gives it to the player ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/network/PacketGatherMana.java PacketGatherMana.java on Github]):
+Let's fix a few things. First we need to fix PacketGatherMana so that it actually gets mana out of the current chunk and gives it to the player ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/network/PacketGatherMana.java PacketGatherMana.java on GitHub]):
 ```
  <syntaxhighlight lang="java">
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
@@ -581,7 +587,7 @@ And then we need to register this event in ModSetup:
     }
 </syntaxhighlight>
 ```
-Also we want to have some configuration ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/ManaConfig.java ManaConfig.java on Github]):
+Also we want to have some configuration ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/ManaConfig.java ManaConfig.java on GitHub]):
 ```
  <syntaxhighlight lang="java">
 public class ManaConfig {

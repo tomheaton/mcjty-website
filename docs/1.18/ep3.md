@@ -1,10 +1,16 @@
-==Links==
+---
+sidebar_position: 3
+---
 
-* Video: [https://www.youtube.com/watch?v=FOELvN6rGPQ&ab_channel=JorritTyberghein Baked Model, Block Entity Renderer]
-* [[YouTube-Tutorials-18|Back to 1.18 Tutorial Index]]
-* [https://github.com/McJty/TutorialV3 Tutorial GitHub]
+# Episode 3
 
-==Introduction==
+## Links
+
+* Video: [Baked Model, Block Entity Renderer](https://www.youtube.com/watch?v=FOELvN6rGPQ&ab_channel=JorritTyberghein)
+* [Back to 1.18 Tutorial Index](./1.18.md)
+* [Tutorial GitHub](https://github.com/McJty/TutorialV3)
+
+## Introduction
 
 This tutorial explains two new concepts related to rendering of blocks: BakedModels and Block Entity Renderers. We do this by implementing a new advanced block that can generate ores out of ingots.
 
@@ -912,7 +918,7 @@ public class TutBlockStates extends BlockStateProvider {
     }
 </syntaxhighlight>
 ```
-We also need to add tags, recipe, item model, language keys, and loot table. Check the github for details but this is basically the same as what we did for the power generator.
+We also need to add tags, recipe, item model, language keys, and loot table. Check the GitHub for details but this is basically the same as what we did for the power generator.
 
 ===Block Entity Renderer===
 

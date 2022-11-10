@@ -51,13 +51,13 @@ deobfCompile "cofh:RedstoneFlux:${redstoneflux_version}"
 ...
 </nowiki>
 ```
-This example is from a multi-mod project containing many mods including McJtyLib, XNet, RFTools. Deep Resonance has these as dependencies but we don't want to pull them in if the 'singleproject' property is equal to true. This property can then be set in the optional 'extra.properties' file. The reason it is not put in the normal 'gradle.properties' is that the latter will contain things like forge version, dependency versions and so on and we want to push that file to git so that someone checking out your mod can compile it with the correct dependency versions. However we don't want to push the 'singleproject' property to github. So we keep that seperate.
+This example is from a multi-mod project containing many mods including McJtyLib, XNet, RFTools. Deep Resonance has these as dependencies but we don't want to pull them in if the 'singleproject' property is equal to true. This property can then be set in the optional 'extra.properties' file. The reason it is not put in the normal 'gradle.properties' is that the latter will contain things like forge version, dependency versions and so on and we want to push that file to git so that someone checking out your mod can compile it with the correct dependency versions. However we don't want to push the 'singleproject' property to GitHub. So we keep that seperate.
 
 === First steps ===
 
 Like explained in LatvianModder's tutorial you should start by creating a new project with type 'Application'. In this tutorial it is assumed you name the main module 'MC' like in that tutorial.
 
-Make sure the gradle and git/github plugins in IDEA are present and enabled.
+Make sure the gradle and Git/GitHub plugins in IDEA are present and enabled.
 
 For every mod that you want to add to this project you have to do the following (however, see possible preparations that you might want to do first):
 
