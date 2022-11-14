@@ -21,3 +21,22 @@
   align-items: center;
   justify-content: center;
 }
+
+.mcjtyInfo {
+  padding: 4rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 4rem;
+}
+
+.mcjtyInfo p {
+  width: 50%;
+  font-size: 2rem;
+}
+
+
+.mcjtyInfo img {
+  border-radius: 20px;
+}
