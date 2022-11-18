@@ -36,7 +36,7 @@ When checking for items you can also use a json like this:
 ]
 ```
 
-===Keywords===
+### Keywords
 
 In this section the rules in effects.json are explained. Every rule is basically a set of 'criteria' and a set of 'actions'. The following criteria are currently supported:
 
@@ -101,7 +101,7 @@ Then there are a number of actions:
 * '''setstate''': if EnigmaScript is present this can be used to set a state with a string like this "state=value"
 * '''setpstate''': if EnigmaScript is present this can be used to set a player state with a string like this "state=value"
 
-===Commands===
+### Commands
 
 This mod has the following commands:
 
@@ -110,7 +110,7 @@ This mod has the following commands:
 * '''fctrldumpitem''': dump NBT info about the item the player is currently holding
 * '''fctrldumpblock''': dump property info about the block the player is currently looking at
 
-===Examples for effects.json===
+### Examples for effects.json
 
 Here are a few examples for effects.json:
 
@@ -168,7 +168,7 @@ With this example the player will be put on fire if he even looks at lava:
 ]
 ```
 
-===Examples for breakevents.json===
+### Examples for breakevents.json
 
 Here are a few examples for breakevents.json:
 
@@ -251,7 +251,7 @@ With 50% chance give an extra diamond when the player mines a diamond ore block:
 ```
 
 
-===Examples for rightclicks.json===
+### Examples for rightclicks.json
 
 Here are a few examples for rightclicks.json:
 

@@ -8,7 +8,7 @@ This is a simple mod that gives you full control on where mobs are allowed to sp
 It is based on a rule system.
 The rule files are located in `config/incontrol`.
 
-==Introduction==
+## Introduction
 
 There are currently five rule files (as of 3.7.0):
 
@@ -38,7 +38,7 @@ When checking for items you can also use a json like this:
 ]
 ```
 
-===Spawn Control===
+### Spawn Control
 
 In this section the rules in spawn.json and summonaid.json are explained. Every rule is basically a set of 'criteria' and a set of 'actions'. Note that in the case of summonaid.json the affected mob will most likely be a zombie. The following criteria are currently supported:
 
@@ -110,7 +110,7 @@ Then there are a number of actions. The most important action is 'result':
 * '''armorlegs''': is either a single string or a list of strings representing random armor that the spawned mob will wear
 * '''armorchest''': is either a single string or a list of strings representing random armor that the spawned mob will wear
 
-===Additional Spawns===
+### Additional Spawns
 
 In this section the rules in potentialspawn.json are explained. Every rule is basically a set of criteria and then a list of additional mobs to spawn under those criteria. The following criteria as explained from spawn.json can also be used here: mintime, maxtime, minlight, maxlight, minheight, maxheight, minspawndist, maxspawndist, random, structure, mindifficulty, maxdifficulty, seesky, weather, tempcategory, difficulty, block, biome, and dimension. mincount and maxcount are also supported but they only work in the format `<amount>,<mob>`. i.e. you have to specify a mob.
 
@@ -124,7 +124,7 @@ Then every mob entry has the following attributes:
 
 You can also remove mob spawn entries with the remove keyword. This is either a string or a list of strings representing mobs that have to be removed from the possible spawns.
 
-===Loot Control===
+### Loot Control
 
 Here we explain how you can control the loot given by mobs when they are killed. The following criteria from spawn.json can also be used here: mintime, maxtime, minlight, maxlight, minheight, maxheight, minspawndist, maxspawndist, random, mindifficulty, maxdifficulty, passive, hostile, seesky, weather, tempcategory, structure, difficulty, block, biome, and dimension. In addition the following criteria are specific for loot:
 
@@ -149,7 +149,7 @@ In addition, there are the following possible outputs:
 * '''remove''': this is a string or a list of strings representing items to remove from the loot
 * '''removeall''': if this is present then all items will be removed from the loot (before new items are added by this rule)
 
-===Experience===
+### Experience
 
 This is similar to loot control except that it controls how much experience you get from killing a mob. All keywords from loot control can be used here except the ones that are about damage type (magic, explosion, ...) as that information is not present in this event. There are four outputs that work for these rules:
 
@@ -159,7 +159,7 @@ This is similar to loot control except that it controls how much experience you 
 * '''addxp''': after multiplying the normal XP add this amount to the final XP
 
 
-===Commands===
+### Commands
 
 This mod has the following commands:
 
@@ -168,7 +168,7 @@ This mod has the following commands:
 * '''ctrlshowmobs''': show all entities and their names that can be used in spawn.json for mob names
 * '''ctrlkill''': kill all entities of a given type. Possible types are: 'all', 'hostile', 'passive', or 'entity'. It is also possible to give the name of an entity instead of a type. On 1.11 this would be 'minecraft:enderman' for example. On 1.10 'Enderman'. There is also an optional extra parameter for a dimension ID
 
-===Examples for spawn.json===
+### Examples for spawn.json
 
 Here are a few examples for spawn.json:
 
@@ -310,7 +310,7 @@ Make all zombies slower but have more health:
 ]
 ```
 
-===Examples for potentialspawn.json===
+### Examples for potentialspawn.json
 
 Here are some examples for potentialspawn.json:
 
@@ -360,7 +360,7 @@ This examples removes all squid spawns everywhere and also adds extra iron golem
 ```
 
 
-===Examples for joot.json===
+### Examples for joot.json
 
 Here are some examples for loot.json:
 

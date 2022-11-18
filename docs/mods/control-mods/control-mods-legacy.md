@@ -7,9 +7,11 @@ This page is for versions of Minecraft 1.15 or older!
 If you want documentation for the latest 1.16 version please go to [this page](./control-mods-16.md) instead!
 :::
 
-[In Control](https://minecraft.curseforge.com/projects/in-control) is a mod that supports a rule based system that allows you to control various aspects about mobs. There are rule files to control spawning, loot, experience and so on.
+[In Control](https://minecraft.curseforge.com/projects/in-control) is a mod that supports a rule based system that allows you to control various aspects about mobs.
+There are rule files to control spawning, loot, experience and so on.
 
-[Fx Control](https://minecraft.curseforge.com/projects/fx-control) is a mod that supports a rule based system that allows you to control things that happen around the player. There are rule files to give the player potion effects, set him/her on fire, prevent him from interacting with objects and other things related to that.
+[Fx Control](https://minecraft.curseforge.com/projects/fx-control) is a mod that supports a rule based system that allows you to control things that happen around the player.
+There are rule files to give the player potion effects, set him/her on fire, prevent him from interacting with objects and other things related to that.
 
 Both mods have support for:
 - [Game Stages](https://minecraft.curseforge.com/projects/game-stages)
@@ -95,10 +97,10 @@ Many conditions are very simple but when testing for items things can be a bit m
   ** ''ore'': a string indicating an ore dictionary value (for example ''ingotCopper'', ''dyeBlue'', ''plankWood'', ...)
   ** ''mod'': a string indicating the modid for the item
   ** ''energy'': an expression which will be evaluated to the amount of Forge Energy present in the item
-  ** ''nbt'': a JSon array. Every object in this array supports the following tags:
+  ** ''nbt'': a JSON array. Every object in this array supports the following tags:
   *** ''tag'': the name of the NBT tag to test on
   *** ''value'': the stringified value of the NBT tag to test on
-  *** ''contains'': use this instead of ''value'' in case the tag represents a list. The value after contains should be a JSon array which in turn contains nbt matching tags like what we're describing now (see example later to make this more clear)
+  *** ''contains'': use this instead of ''value'' in case the tag represents a list. The value after contains should be a JSON array which in turn contains nbt matching tags like what we're describing now (see example later to make this more clear)
 
 ### Item Filter Examples
 
@@ -122,7 +124,7 @@ A specific block with a specific metadata:
     "playerhelditem": "minecraft:stained_hardened_clay@13",
 ```
 
-The same example specified with JSon:
+The same example specified with JSON:
 
 ```json
     "playerhelditem": {
@@ -137,7 +139,7 @@ The same block with some NBT data:
     "playerhelditem": "minecraft:stained_hardened_clay@13/{display:{Lore:[\"My Clay\"]}}",
 ```
 
-The same example specified with JSon:
+The same example specified with JSON:
 
 ```json
     "playerhelditem": {
@@ -194,11 +196,11 @@ Similarly to item filters there is also the ''block'' condition that can test on
 * ''ore:dyeBlue'': a block matching the specified ore dictionary value
 * A Json descriptor which supports the following tags:
   ** ''block'': a block ID (like ''minecraft:sand'' or ''rftools:powercell'')
-  ** ''properties'': (only if ''block'' is used). This is a JSon array with properties to match against. As soon as this is present a blockstate will be constructed made out of the block and the properties specified here and the match has to be exact. So properties that are not specified here will be put to their default value
+  ** ''properties'': (only if ''block'' is used). This is a JSON array with properties to match against. As soon as this is present a blockstate will be constructed made out of the block and the properties specified here and the match has to be exact. So properties that are not specified here will be put to their default value
   ** ''ore'': a string indicating an ore dictionary value (for example ''ingotCopper'', ''dyeBlue'', ''plankWood'', ...)
   ** ''mod'': a string indicating the modid for the block
   ** ''energy'': an expression which will be evaluated to the amount of Forge Energy present in the block
-  ** ''contains'': either a single JSon object or else an array of JSon objects representing item filters as explained in the item filter section. The contains test will succeed if it finds any matching item in the inventory (if the block to test actually represents an inventory)
+  ** ''contains'': either a single JSON object or else an array of JSON objects representing item filters as explained in the item filter section. The contains test will succeed if it finds any matching item in the inventory (if the block to test actually represents an inventory)
   ** ''side'': this is a modifier for both ''energy'' and ''contains''. If present it will indicate the side from which we want to examine the energy or inventory contents. If not present the 'null' side is used. This should be a string like ''east'', ''west'', ''south'', ''north'', ''up'', or ''down''.
 
 ### Block Filter Examples
@@ -215,7 +217,7 @@ A block of planks:
     "block": "ore:plankWood",
 ```
 
-Or in JSon syntax:
+Or in JSON syntax:
 
 ```json
     "block": { "ore": "plankWood" },
@@ -437,7 +439,7 @@ In contrast with most other rule files every rule is evaluated every time. i.e. 
 
 * '''item''': this is a string or a list of strings representing new loot that will be dropped
 * '''itemcount''': this is a string representing how many items should drop (optionally depending on looting level). For example: "5/7-10/20-30" will drop 5 items at looting 0, 7-10 items at looting 1 and 20-30 items at looting 2 or beyond
-* '''nbt''': this is a JSon specifying the NBT that will be used for the loot items
+* '''nbt''': this is a JSON specifying the NBT that will be used for the loot items
 * '''remove''': this is a string or a list of strings representing items to remove from the loot
 * '''removeall''': if this is present then all items will be removed from the loot (before new items are added by this rule)
 
