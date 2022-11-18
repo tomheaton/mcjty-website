@@ -1,3 +1,9 @@
+---
+sidebar_position: 8
+---
+
+# Render Block Baked Model
+
 In this tutorial we're going to explain how you can statically render a conduit like system. This needs a baked model since we have to be able to calculate geometry dynamically. However this example does not use tile entities or TESR (TileEntitySpecialRenderer) which means the result will be static and only change when new blocks are added or removed. Here is how it looks like:
 ```
 <img src="http://i.imgur.com/ekIH6Mc.png" alt="Conduits">

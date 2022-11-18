@@ -1,3 +1,9 @@
+---
+sidebar_position: 6
+---
+
+# Basic Item
+
 In this chapter we show how to make a very basic first item.
 
 More in-depth information on items can be found at the official forge documentation: https://mcforge.readthedocs.io/en/latest/items/items/

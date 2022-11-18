@@ -1,3 +1,9 @@
+---
+sidebar_position: 5
+---
+
+# Render Block State
+
 In this example I show how you can make the front panel of a block depend on a redstone signal. Here we add an additional property to our blockstate that says if the block is enabled (powered) or not.
 ```
 <img src="http://i.imgur.com/ouNhzQy.png" alt="State textured block">

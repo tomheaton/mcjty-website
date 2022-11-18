@@ -1,3 +1,9 @@
+---
+sidebar_position: 4
+---
+
+# Render Block Different faces
+
 In this example we show how you can make a block that has a different texture on every side. In addition the block will also use blockstates to orient itself according to how the player places the block.
 
 Note that blockstates roughly translate to metadata as you would use in older versions of Minecraft. The blockstate system is much cleaner but remember that in 1.8.9 the meta data is still represented by 4 bits (for blocks at least) so you are limited to 16 different states. In the example below we define a property called 'FACING' which is a direction property. Based on this property we will decide how to rotate our model in the blockstate json.

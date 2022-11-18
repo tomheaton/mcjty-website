@@ -1,3 +1,9 @@
+---
+sidebar_position: 1
+---
+
+# Links
+
 Here are links to other sites that contain useful information related to modding on Minecraft:
 
 * [https://github.com/TheGreyGhost/MinecraftByExample | Many examples in code form. Easy to use as a start for your own blocks and items]

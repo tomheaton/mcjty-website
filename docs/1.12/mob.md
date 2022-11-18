@@ -1,3 +1,9 @@
+---
+sidebar_position: 10
+---
+
+# Mobs
+
 In this tutorial we will show you how you can make your own custom mob and make it spawn in the game. This tutorial does not explain how to make mob models. We simply use the vanilla zombie model but with another texture:
 ```
 <img src="http://i.imgur.com/yDWCYTW.png" alt="The Weird Zombie">

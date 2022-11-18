@@ -1,3 +1,9 @@
+---
+sidebar_position: 7
+---
+
+# Tile Entities
+
 If you want to add extra data to your block (more than what you can fit in the 4 bits of metadata) or you want to add some kind of logic to the block (i.e. it is a machine or other device) then you need a tile entity.
 In this chapter we show a few example tile entities.
 

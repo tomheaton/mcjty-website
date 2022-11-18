@@ -1,3 +1,9 @@
+---
+sidebar_position: 11
+---
+
+# Rendering
+
 In the earlier tutorials you saw how to make a basic block and item, but it looked very ugly.
 In this chapter we will demonstrate various techniques available to you for making your items and blocks look nice.
 

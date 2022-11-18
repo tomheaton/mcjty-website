@@ -1,3 +1,9 @@
+---
+sidebar_position: 9
+---
+
+# GUI
+
 In this tutorial we explain how you can make a chest that can hold 9 items (that's all you need right?) and opens a GUI so you can access those items.
 ```
 <img src="http://i.imgur.com/g5yIlgc.png" alt="User Interface">

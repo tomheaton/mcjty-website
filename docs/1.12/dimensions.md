@@ -1,3 +1,9 @@
+---
+sidebar_position: 14
+---
+
+# Dimensions
+
 This more advanced tutorial shows how you can make your own custom dimension. Note that this tutorial depends on the tutorial to add a custom command (to be able to teleport to your dimension) and also the tutorial on the configuration section.
 ```
 <img src="http://i.imgur.com/KyF7Lhk.png" alt="Dimension">

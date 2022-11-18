@@ -1,6 +1,13 @@
-Just like you can interface with The One Probe you can of course also do this for WAILA (actually Hwyla for 1.12). Again you have to modify your build.gradle:
-```
-<syntaxhighlight lang="gradle">
+---
+sidebar_position: 2
+---
+
+# API - WAILA
+
+Just like you can interface with The One Probe you can of course also do this for WAILA (actually Hwyla for 1.12).
+Again you have to modify your `build.gradle`:
+
+```gradle title="build.gradle"
 repositories {
     maven { // The repo from which to get waila
         name "Mobius Repo"
@@ -15,14 +22,14 @@ repositories {
 ...
 
 dependencies {
-deobfCompile "mcp.mobius.waila:Hwyla:1.8.18-B32_1.12:api"
-deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.11-5"
+    deobfCompile "mcp.mobius.waila:Hwyla:1.8.18-B32_1.12:api"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.11-5"
 }
-</syntaxhighlight >
 ```
+
 Now we add a WailaCompatibility class and also a WailaInfoProvider interface similar to how we did it with TOP:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class WailaCompatibility implements IWailaDataProvider {
 
     public static final WailaCompatibility INSTANCE = new WailaCompatibility();
@@ -83,16 +90,14 @@ public class WailaCompatibility implements IWailaDataProvider {
 
 }
 
-
 public interface WailaInfoProvider {
-List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config);
+    List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config);
 }
-</syntaxhighlight >
 ```
 
 Then we alter the MainCompatHandler class to add a method for WAILA:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class MainCompatHandler {
     public static void registerWaila() {
         if (Loader.isModLoaded("Waila")) {
@@ -105,27 +110,31 @@ public class MainCompatHandler {
             TOPCompatibility.register();
         }
     }
-
 }
-</syntaxhighlight >
 ```
-And finally we have to call registerWaila somewhere. We do that in CommonProxy:
+
+And finally we have to call registerWaila somewhere.
+We do that in CommonProxy:
+
+```java title="CommonProxy.java"
+public static class CommonProxy {
+    public void preInit(FMLPreInitializationEvent e) {
+        ...
+        MainCompatHandler.registerWaila();
+        MainCompatHandler.registerTOP();
+    }
 ```
-<syntaxhighlight lang="java">
-    public static class CommonProxy {
-        public void preInit(FMLPreInitializationEvent e) {
-            ...
-            MainCompatHandler.registerWaila();
-            MainCompatHandler.registerTOP();
-        }
-</syntaxhighlight >
-```
-Then we add support in our DataBlock. It is important to note that (in contrast with The One Probe) the getWailaBody method is called on the client side. That means we can't easily access information that is only present on the server. And since our DataBlock does not sync its counter value to the client the WAILA tooltip will always show 0. There are ways to fix this with packets:
-```
-<syntaxhighlight lang="java">
+
+Then we add support in our DataBlock.
+It is important to note that (in contrast with The One Probe) the getWailaBody method is called on the client side.
+That means we can't easily access information that is only present on the server.
+And since our DataBlock does not sync its counter value to the client the WAILA tooltip will always show 0.
+There are ways to fix this with packets:
+
+```java
 public class DataBlock extends Block implements ITileEntityProvider, TOPInfoProvider, WailaInfoProvider {
 
-...
+    ...
 
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
@@ -136,7 +145,4 @@ public class DataBlock extends Block implements ITileEntityProvider, TOPInfoProv
         }
         return currenttip;
     }
-
-
-</syntaxhighlight >
 ```

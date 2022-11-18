@@ -1,3 +1,9 @@
+---
+sidebar_position: 5
+---
+
+# Basic Block
+
 In this document you learn how to do your first basic block. i.e. the simplest kind of block you can have: just a block that looks the same on all sides and does not have any other information.
 
 More in-depth information on blocks can be found at the official forge documentation: https://mcforge.readthedocs.io/en/latest/blocks/blocks/

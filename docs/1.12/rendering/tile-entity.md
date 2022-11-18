@@ -1,3 +1,9 @@
+---
+sidebar_position: 7
+---
+
+# Render Block TESR
+
 This is a more advanced tutorial in which various new concepts are introduced. First you will see how to make a tile entity that has to sync data from server to client. You will also see how we can use both a static OBJ model combined with an animating dynamic OBJ model. And finally you will see how to render any item directly in the world. To do this we need to implement a TESR (TileEntitySpecialRenderer). The end results looks like this. You can insert and remove items by right clicking on this block:
 ```
 <img src="http://i.imgur.com/74jddr9.png" alt="Pedestal Block">

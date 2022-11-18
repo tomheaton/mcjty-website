@@ -1,3 +1,9 @@
+---
+sidebar_position: 12
+---
+
+# Networking
+
 This document talks about simple networking as well as key handling. In this example we are going to listen to a key press on the client side ('t') and then send a packet to the server so that the server can do some processing on it.
 
 The official Forge documentation has more detailed information on networking as well: https://mcforge.readthedocs.io/en/latest/networking/

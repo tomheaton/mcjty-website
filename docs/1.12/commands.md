@@ -1,3 +1,9 @@
+---
+sidebar_position: 13
+---
+
+# Commands
+
 In this small tutorial we show you how you can make your own console commands (server side in this case). The command we add here is a simple 'tp' command that allows the player to teleport to any dimension. We will use this command later to test our custom dimension.
 
 So first lets make a TeleportCommand class which will implement the teleportation functionality. This is actually very simple. You just have to implement the methods from CommandBase:

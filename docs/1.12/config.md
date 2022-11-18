@@ -1,3 +1,9 @@
+---
+sidebar_position: 4
+---
+
+# Configuration
+
 Almost all mods need some kind of config file where players can change how your mod is balanced. Adding a config file is very easy. In this tutorial we will show you how you can do this.
 
 More explanation on the config system as well as an alternative way to do configs using annotations can be found here: https://mcforge.readthedocs.io/en/latest/config/annotations/

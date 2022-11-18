@@ -1,3 +1,9 @@
+---
+sidebar_position: 6
+---
+
+# Render Block OBJ
+
 In this chapter I show how you can make a block that renders a static model exported from Blender or another 3D program that supports WaveFront OBJ files. The result looks like this:
 ```
 <img src="http://i.imgur.com/jMOm6m4.png" alt="Model Block">

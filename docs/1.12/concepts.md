@@ -1,3 +1,9 @@
+---
+sidebar_position: 2
+---
+
+# Concepts
+
 In this section we will explain and clarify various terms and concepts that are relevant to modding Minecraft.
 
 === Block ===

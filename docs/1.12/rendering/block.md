@@ -1,3 +1,9 @@
+---
+sidebar_position: 3
+---
+
+# Render Block Basic
+
 Rendering a basic block is very similar to a basic item except that you need two json files now. One for the blockstates:
 ```
 <syntaxhighlight lang="java">

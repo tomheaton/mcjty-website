@@ -1,3 +1,9 @@
+---
+sidebar_position: 2
+---
+
+# Render Item NBT
+
 In this tutorial we show you can render a different model depending on the current NBT of the item. Here we have an item that has two different possibilities depending on a flag in the NBT. If the tag 'blue' is present in the NBT then we show the 'blue' model. Otherwise we show the 'red' model. We solve this by defining different models based on the 'variant'. You can of course have more possibilities here.
 
 This example is a bit more complex. It also adds code to switch between the mode by right clicking with the item in your hand.

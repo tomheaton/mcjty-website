@@ -1,3 +1,9 @@
+---
+sidebar_position: 3
+---
+
+# Basic Mod
+
 There many ways that you can structure your mod. This section just proposes one solution. The official forge documentation gives more in depth info here: https://mcforge.readthedocs.io/en/latest/gettingstarted/structuring/
 
 First here is a minimal mod class:
