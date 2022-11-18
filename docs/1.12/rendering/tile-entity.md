@@ -2,30 +2,34 @@
 sidebar_position: 7
 ---
 
-# Render Block TESR
+# Render Block TESR / OBJ
 
-This is a more advanced tutorial in which various new concepts are introduced. First you will see how to make a tile entity that has to sync data from server to client. You will also see how we can use both a static OBJ model combined with an animating dynamic OBJ model. And finally you will see how to render any item directly in the world. To do this we need to implement a TESR (TileEntitySpecialRenderer). The end results looks like this. You can insert and remove items by right clicking on this block:
-```
-<img src="http://i.imgur.com/74jddr9.png" alt="Pedestal Block">
-```
+This is a more advanced tutorial in which various new concepts are introduced.
+First you will see how to make a tile entity that has to sync data from server to client.
+You will also see how we can use both a static OBJ model combined with an animating dynamic OBJ model.
+And finally you will see how to render any item directly in the world. To do this we need to implement a TESR (TileEntitySpecialRenderer).
+The end results looks like this. You can insert and remove items by right-clicking on this block:
+
+![image](https://i.imgur.com/74jddr9.png)
+
 Make sure you added our domain to the object loader like you did in the static OBJ tutorial:
-```
-<syntaxhighlight lang="java">
-    public static class ClientProxy extends CommonProxy {
-        @Override
-        public void preInit(FMLPreInitializationEvent e) {
-            super.preInit(e);
 
-            OBJLoader.INSTANCE.addDomain(MODID);
+```java
+public static class ClientProxy extends CommonProxy {
+    @Override
+    public void preInit(FMLPreInitializationEvent e) {
+        super.preInit(e);
 
-            ...
-        }
+        OBJLoader.INSTANCE.addDomain(MODID);
+
+        ...
     }
-</syntaxhighlight>
+}
 ```
+
 Then we have our block:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class PedestalBlock extends Block implements ITileEntityProvider {
 
     // Used for visuals only
@@ -124,11 +128,11 @@ public class PedestalBlock extends Block implements ITileEntityProvider {
         return true;
     }
 }
-</syntaxhighlight>
 ```
+
 Then we have the tile entity. Notice the extra code we use to synchronize our tile entity to the client when needed:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class PedestalTileEntity extends TileEntity {
 
     private ItemStack stack = ItemStack.EMPTY;
@@ -193,11 +197,11 @@ public class PedestalTileEntity extends TileEntity {
         return compound;
     }
 }
-</syntaxhighlight>
 ```
-Finally we have the actual TESR. Note that the static model is not rendered here. This is handled automatically. We only have to do the animating handles and the item:
-```
-<syntaxhighlight lang="java">
+
+Finally, we have the actual TESR. Note that the static model is not rendered here. This is handled automatically. We only have to do the animating handles and the item:
+
+```java
 @SideOnly(Side.CLIENT)
 public class PedestalTESR extends TileEntitySpecialRenderer<PedestalTileEntity> {
 
@@ -270,11 +274,11 @@ public class PedestalTESR extends TileEntitySpecialRenderer<PedestalTileEntity> 
     }
 
 }
-</syntaxhighlight>
 ```
+
 And finally we need our blockstate json:
-```
- <nowiki>
+
+```json
 {
   "forge_marker": 1,
   "defaults": {
@@ -286,5 +290,4 @@ And finally we need our blockstate json:
     "inventory": { "model": "modtut:pedestal.obj" }
   }
 }
-</nowiki>
 ```

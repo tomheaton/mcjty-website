@@ -4,13 +4,17 @@ sidebar_position: 10
 
 # Mobs
 
-In this tutorial we will show you how you can make your own custom mob and make it spawn in the game. This tutorial does not explain how to make mob models. We simply use the vanilla zombie model but with another texture:
-```
-<img src="http://i.imgur.com/yDWCYTW.png" alt="The Weird Zombie">
-```
-The first thing you need is an actual entity. The entity we use here is an adaptation of the vanilla zombie entity. It has a special property (ARMS_RAISED) which is used while attacking:
-```
-<syntaxhighlight lang="java">
+In this tutorial we will show you how you can make your own custom mob and make it spawn in the game.
+This tutorial does not explain how to make mob models.
+We simply use the vanilla zombie model but with another texture:
+
+![image](https://i.imgur.com/yDWCYTW.png)
+
+The first thing you need is an actual entity.
+The entity we use here is an adaptation of the vanilla zombie entity.
+It has a special property (ARMS_RAISED) which is used while attacking:
+
+```java
 public class EntityWeirdZombie extends EntityMob {
 
     // We reuse the zombie model which has arms that need to be raised when the zombie is attacking:
@@ -97,11 +101,12 @@ this.getDataManager().set(ARMS_RAISED, Boolean.valueOf(armsRaised));
         return 5;
     }
 }
-</syntaxhighlight>
 ```
-We also need a custom Mele Attack AI task because we need to support the raising of arms while attacking. This is again a copy of vanilla code but adapted to our entity:
-```
-<syntaxhighlight lang="java">
+
+We also need a custom Melee Attack AI task because we need to support the raising of arms while attacking.
+This is again a copy of vanilla code but adapted to our entity:
+
+```java
 public class EntityAIWeirdZombieAttack extends EntityAIAttackMelee {
     private int raiseArmTicks;
     private EntityWeirdZombie weirdZombie;
@@ -144,11 +149,12 @@ public class EntityAIWeirdZombieAttack extends EntityAIAttackMelee {
         }
     }
 }
-</syntaxhighlight>
 ```
-We also need a rendering object. In this class we reuse the ModelZombie from vanilla but we do supply our own texture:
-```
-<syntaxhighlight lang="java">
+
+We also need a rendering object.
+In this class we reuse the ModelZombie from vanilla, but we do supply our own texture:
+
+```java
 public class RenderWeirdZombie extends RenderLiving<EntityWeirdZombie> {
 
     private ResourceLocation mobTexture = new ResourceLocation("modtut:textures/entity/weirdzombie.png");
@@ -173,15 +179,15 @@ public class RenderWeirdZombie extends RenderLiving<EntityWeirdZombie> {
         public Render<? super EntityWeirdZombie> createRenderFor(RenderManager manager) {
             return new RenderWeirdZombie(manager);
         }
-
     }
-
 }
-</syntaxhighlight>
 ```
-Finally we need to register all this to the system. We make a new ModEntities class like this. Note that registerModEntity also makes us a spawn egg which is handy for testing our mob:
-```
-<syntaxhighlight lang="java">
+
+Finally, we need to register all this to the system.
+We make a new ModEntities class like this.
+Note that registerModEntity also makes us a spawn egg which is handy for testing our mob:
+
+```java
 public class ModEntities {
 
     public static void init() {
@@ -202,37 +208,38 @@ public class ModEntities {
         RenderingRegistry.registerEntityRenderingHandler(EntityWeirdZombie.class, RenderWeirdZombie.FACTORY);
     }
 }
-</syntaxhighlight>
 ```
+
 Then we change CommonProxy and ClientProxy to call the new init methods:
+
+```java
+public static class CommonProxy {
+    public void preInit(FMLPreInitializationEvent e) {
+
+        ...
+
+        ModEntities.init();
+
+        ...
+    }
+}
+
+public static class ClientProxy extends CommonProxy {
+    @Override
+    public void preInit(FMLPreInitializationEvent e) {
+
+        ...
+
+        ModEntities.initModels();
+
+        ...
+    }
+}
 ```
-<syntaxhighlight lang="java">
-    public static class CommonProxy {
-        public void preInit(FMLPreInitializationEvent e) {
 
-            ...
-
-            ModEntities.init();
-
-            ...
-        }
-
-
-    public static class ClientProxy extends CommonProxy {
-        @Override
-        public void preInit(FMLPreInitializationEvent e) {
-
-            ...
-
-            ModEntities.initModels();
-
-            ...
-        }
-</syntaxhighlight>
-```
 We also need to define the loot for this mob:
-```
- <nowiki>
+
+```json
 {
   "pools": [
     {
@@ -285,5 +292,4 @@ We also need to define the loot for this mob:
     }
   ]
 }
-</nowiki>
 ```

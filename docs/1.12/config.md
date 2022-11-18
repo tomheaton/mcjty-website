@@ -10,14 +10,13 @@ More explanation on the config system as well as an alternative way to do config
 
 First we add a 'Config' class that will handle our configuration. In this example it is just a single class. In bigger mods you might want to structure your configuration classes differently and perhaps group them per module. In this example we make a config file with two sections (called categories). One is for general configuration and the other is for dimension configuration (currently unused).
 
-'''Automatic Creation:''' It is important to note that the Forge configuration framework lets you access the config file without having to worry if it exists or not. It will automatically create the file for you if needed and add config options to it if needed. For example, if you later decide to add a new config option then you can just do that here and the config file will be automatically extended.
+**Automatic Creation:** It is important to note that the Forge configuration framework lets you access the config file without having to worry if it exists or not. It will automatically create the file for you if needed and add config options to it if needed. For example, if you later decide to add a new config option then you can just do that here and the config file will be automatically extended.
 
-'''Changing Defaults:''' If you change the default value of a config option then this will not be reflected in the config file. You have to tell your users to manually delete the config file or else use another trick to force a reset if you have a config option that absolutely needs a different default. One way can be to rename the config. That way a new config will be created with the new default (but the old one will remain in already generated config files). Another way is to add versioning (another number that you add to your config).
+**Changing Defaults:** If you change the default value of a config option then this will not be reflected in the config file. You have to tell your users to manually delete the config file or else use another trick to force a reset if you have a config option that absolutely needs a different default. One way can be to rename the config. That way a new config will be created with the new default (but the old one will remain in already generated config files). Another way is to add versioning (another number that you add to your config).
 
-'''Server/Client config:''' One final remark: the configuration file is read both on the server and the client side. Think about this when adding values that you need to use on both sides. For example, how much power a machine needs is a server side config but the client might also want to use this to display that information in a tooltip. If you have something like that you must either make sure that clients always have an up-to-date config file (because otherwise the tooltip would be wrong) or else send over the real information from the server to the clients with network packets.
+**Server/Client config:** One final remark: the configuration file is read both on the server and the client side. Think about this when adding values that you need to use on both sides. For example, how much power a machine needs is a server side config but the client might also want to use this to display that information in a tooltip. If you have something like that you must either make sure that clients always have an up-to-date config file (because otherwise the tooltip would be wrong) or else send over the real information from the server to the clients with network packets.
 
-```
-<syntaxhighlight lang="java">
+```java
 public class Config {
 
     private static final String CATEGORY_GENERAL = "general";
@@ -53,14 +52,15 @@ public class Config {
 
     private static void initDimensionConfig(Configuration cfg) {
         cfg.addCustomCategoryComment(CATEGORY_DIMENSIONS, "Dimension configuration");
-
     }
 }
-</syntaxhighlight>
 ```
-We also have to add some things to our CommonProxy class. We create a new configuration file in the directory given to us in the FMLPreInitializationEvent and then we call Config.readConfig() to set it all up. We also have to implement something in postInit() to make sure that when our config changes during init it gets saved as well:
-```
-<syntaxhighlight lang="java">
+
+We also have to add some things to our CommonProxy class.
+We create a new configuration file in the directory given to us in the FMLPreInitializationEvent, and then we call Config.readConfig() to set it all up.
+We also have to implement something in postInit() to make sure that when our config changes during init it gets saved as well:
+
+```java
 @Mod.EventBusSubscriber
 public class CommonProxy {
 
@@ -83,5 +83,4 @@ public class CommonProxy {
         }
     }
 }
-</syntaxhighlight>
 ```

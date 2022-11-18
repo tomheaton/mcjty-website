@@ -4,13 +4,16 @@ sidebar_position: 9
 
 # GUI
 
-In this tutorial we explain how you can make a chest that can hold 9 items (that's all you need right?) and opens a GUI so you can access those items.
-```
-<img src="http://i.imgur.com/g5yIlgc.png" alt="User Interface">
-```
-Here is the block code. In this code we register our tile entity as well. In onBlockActivated() we actually open the GUI. Note that this is done on the server because a gui for a tile entity has to be 'opened' on both sides so that there is a mechanism in place for synchronizing the contents. The player.openGui() call happens on the server and this will be synced to the client using the IGuiHandler (more on this later). i.e. if you have a GUI open for a chest you want to see the items appear in real time as well as the other way around:
-```
-<syntaxhighlight lang="java">
+In this tutorial we explain how you can make a chest that can hold 9 items (that's all you need right?) and opens a GUI, so you can access those items.
+
+![image](https://i.imgur.com/g5yIlgc.png)
+
+Here is the block code. In this code we register our tile entity as well.
+In onBlockActivated() we actually open the GUI.
+Note that this is done on the server because a gui for a tile entity has to be 'opened' on both sides so that there is a mechanism in place for synchronizing the contents.
+The player.openGui() call happens on the server and this will be synced to the client using the IGuiHandler (more on this later). i.e. if you have a GUI open for a chest you want to see the items appear in real time as well as the other way around:
+
+```java
 public class TestContainerBlock extends Block implements ITileEntityProvider {
 
     public static final int GUI_ID = 1;
@@ -46,11 +49,11 @@ public class TestContainerBlock extends Block implements ITileEntityProvider {
         return true;
     }
 }
-</syntaxhighlight>
 ```
+
 Do the proper registration in CommonProxy:
-```
-<syntaxhighlight lang="java">
+
+```java
 @Mod.EventBusSubscriber
 public class CommonProxy {
 
@@ -68,13 +71,12 @@ public class CommonProxy {
         event.getRegistry().register(new ItemBlock(ModBlocks.testContainerBlock).setRegistryName(ModBlocks.testContainerBlock.getRegistryName()));
         ...
     }
-
 }
-</syntaxhighlight>
 ```
+
 And add the ObjectHolder and call to initModel() to ModBlocks:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class ModBlocks {
 
     @GameRegistry.ObjectHolder("modtut:testcontainerblock")
@@ -89,13 +91,12 @@ public class ModBlocks {
         testContainerBlock.initModel();
     }
 }
-</syntaxhighlight>
 ```
 
+The tile entity is what is actually storing the items.
+In this tutorial we will no longer use the vanilla IInventory system, but instead we implement our inventory using the new recommended capability system (IItemHandler).
 
-The tile entity is what is actually storing the items. In this tutorial we will no longer use the vanilla IInventory system but instead we implement our inventory using the new recommended capability system (IItemHandler).
-```
-<syntaxhighlight lang="java">
+```java
 public class TestContainerTileEntity extends TileEntity {
 
     public static final int SIZE = 9;
@@ -146,35 +147,44 @@ public class TestContainerTileEntity extends TileEntity {
         return super.getCapability(capability, facing);
     }
 }
-</syntaxhighlight>
 ```
 
-Here is the blockstate json (blockstates/testcontainerblock.json). Note that in this example we don't have our own block model but instead use the vanilla cube_all model:
-```
- <nowiki>
+Here is the blockstate json (`blockstates/testcontainerblock.json`).
+Note that in this example we don't have our own block model but instead use the vanilla cube_all model:
+
+```json title="blockstates/testcontainerblock.json"
 {
   "forge_marker": 1,
   "defaults": {
     "model": "cube_all",
-    textures: { "all":"modtut:blocks/testcontainer"}
+    "textures": { "all":"modtut:blocks/testcontainer"}
   },
   "variants": {
     "normal": [{}],
     "inventory": [{}]
   }
 }
-</nowiki>
 ```
 
-This is not enough however. For a GUI to work we need actual GUI code and also a Container implementation. While it is the Tile Entity that holds the actual contents, it is the Container that is used to communicate between the GUI and the actual contents on the server. Keep in mind that when you open a GUI for a chest (for example) you not only see the slots from the chest itself but also slots from the player inventory. So the Container is a view on at least two inventories in this case.
+This is not enough, however.
+For a GUI to work we need actual GUI code and also a Container implementation.
+While it is the Tile Entity that holds the actual contents, it is the Container that is used to communicate between the GUI and the actual contents on the server.
+Keep in mind that when you open a GUI for a chest (for example) you not only see the slots from the chest itself but also slots from the player inventory.
+So the Container is a view on at least two inventories in this case.
 
-When a GUI is opened in Minecraft this usually happens on the server side. There a Container implementation is used to indicate what inventory is being opened. On the client side a synchronized copy of that Container is also used and given to the actual GUI.
+When a GUI is opened in Minecraft this usually happens on the server side.
+There a Container implementation is used to indicate what inventory is being opened.
+On the client side a synchronized copy of that Container is also used and given to the actual GUI.
 
-Here you see the Container for this example. Note how slots are added both for our own tile entity as well as the player inventory.
+Here you see the Container for this example.
+Note how slots are added both for our own tile entity and the player inventory.
 
-One note. It is crucial that you implement transferStackInSlot. If you don't your block will crash if the player uses shift-click on an item. In this example we copied the implementation that is also used by the vanilla chest. It basically transfers slots between hotbar/player inventory/chest depending on where the item started and where there is room.
-```
-<syntaxhighlight lang="java">
+One note. It is crucial that you implement transferStackInSlot.
+If you don't your block will crash if the player uses shift-click on an item.
+In this example we copied the implementation that is also used by the vanilla chest.
+It basically transfers slots between hotbar/player inventory/chest depending on where the item started and where there is room.
+
+```java
 public class TestContainer extends Container {
 
     private TestContainerTileEntity te;
@@ -253,11 +263,13 @@ public class TestContainer extends Container {
         return te.canInteractWith(playerIn);
     }
 }
-</syntaxhighlight>
 ```
-Now we also need a GUI. GUI's for containers usually extend from GuiContainer. In this simple case there is not much code we need to get this GUI working. You can of course add your own custom rendering to make this GUI more fancy as well as adding custom components and stuff like that:
-```
-<syntaxhighlight lang="java">
+
+Now we also need a GUI. GUI's for containers usually extend from GuiContainer.
+In this simple case there is not much code we need to get this GUI working.
+You can of course add your own custom rendering to make this GUI more fancy as well as adding custom components and stuff like that:
+
+```java
 public class TestContainerGui extends GuiContainer {
     public static final int WIDTH = 180;
     public static final int HEIGHT = 152;
@@ -277,11 +289,17 @@ public class TestContainerGui extends GuiContainer {
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 }
-</syntaxhighlight>
 ```
-Now there is one final thing you need to do and that is to tell Minecraft how to create your GUI and Container implementations. For this a IGuiHandler is needed which contains server and client side code to handle the GUI. In the example below we hardcoded the TestContainerTileEntity and TestContainer names. I recommend not doing that in your own code but using a simple framework. For example, you could have a GenericTileEntity that you can do 'instanceof' of and then have methods in that to create your gui and/or container. Or you can also make use of the given ID which is also given to player.openGui() as it was called above (GUI_ID). This example is just to demonstrate how it works.
-```
-<syntaxhighlight lang="java">
+
+Now there is one final thing you need to do and that is to tell Minecraft how to create your GUI and Container implementations.
+For this a IGuiHandler is needed which contains server and client side code to handle the GUI.
+In the example below we hardcoded the TestContainerTileEntity and TestContainer names.
+I recommend not doing that in your own code but using a simple framework.
+For example, you could have a GenericTileEntity that you can do 'instanceof' of and then have methods in that to create your gui and/or container.
+Or you can also make use of the given ID which is also given to player.openGui() as it was called above (GUI_ID).
+This example is just to demonstrate how it works.
+
+```java
 public class GuiProxy implements IGuiHandler {
 
     @Override
@@ -305,21 +323,21 @@ public class GuiProxy implements IGuiHandler {
         return null;
     }
 }
-</syntaxhighlight>
 ```
+
 And finally you need to register this GuiProxy class in your CommonProxy:
+
+```java
+public static class CommonProxy {
+
+    ...
+
+    public void init(FMLInitializationEvent e) {
+        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiProxy());
+    }
+
+    ...
+}
 ```
-<syntaxhighlight lang="java">
-    public static class CommonProxy {
 
-        ...
-
-        public void init(FMLInitializationEvent e) {
-            NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiProxy());
-        }
-
-        ...
-</syntaxhighlight>
-```
-
-This completes this tutorial
+This completes this tutorial.

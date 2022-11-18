@@ -4,13 +4,16 @@ sidebar_position: 12
 
 # Networking
 
-This document talks about simple networking as well as key handling. In this example we are going to listen to a key press on the client side ('t') and then send a packet to the server so that the server can do some processing on it.
+This document talks about simple networking as well as key handling.
+In this example we are going to listen to a key press on the client side (`t`) and then send a packet to the server so that the server can do some processing on it.
 
 The official Forge documentation has more detailed information on networking as well: https://mcforge.readthedocs.io/en/latest/networking/
 
-First we need to register our key bindings. This can be done like this. This code basically registers a new key and assigns it to 't' by default. The player can change this in the controls configuration:
-```
-<syntaxhighlight lang="java">
+First we need to register our key bindings.
+This can be done like this. This code basically registers a new key and assigns it to `t` by default.
+The player can change this in the controls configuration:
+
+```java
 @SideOnly(Side.CLIENT)
 public class KeyBindings {
 
@@ -21,11 +24,15 @@ public class KeyBindings {
         ClientRegistry.registerKeyBinding(tutorialKey);
     }
 }
-</syntaxhighlight>
 ```
-You also need to tell the system what should happen in case the player presses that key. That can be done as follows. Basically this class is an event handler that listens to the 'KeyInputEvent'. This is called client-side. Since we want to do our key handling server side the only thing we do here is to send a packet to the server. More on this in the second half of this tutorial:
-```
-<syntaxhighlight lang="java">
+
+You also need to tell the system what should happen in case the player presses that key.
+That can be done as follows. Basically this class is an event handler that listens to the 'KeyInputEvent'.
+This is called client-side.
+Since we want to do our key handling server side the only thing we do here is to send a packet to the server.
+More on this in the second half of this tutorial:
+
+```java
 public class InputHandler {
 
     @SubscribeEvent
@@ -36,26 +43,33 @@ public class InputHandler {
         }
     }
 }
-</syntaxhighlight>
 ```
-These two classes don't do anything yet. To make them actually work you need to add some things to the ClientProxy:
-```
-<syntaxhighlight lang="java">
-        @Override
-        public void init(FMLInitializationEvent e) {
-            super.init(e);
 
-            // Initialize our input handler so we can listen to keys
-            MinecraftForge.EVENT_BUS.register(new InputHandler());
-            KeyBindings.init();
+These two classes don't do anything yet.
+To make them actually work you need to add some things to the ClientProxy:
 
-            ...
-        }
-</syntaxhighlight>
+```java
+@Override
+public void init(FMLInitializationEvent e) {
+    super.init(e);
+
+    // Initialize our input handler so we can listen to keys
+    MinecraftForge.EVENT_BUS.register(new InputHandler());
+    KeyBindings.init();
+
+    ...
+}
 ```
-Now we need to do is to add the actual packet implementation. There are actually two classes that you have to make. One is the actual message (this is created on the client and then sent to the server) and the other is the message handler (which is called on the server). It is recommended that you actually make two different classes. One way to make this easy to manage is to make the handler an inner static class of the message like what is done here. Note about the special warning with regards to networking and threads. Also note how with networking you have to be careful about abuse. In this case we check if the chunk is actually loaded to prevent a client from (accidently or not) overloading a server:
-```
-<syntaxhighlight lang="java">
+
+Now we need to do is to add the actual packet implementation.
+There are actually two classes that you have to make.
+One is the actual message (this is created on the client and then sent to the server) and the other is the message handler (which is called on the server).
+It is recommended that you actually make two different classes.
+One way to make this easy to manage is to make the handler an inner static class of the message like what is done here.
+Note about the special warning in regard to networking and threads. Also note how with networking you have to be careful about abuse.
+In this case we check if the chunk is actually loaded to prevent a client from (accidentally or not) overloading a server:
+
+```java
 public class PacketSendKey implements IMessage {
     private BlockPos blockPos;
 
@@ -103,11 +117,11 @@ public class PacketSendKey implements IMessage {
         }
     }
 }
-</syntaxhighlight>
 ```
-Finally we need to setup our packet handler so that we can actually send a packet from the client to the server. First we make a new 'PacketHandler' class. In this class we will register all the packets that we need (currently just one) and specify if they should go from server to client or from client to server. In this example we only need a packet to go from client to server:
-```
-<syntaxhighlight lang="java">
+
+Finally, we need to setup our packet handler so that we can actually send a packet from the client to the server. First we make a new 'PacketHandler' class. In this class we will register all the packets that we need (currently just one) and specify if they should go from server to client or from client to server. In this example we only need a packet to go from client to server:
+
+```java
 public class PacketHandler {
     private static int packetId = 0;
 
@@ -130,19 +144,18 @@ public class PacketHandler {
         INSTANCE.registerMessage(PacketSendKey.Handler.class, PacketSendKey.class, nextID(), Side.SERVER);
     }
 }
-</syntaxhighlight>
 ```
+
 To make this actually work you have to extend the preInit() method in your CommonProxy:
-```
-<syntaxhighlight lang="java">
-        public void preInit(FMLPreInitializationEvent e) {
-            // Initialize our packet handler. Make sure the name is
-            // 20 characters or less!
-            PacketHandler.registerMessages("modtut");
 
-            ...
-        }
-</syntaxhighlight>
+```java
+public void preInit(FMLPreInitializationEvent e) {
+    // Initialize our packet handler. Make sure the name is
+    // 20 characters or less!
+    PacketHandler.registerMessages("modtut");
+
+    ...
+}
 ```
 
-Now if you try this you should be able to press 't' in game to get the registry name of the block that you are looking at.
+Now if you try this you should be able to press `t` in game to get the registry name of the block that you are looking at.

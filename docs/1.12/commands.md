@@ -4,11 +4,15 @@ sidebar_position: 13
 
 # Commands
 
-In this small tutorial we show you how you can make your own console commands (server side in this case). The command we add here is a simple 'tp' command that allows the player to teleport to any dimension. We will use this command later to test our custom dimension.
+In this small tutorial we show you how you can make your own console commands (server side in this case).
+The command we add here is a simple 'tp' command that allows the player to teleport to any dimension.
+We will use this command later to test our custom dimension.
 
-So first lets make a TeleportCommand class which will implement the teleportation functionality. This is actually very simple. You just have to implement the methods from CommandBase:
-```
-<syntaxhighlight lang="java">
+So first lets make a TeleportCommand class which will implement the teleportation functionality.
+This is actually very simple.
+You just have to implement the methods from CommandBase:
+
+```java
 public class TeleportCommand extends CommandBase {
 
     public TeleportCommand(){
@@ -65,11 +69,14 @@ public class TeleportCommand extends CommandBase {
         return Collections.emptyList();
     }
 }
-</syntaxhighlight>
 ```
-To do the actual teleportation we need a CustomTeleporter class which is implemented like this. This clas extends Teleporter to make sure that teleporting doesn't create a nether portal. The default vanilla implementation of Teleporter does this and for our purposes we don't want that. In addition we also add a 'teleportToDimension' convenience method that we will call from our command above:
-```
-<syntaxhighlight lang="java">
+
+To do the actual teleportation we need a CustomTeleporter class which is implemented like this.
+This class extends Teleporter to make sure that teleporting doesn't create a nether portal.
+The default vanilla implementation of Teleporter does this and for our purposes we don't want that.
+In addition, we also add a 'teleportToDimension' convenience method that we will call from our command above:
+
+```java
 public class CustomTeleporter extends Teleporter {
 
     public CustomTeleporter(WorldServer world, double x, double y, double z) {
@@ -117,13 +124,12 @@ public class CustomTeleporter extends Teleporter {
             worldServer.updateEntityWithOptionalForce(player, false);
         }
     }
-
 }
-</syntaxhighlight>
 ```
+
 To actually make this command work we need to register it in our main mod class:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class ModTut {
 
     ...
@@ -133,6 +139,4 @@ public class ModTut {
         event.registerServerCommand(new TeleportCommand());
     }
 }
-
-</syntaxhighlight>
 ```

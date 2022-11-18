@@ -4,15 +4,23 @@ sidebar_position: 14
 
 # Dimensions
 
-This more advanced tutorial shows how you can make your own custom dimension. Note that this tutorial depends on the tutorial to add a custom command (to be able to teleport to your dimension) and also the tutorial on the configuration section.
-```
-<img src="http://i.imgur.com/KyF7Lhk.png" alt="Dimension">
-```
-Implementing your own dimension is fun and there really is a lot you can do to tweak your dimension. In this tutorial we will only show you the very basic dimension. There is a lot more that you can do. A good reference for doing more with dimensions is the vanilla 'ChunkProviderOverworld' class. Our dimension only implements a subset of the vanilla overworld.
+This more advanced tutorial shows how you can make your own custom dimension.
+Note that this tutorial depends on the tutorial to add a custom command (to be able to teleport to your dimension) and also the tutorial on the configuration section.
 
-The first thing you need is a WorldProvider implementation. In many cases every dimension has its own WorldProvider but it is actually possible to reuse the same world provider for multiple dimensions (RFTools Dimensions does that). Also note that there are lot more functions in WorldProvider that you can override to provide all kinds of interesting results. You can affect the time of the dimension, the sky, the weather, and much much more here.
-```
-<syntaxhighlight lang="java">
+![image](https://i.imgur.com/KyF7Lhk.png)
+
+Implementing your own dimension is fun and there really is a lot you can do to tweak your dimension.
+In this tutorial we will only show you the very basic dimension.
+There is a lot more that you can do.
+A good reference for doing more with dimensions is the vanilla 'ChunkProviderOverworld' class.
+Our dimension only implements a subset of the vanilla overworld.
+
+The first thing you need is a WorldProvider implementation.
+In many cases every dimension has its own WorldProvider, but it is actually possible to reuse the same world provider for multiple dimensions (RFTools Dimensions does that).
+Also note that there are lot more functions in WorldProvider that you can override to provide all kinds of interesting results.
+You can affect the time of the dimension, the sky, the weather, and much, much more here.
+
+```java
 public class TestWorldProvider extends WorldProvider {
 
     @Override
@@ -30,11 +38,17 @@ public class TestWorldProvider extends WorldProvider {
         return new TestChunkGenerator(world);
     }
 }
-</syntaxhighlight>
 ```
-Now we need the actual code that generates our landscape. This is a modified copy of ChunkProviderOverworld except that we separated the actual terrain generator in a separate class for clarity. The terrain we generate here is basically only doing terrain and caves. There are no structures, no ravines and so on. Feel free to check the vanilla code to see how to implement those. We also make our custom mob spawn here as the only creature. You can of course also change that:
-```
-<syntaxhighlight lang="java">
+
+Now we need the actual code that generates our landscape.
+This is a modified copy of ChunkProviderOverworld except that we separated the actual terrain generator in a separate class for clarity.
+The terrain we generate here is basically only doing terrain and caves.
+There are no structures, no ravines and so on.
+Feel free to check the vanilla code to see how to implement those.
+We also make our custom mob spawn here as the only creature.
+You can of course also change that:
+
+```java
 public class TestChunkGenerator implements IChunkGenerator {
 
     private final World worldObj;
@@ -112,7 +126,6 @@ public class TestChunkGenerator implements IChunkGenerator {
             return mobs;
         }
         return ImmutableList.of();
-
     }
 
     @Nullable
@@ -128,14 +141,19 @@ public class TestChunkGenerator implements IChunkGenerator {
 
     @Override
     public void recreateStructures(Chunk chunkIn, int x, int z) {
-
     }
 }
-</syntaxhighlight>
 ```
-Now we need the actual terrain generator. This is pretty complicated code that involves a lot of math (perlin noise functions and so on). We will not explain those in detail. I suggest you try to tweak the values here and see what effects that all gives. The basic purpose of this code is to fill a heightmap and then generate a chunk based on that. Chunks are generated in the ChunkPrimer class. If you just want to create a flat terrain then that would be really easy to do with the primer:
-```
-<syntaxhighlight lang="java">
+
+Now we need the actual terrain generator.
+This is pretty complicated code that involves a lot of math (perlin noise functions and so on).
+We will not explain those in detail.
+I suggest you try to tweak the values here and see what effects that all gives.
+The basic purpose of this code is to fill a heightmap and then generate a chunk based on that.
+Chunks are generated in the ChunkPrimer class.
+If you just want to create a flat terrain then that would be really easy to do with the primer:
+
+```java
 public class NormalTerrainGenerator {
     private World world;
     private Random random;
@@ -197,7 +215,6 @@ public class NormalTerrainGenerator {
         this.surfaceNoise = ctx.getHeight();
         this.depthNoise = ctx.getDepth();
     }
-
 
     private void generateHeightmap(int chunkX4, int chunkY4, int chunkZ4) {
         this.depthRegion = this.depthNoise.generateNoiseOctaves(this.depthRegion, chunkX4, chunkZ4, 5, 5, 200.0D, 200.0D, 0.5D);
@@ -287,7 +304,6 @@ public class NormalTerrainGenerator {
         }
     }
 
-
     public void generate(int chunkX, int chunkZ, ChunkPrimer primer) {
         generateHeightmap(chunkX * 4, 0, chunkZ * 4);
 
@@ -359,17 +375,16 @@ public class NormalTerrainGenerator {
             }
         }
     }
-
 }
-</syntaxhighlight>
 ```
+
 Now finally we need to set this all up so that our dimension actually works in game. To do that we add a new ModDimensions class. There are two distinct things we need to register here. First there is the dimension type. This is actually an enum that you can extend at runtime (Forge magic) using DimensionType.register(). The dimension type maps a dimension type ID to your world provider. In this example the ID for the dimension type and the dimension are the same but that's not actually required.
 
 Then we also need to register the dimension itself and map it to the dimension type.
 
-Finally we call our new init() method from our CommonProxy class:
-```
-<syntaxhighlight lang="java">
+Finally, we call our new init() method from our CommonProxy class:
+
+```java
 public class ModDimensions {
 
     public static DimensionType testDimensionType;
@@ -388,7 +403,6 @@ public class ModDimensions {
     }
 }
 
-
 public class CommonProxy {
 
     ...
@@ -402,8 +416,7 @@ public class CommonProxy {
         ...
 
     }
-
-</syntaxhighlight>
+}
 ```
 
-To test our dimension you can use: /tp 100 in game
+To test our dimension you can use: `/tp 100` in game

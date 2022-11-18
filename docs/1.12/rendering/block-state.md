@@ -5,16 +5,14 @@ sidebar_position: 5
 # Render Block State
 
 In this example I show how you can make the front panel of a block depend on a redstone signal. Here we add an additional property to our blockstate that says if the block is enabled (powered) or not.
-```
-<img src="http://i.imgur.com/ouNhzQy.png" alt="State textured block">
-```
-```
-<syntaxhighlight lang="java">
+
+![image](https://i.imgur.com/ouNhzQy.png)
+
+```java
 public class StateTexturedBlock extends Block {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
     public static final PropertyBool ENABLED = PropertyBool.create("enabled");
-
 
     public StateTexturedBlock() {
         super(Material.ROCK);
@@ -64,11 +62,13 @@ public class StateTexturedBlock extends Block {
         return new BlockStateContainer(this, FACING, ENABLED);
     }
 }
-</syntaxhighlight>
 ```
-And here is the blockstate json (blockstates/statetexturedblock.json). Here you see how we change the front texture when the 'enabled' property is true. This work because in our model file (see later) we added a '#front' parameter for one of the textures:
-```
- <nowiki>
+
+And here is the blockstate json (`blockstates/statetexturedblock.json`).
+Here you see how we change the front texture when the `enabled` property is true.
+This work because in our model file (see later) we added a `#front` parameter for one of the textures:
+
+```json title="blockstates/statetexturedblock.json"
 {
   "forge_marker": 1,
   "defaults": {
@@ -98,11 +98,12 @@ And here is the blockstate json (blockstates/statetexturedblock.json). Here you 
     }
   }
 }
-</nowiki>
 ```
-Finally we need our model file (models/block/statetexturedblock.json). The 'north' texture is defined with the #front parameter which is given in the blockstate json:
-```
- <nowiki>
+
+Finally, we need our model file (`models/block/statetexturedblock.json`).
+The 'north' texture is defined with the `#front` parameter which is given in the blockstate json:
+
+```json title="models/block/statetexturedblock.json"
 {
   "parent": "block/cube",
   "textures": {
@@ -114,5 +115,5 @@ Finally we need our model file (models/block/statetexturedblock.json). The 'nort
     "north": "#front",
     "south": "modtut:blocks/statetexture"
   }
-}</nowiki>
+}
 ```

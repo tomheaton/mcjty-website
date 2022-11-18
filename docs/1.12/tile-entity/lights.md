@@ -1,12 +1,24 @@
-In this tile entity example we demonstrate how you can have a tile entity do some calculation and do something based on this. The calculations of this tile entity are pretty simple.
+---
+sidebar_position: 2
+---
 
-Every tick we count how many entities there are in a 20x20x20 box around the block and we let the block blink a texture depending on how many there are. So if you have tons of rabbits around your block it will blink faster. Note: doing this every tick is not very efficient. For that reason we only count every 10 ticks (two times per second). Also since we only need to blink on the client we only calculate this client side. That means that this is a tile entity that has no data to persist (no readFromNBT) and also no data that is known on the server. It is considerations like this that you have to take into account if you want to make efficient mods that don't cause lag on the server or the client (or both).
-```
-<img src="http://i.imgur.com/1w1y9XW.png" alt="Blinking Block">
-```
-First the block. We use a dummy blockstate property (via getActualState()) that is not represented by metadata to communicate the 'blinking' state of our block to the json blockstate (so that it can switch the texture). Note that this block is translucent which is the reason for the getBlockLayer() and isOpaqueCube() overrides:
-```
-<syntaxhighlight lang="java">
+# TileEntity Blinking Light
+
+In this tile entity example we demonstrate how you can have a tile entity do some calculation and do something based on this.
+The calculations of this tile entity are pretty simple.
+
+Every tick we count how many entities there are in a 20x20x20 box around the block, and we let the block blink a texture depending on how many there are.
+So if you have tons of rabbits around your block it will blink faster. Note: doing this every tick is not very efficient.
+For that reason we only count every 10 ticks (two times per second). Also since we only need to blink on the client we only calculate this client side.
+That means that this is a tile entity that has no data to persist (no readFromNBT) and also no data that is known on the server.
+It is considerations like this that you have to take into account if you want to make efficient mods that don't cause lag on the server or the client (or both).
+
+![image](https://i.imgur.com/1w1y9XW.png)
+
+First the block. We use a dummy blockstate property (via getActualState()) that is not represented by metadata to communicate the 'blinking' state of our block to the json blockstate (so that it can switch the texture).
+Note that this block is translucent which is the reason for the getBlockLayer() and isOpaqueCube() overrides:
+
+```java
 public class BlinkingBlock extends Block implements ITileEntityProvider {
 
     public static final PropertyBool LIT = PropertyBool.create("lit");
@@ -57,13 +69,16 @@ public class BlinkingBlock extends Block implements ITileEntityProvider {
         return 0;
     }
 }
-</syntaxhighlight>
 ```
-We assume that by now you know how to register this block. You need to add an ObjectHolder to ModBlocks and register the block, tile entity, and ItemBlock in CommonProxy. Also don't forget to call initModel() from ModBlocks.initModels()!
 
-We now have to define our tile entity. Since this tile entity has to 'tick' (i.e. called 20 times per second) we have to implement ITickable:
-```
-<syntaxhighlight lang="java">
+We assume that by now you know how to register this block.
+You need to add an ObjectHolder to ModBlocks and register the block, tile entity, and ItemBlock in CommonProxy.
+Also don't forget to call initModel() from ModBlocks.initModels()!
+
+We now have to define our tile entity.
+Since this tile entity has to 'tick' (i.e. called 20 times per second) we have to implement ITickable:
+
+```java
 public class BlinkingTileEntity extends TileEntity implements ITickable {
 
     // We only calculate this value on the client so we don't care about the server
@@ -111,11 +126,11 @@ public class BlinkingTileEntity extends TileEntity implements ITickable {
         }
     }
 }
-</syntaxhighlight>
 ```
-Finally we have our blockstate json (blockstates/blinkingblock.json):
-```
- <nowiki>
+
+Finally, we have our blockstate json (`blockstates/blinkingblock.json`):
+
+```json title="blockstates/blinkingblock.json"
 {
   "forge_marker": 1,
   "defaults": {
@@ -137,16 +152,15 @@ Finally we have our blockstate json (blockstates/blinkingblock.json):
     }
   }
 }
-</nowiki>
 ```
-And our model (models/block/blinkingblock.json):
-```
- <nowiki>
+
+And our model (`models/block/blinkingblock.json`):
+
+```json title="models/block/blinkingblock.json"
 {
   "parent": "block/cube_all",
   "textures": {
     "all": "#txt"
   }
 }
-</nowiki>
 ```

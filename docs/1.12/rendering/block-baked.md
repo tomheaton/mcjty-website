@@ -4,13 +4,24 @@ sidebar_position: 8
 
 # Render Block Baked Model
 
-In this tutorial we're going to explain how you can statically render a conduit like system. This needs a baked model since we have to be able to calculate geometry dynamically. However this example does not use tile entities or TESR (TileEntitySpecialRenderer) which means the result will be static and only change when new blocks are added or removed. Here is how it looks like:
-```
-<img src="http://i.imgur.com/ekIH6Mc.png" alt="Conduits">
-```
-There are a few things we need to do before this can work. First a baked model cannot access the world in any way because it can possibly be called in a thread. So you need a way to transfer all the rendering of the needed information from the block to the baked model. This works by using ExtendedBlockState and unlisted properties. These are properties that are not translated to metadata so you are not limited to the 4 bits of metadata that is reserved for blocks. It is also not directly stored with the block so you have to calculate it when the chunk renderer needs it. In this example we need six booleans to indicate if there is another block of this type on a given side. First we define a property so that we can store booleans. Note that you can make properties of any possible type. We could also have chosen to make a single property that contains six booleans (instead of six properties with each containing a boolean).
-```
-<syntaxhighlight lang="java">
+In this tutorial we're going to explain how you can statically render a conduit like system.
+This needs a baked model since we have to be able to calculate geometry dynamically.
+However, this example does not use tile entities or TESR (TileEntitySpecialRenderer) which means the result will be static and only change when new blocks are added or removed.
+Here is how it looks like:
+
+![image](https://i.imgur.com/ekIH6Mc.png)
+
+There are a few things we need to do before this can work.
+First a baked model cannot access the world in any way because it can possibly be called in a thread.
+So you need a way to transfer all the rendering of the needed information from the block to the baked model.
+This works by using ExtendedBlockState and unlisted properties.
+These are properties that are not translated to metadata, so you are not limited to the 4 bits of metadata that is reserved for blocks.
+It is also not directly stored with the block, so you have to calculate it when the chunk renderer needs it.
+In this example we need six booleans to indicate if there is another block of this type on a given side.
+First we define a property so that we can store booleans. Note that you can make properties of any possible type.
+We could also have chosen to make a single property that contains six booleans (instead of six properties with each containing a boolean).
+
+```java
 public class UnlistedPropertyBlockAvailable implements IUnlistedProperty<Boolean> {
 
     private final String name;
@@ -39,11 +50,16 @@ public class UnlistedPropertyBlockAvailable implements IUnlistedProperty<Boolean
         return value.toString();
     }
 }
-</syntaxhighlight>
 ```
-Then we use this in our block. Note that initItemModel() has to be called from within ClientProxy.init() (as opposed to the initModel() which is called from preInit() as usual). The methods createBlockState() and getExtendedState() are used to communicate the unlisted properties to our baked model. We override createBlockState() so that we can make an ExtendedBlockState instead of the normal blockstate. The getExtendedState() method is where we actually calculate the properties based on the presence of adjacent blocks. This will be used by our baked model at the time static geometry is rendered in the chunk.
-```
-<syntaxhighlight lang="java">
+
+Then we use this in our block.
+Note that initItemModel() has to be called from within ClientProxy.init() (as opposed to the initModel() which is called from preInit() as usual).
+The methods createBlockState() and getExtendedState() are used to communicate the unlisted properties to our baked model.
+We override createBlockState() so that we can make an ExtendedBlockState instead of the normal blockstate.
+The getExtendedState() method is where we actually calculate the properties based on the presence of adjacent blocks.
+This will be used by our baked model at the time static geometry is rendered in the chunk.
+
+```java
 public class BakedModelBlock extends Block {
 
     // Properties that indicate if there is the same block in a certain direction.
@@ -122,15 +138,17 @@ public class BakedModelBlock extends Block {
     private boolean isSameBlock(IBlockAccess world, BlockPos pos) {
         return world.getBlockState(pos).getBlock() == ModBlocks.bakedModelBlock;
     }
-
 }
-</syntaxhighlight>
 ```
-To get our baked model working we need three things. First we need a model (implementation of IModel). That doesn't do much more then act as a way to create our baked model (IBakedModel implementation) which does the actual work. And finally we need a custom model loader (implementation of ICustomModelLoader) so that we can load our new model from within json.
+
+To get our baked model working we need three things.
+First we need a model (implementation of IModel).
+That doesn't do much more than act as a way to create our baked model (IBakedModel implementation) which does the actual work.
+And finally we need a custom model loader (implementation of ICustomModelLoader) so that we can load our new model from within json.
 
 First we make our model. This is the class that is responsible for making our baked model:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class ExampleModel implements IModel {
     @Override
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
@@ -152,15 +170,15 @@ public class ExampleModel implements IModel {
         return TRSRTransformation.identity();
     }
 }
-</syntaxhighlight>
 ```
-We also need our custom model loader. This loader only supports our single model but you can easily extends this to support more models:
-```
-<syntaxhighlight lang="java">
+
+We also need our custom model loader.
+This loader only supports our single model, but you can easily extend this to support more models:
+
+```java
 public class BakedModelLoader implements ICustomModelLoader {
 
     public static final ExampleModel EXAMPLE_MODEL = new ExampleModel();
-
 
     @Override
     public boolean accepts(ResourceLocation modelLocation) {
@@ -174,14 +192,13 @@ public class BakedModelLoader implements ICustomModelLoader {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-
     }
 }
-</syntaxhighlight>
 ```
+
 We also have to register the loader:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -197,11 +214,15 @@ public class ClientProxy extends CommonProxy {
     }
 
     ...
-</syntaxhighlight>
+
+}
 ```
-Now we have to define our baked model. This is a bit more complex but the important thing here is that this baked model calculates the quads (faces of our model) based on the input state which is coming from our block. To be able to support multiple formats with this (since we don't know how our model will be baked) we use a general putVertex() here that can convert a vertex to the appropriate format automatically:
-```
-<syntaxhighlight lang="java">
+
+Now we have to define our baked model.
+This is a bit more complex but the important thing here is that this baked model calculates the quads (faces of our model) based on the input state which is coming from our block.
+To be able to support multiple formats with this (since we don't know how our model will be baked) we use a general putVertex() here that can convert a vertex to the appropriate format automatically:
+
+```java
 public class ExampleBakedModel implements IBakedModel {
 
     public static final ModelResourceLocation BAKED_MODEL = new ModelResourceLocation(ModTut.MODID + ":bakedmodelblock");
@@ -358,18 +379,18 @@ public class ExampleBakedModel implements IBakedModel {
         return ItemCameraTransforms.DEFAULT;
     }
 }
-</syntaxhighlight>
 ```
-In our ModBlocks class we need to define a new entry to initialize the item model for our baked model block. initItemModels() has to be called from ClientProxy.init():
-```
-<syntaxhighlight lang="java">
+
+In our ModBlocks class we need to define a new entry to initialize the item model for our baked model block.
+`initItemModels()` has to be called from `ClientProxy.init()`:
+
+```java
 public class ModBlocks {
 
     ...
 
     @GameRegistry.ObjectHolder("modtut:bakedmodelblock")
     public static BakedModelBlock bakedModelBlock;
-
 
     @SideOnly(Side.CLIENT)
     public static void initModels() {
@@ -382,32 +403,34 @@ public class ModBlocks {
         bakedModelBlock.initItemModel();
     }
 }
-</syntaxhighlight>
 ```
-Finally, even though we use a baked model we still need to define json's for the block states and models. For example, for our inventory model (what is shown in the inventory itself) and also a dummy block model that will get replaced with the baked model. First here is the blockstate (blockstates/bakedmodelblock.json):
-```
- <nowiki>
+
+Finally, even though we use a baked model we still need to define json's for the block states and models.
+For example, for our inventory model (what is shown in the inventory itself) and also a dummy block model that will get replaced with the baked model.
+First here is the blockstate (`blockstates/bakedmodelblock.json`):
+
+```json title="blockstates/bakedmodelblock.json"
 {
   "variants": {
     "normal": { "model": "modtut:bakedmodelblock" }
   }
 }
-</nowiki>
 ```
-Then the block model (models/block/bakedmodelblock.json):
-```
- <nowiki>
+
+Then the block model (`models/block/bakedmodelblock.json`):
+
+```json title="models/block/bakedmodelblock.json"
 {
   "parent": "block/cube_all",
   "textures": {
     "all": "modtut:blocks/bakedmodeltexture"
   }
 }
-</nowiki>
 ```
-And finally the item model (models/item/bakedmodelblock.json):
-```
- <nowiki>
+
+And finally the item model (`models/item/bakedmodelblock.json`):
+
+```json title="models/item/bakedmodelblock.json"
 {
   "parent": "modtut:block/bakedmodelblock",
   "display": {
@@ -418,5 +441,4 @@ And finally the item model (models/item/bakedmodelblock.json):
     }
   }
 }
-</nowiki>
 ```

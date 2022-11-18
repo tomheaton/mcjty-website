@@ -4,14 +4,17 @@ sidebar_position: 4
 
 # Render Block Different faces
 
-In this example we show how you can make a block that has a different texture on every side. In addition the block will also use blockstates to orient itself according to how the player places the block.
+In this example we show how you can make a block that has a different texture on every side.
+In addition, the block will also use blockstates to orient itself according to how the player places the block.
 
-Note that blockstates roughly translate to metadata as you would use in older versions of Minecraft. The blockstate system is much cleaner but remember that in 1.8.9 the meta data is still represented by 4 bits (for blocks at least) so you are limited to 16 different states. In the example below we define a property called 'FACING' which is a direction property. Based on this property we will decide how to rotate our model in the blockstate json.
-```
-<img src="http://i.imgur.com/ne5i9nJ.png" alt="Block with multiple faces">
-```
-```
-<syntaxhighlight lang="java">
+Note that blockstates roughly translate to metadata as you would use in older versions of Minecraft.
+The blockstate system is much cleaner but remember that in 1.8.9 the metadata is still represented by 4 bits (for blocks at least) so you are limited to 16 different states.
+In the example below we define a property called 'FACING' which is a direction property.
+Based on this property we will decide how to rotate our model in the blockstate json.
+
+![image](https://i.imgur.com/ne5i9nJ.png)
+
+```java
 public class MultiTexturedBlock extends Block {
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
@@ -57,11 +60,11 @@ public class MultiTexturedBlock extends Block {
         return new BlockStateContainer(this, FACING);
     }
 }
-</syntaxhighlight>
 ```
-Here is the blockstate json (blockstates/multitexturedblock.json):
-```
- <nowiki>
+
+Here is the blockstate json (`blockstates/multitexturedblock.json`):
+
+```json title="blockstates/multitexturedblock.json"
 {
   "forge_marker": 1,
   "defaults": {
@@ -80,11 +83,11 @@ Here is the blockstate json (blockstates/multitexturedblock.json):
     }
   }
 }
-</nowiki>
 ```
-And here is the actual model (models/block/multitexturedblock.json):
-```
- <nowiki>
+
+And here is the actual model (`models/block/multitexturedblock.json`):
+
+```json title="models/block/multitexturedblock.json"
 {
   "parent": "block/cube",
   "textures": {
@@ -97,5 +100,4 @@ And here is the actual model (models/block/multitexturedblock.json):
     "south": "modtut:blocks/faceBack"
   }
 }
-</nowiki>
 ```

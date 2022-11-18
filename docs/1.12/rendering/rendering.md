@@ -15,5 +15,5 @@ The official Forge documentation has a lot of detailed information on models so 
 * [Rendering of a basic block with different texture on every face](./block-face.md)
 * [Rendering a block differently depending on state](./block-state.md)
 * [Rendering of a block based on WaveFront OBJ file (static)](./block-obj.md)
-* [More complex dynamic TESR with OBJ and animation (dynamic)](../tile-entity/sync/render.md)
+* [More complex dynamic TESR with OBJ and animation (dynamic)](./tile-entity.md)
 * [Rendering of a block based on baked model (static)](./block-baked.md)

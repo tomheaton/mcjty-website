@@ -11,4 +11,4 @@ More in-depth information on tile entities can be found at the official forge do
 
 * [Using a tile entity to store some data](./data.md)
 * [Using a tile entity that does some timed action](./lights.md)
-* [Using a tile entity that syncs data from server to client](./sync/sync.md)
+* [Using a tile entity that syncs data from server to client](./sync.md)
