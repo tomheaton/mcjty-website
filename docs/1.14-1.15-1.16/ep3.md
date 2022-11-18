@@ -35,7 +35,7 @@ public class FirstBlock extends Block {
 ```
 We use one of the standard vanilla properties called FACING. This represents a direction with six possible values (north, south, east, west, up, down). In fillStateContainer we add our property to the state container builder so that the system knows this block supports this property. Then we override onBlockPlacedBy to make sure our block faces the right direction when it is placed by a player.
 
-We need to change our blockstate json now:
+We need to change our blockstate JSON now:
 ```
 <syntaxhighlight lang="json">
 {

@@ -15,7 +15,7 @@ It is considerations like this that you have to take into account if you want to
 
 ![image](https://i.imgur.com/1w1y9XW.png)
 
-First the block. We use a dummy blockstate property (via getActualState()) that is not represented by metadata to communicate the 'blinking' state of our block to the json blockstate (so that it can switch the texture).
+First the block. We use a dummy blockstate property (via getActualState()) that is not represented by metadata to communicate the 'blinking' state of our block to the JSON blockstate (so that it can switch the texture).
 Note that this block is translucent which is the reason for the getBlockLayer() and isOpaqueCube() overrides:
 
 ```java
@@ -128,7 +128,7 @@ public class BlinkingTileEntity extends TileEntity implements ITickable {
 }
 ```
 
-Finally, we have our blockstate json (`blockstates/blinkingblock.json`):
+Finally, we have our blockstate JSON (`blockstates/blinkingblock.json`):
 
 ```json title="blockstates/blinkingblock.json"
 {

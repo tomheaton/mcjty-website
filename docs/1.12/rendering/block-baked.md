@@ -90,7 +90,7 @@ public class BakedModelBlock extends Block {
 
     @SideOnly(Side.CLIENT)
     public void initItemModel() {
-        // For our item model we want to use a normal json model. This has to be called in
+        // For our item model we want to use a normal JSON model. This has to be called in
         // ClientProxy.postInit (not preInit) so that's why it is a separate method.
         Item itemBlock = Item.REGISTRY.getObject(new ResourceLocation(ModTut.MODID, "bakedmodelblock"));
         ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation(getRegistryName(), "inventory");

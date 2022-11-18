@@ -191,7 +191,7 @@ public class DataTileEntity extends TileEntity {
 }
 ```
 
-Here is the blockstate json (blockstates/datablock.json):
+Here is the blockstate JSON (blockstates/datablock.json):
 
 ```json
 {

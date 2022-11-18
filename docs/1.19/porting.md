@@ -136,7 +136,7 @@ Note how it is different for biomes.
 The reason for that is that biomes can be specified fully in JSON.
 And when that happens there will be no entry for this biome in the forge registry.
 The method using `registryAccess()` is the safest way to get the key for a biome.
-The same is true for other objects that can be added dynamically to the game using json only (structures, dimensions, ...)
+The same is true for other objects that can be added dynamically to the game using JSON only (structures, dimensions, ...)
 
 Note that if you have a `RegistryObject` then an easier way to get the registry name is to use `registryobject.getId()`.
 
@@ -192,7 +192,7 @@ In addition, tickable sounds now have an extra `RandomSource` parameter in their
 
 See [this guide](https://forge.gemwire.uk/wiki/Biome_Modifiers) for more information on Biome Decorators.
 
-`BiomeLoadingEvent` is gone. You can now do (most/all) stuff with json Biome Modifiers.
+`BiomeLoadingEvent` is gone. You can now do (most/all) stuff with JSON Biome Modifiers.
 Example of a biome decorator (place in `data/<modid>/forge/biome_modifier`):
 
 ```json

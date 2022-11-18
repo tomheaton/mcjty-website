@@ -24,21 +24,21 @@ Because both mods have a very similar structure the documentation for them is me
     * A: `potentialspawn.json` or `spawner.json` are used to ADD spawns. `spawn.json` is used to RESTRICT spawns
 
 * Q: Why can't I seem to control mobs from mod 'X' using `spawn.json`?
-    * A: Occasionally modded mobs don't follow the rules completely. It may help in such situations to use 'onjoin' : true in your rule
+    * A: Occasionally modded mobs don't follow the rules completely. It may help in such situations to use `'onjoin': true` in your rule
 
 * Q: I added a rule to spawn.json to allow a mod but nothing is happening. Why is that?
-    * A: 'Allow' (is standard). With spawn.json you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to spawner.json (possibly refined with rules in spawn.json)
-    * A: Having only 'allow' rules in spawn.json is (usually) pretty useless as those mobs will spawn anyway (exceptions are if you want to boost mobs). Typically, you want to have 'deny' rules
+    * A: 'Allow' (is standard). With `spawn.json` you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to `spawner.json` (possibly refined with rules in `spawn.json`)
+    * A: Having only 'allow' rules in `spawn.json` is (usually) pretty useless as those mobs will spawn anyway (exceptions are if you want to boost mobs). Typically, you want to have 'deny' rules
 
 ## Differences between 1.16.5, 1.18.2, 1.19 and older
 
 The 1.16.5 version of InControl and FxControl have some important differences which will require you to change rules when you move over from an older version to 1.16.5:
 
-* It's recommended to use the biome registry name for biomes instead of the actual readable name. i.e. "minecraft:plains" instead of Plains. This is also possible with recent versions of InControl and FxControl in 1.15.2
+* It's recommended to use the biome registry name for biomes instead of the actual readable name. i.e. `minecraft:plains` instead of Plains. This is also possible with recent versions of InControl and FxControl in 1.15.2
 * 'tempcategory' is removed and replaced with a more generic 'category' for biomes. It is now a list and supports the following categories: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, the_end, beach, forest, ocean, desert, river, swamp, mushroom and nether
 * 'biometype' now supports the following values: desert, desert_legacy, warm, cool, and icy
-* Numerical dimension ID's no longer work (like 0 for the overworld. Use 'minecraft:overworld' instead). This is also possible in the 1.15.2 versions of InControl and FxControl (and recommended). But in 1.16.3 and later the numerical ID's are gone.
-* The '/incontrol reload' command will no longer be able to reload the potentialspawns file (at least in regard to adding new spawns). Reloading the new 'spawner.json' file works fine though
+* Numerical dimension ID's no longer work (like `0` for the overworld. Use `minecraft:overworld` instead). This is also possible in the 1.15.2 versions of InControl and FxControl (and recommended). But in 1.16.3 and later the numerical IDs are gone.
+* The '/incontrol reload' command will no longer be able to reload the potentialspawns file (at least in regard to adding new spawns). Reloading the new `spawner.json` file works fine though
 * In 1.15.2 or higher there is a new 'continue' boolean flag that you can use in spawn rules. If this is set to true then if the rule succeeds it will not prevent execution of further rules (which it normally does by default)
 * In 1.19 the 'category' check for biomes is gone. Instead, there is the much more flexible 'biometags' test that can check for biome tags
 
@@ -107,10 +107,10 @@ The following comparators are supported: `>`, `>=`, `<`, `<=`, `=`, and `!=`.
 
 ## Item filters
 
-Many conditions are very simple but when testing for items things can be a bit more complicated. That's why there is a specific syntax that can be used when testing on items. In this section we will go over all the possibilities and also present a few examples. In most cases when testing for an item (like test if the player holds a specific item in his/her hand) you can either use a single item filter or else a list of item filters. Let's talk about the case of an individual item filter. The following possibilities are supported:
+Many conditions are very simple but when testing for items things can be a bit more complicated. That's why there is a specific syntax that can be used when testing on items. In this section we will go over all the possibilities and also present a few examples. In most cases when testing for an item (like test if the player holds a specific item in their hand) you can either use a single item filter or else a list of item filters. Let's talk about the case of an individual item filter. The following possibilities are supported:
 
 * `minecraft:sand` (just normal minecraft sand)
-* With NBT (same format as for /give command): `minecraft:stained_hardened_clay/{display:{Lore:[\"My Clay\"]}}`
+* With NBT (same format as for `/give` command): `minecraft:stained_hardened_clay/{display:{Lore:[\"My Clay\"]}}`
 * A Json descriptor which supports the following tags:
   * `item`: an item ID (like `minecraft:sand` or `rftools:powercell`)
   * `empty`: a boolean (true or false) indicating if the item is empty or not. If this is present no other tags will be considered
@@ -128,7 +128,8 @@ Many conditions are very simple but when testing for items things can be a bit m
 
 The following examples are all applied on `playerhelditem` but it is of course possible to use them for any kind of condition that supports items.
 
-The simplest case. A simple stick:
+The simplest case.
+A simple stick:
 
 ```json
 {
@@ -210,7 +211,7 @@ In this final example we test if a pickaxe has a specific enchantment (unbreakin
 
 ## Block Filters
 
-Similarly to item filters there is also the `block` condition that can test on the existance of a specific block.
+Similarly to item filters there is also the `block` condition that can test on the existence of a specific block.
 Like with items it is possible to specify a list or a single block filter.
 Here are the possibilities on an individual block filter:
 
@@ -252,7 +253,7 @@ Or in JSON syntax:
 ```
 
 
-An RFTools powercell containing more then 1000000 energy:
+An RFTools powercell containing more than 1000000 energy:
 
 ```json
 {
@@ -366,7 +367,7 @@ Possible types:
 * `I`: an integer
 * `F`: floating point number
 * `[<type>]`: a list of type (for example, `[S]` is a list of strings)
-* `JSON`: a json in a specific format explained elsewhere
+* `JSON`: a JSON in a specific format explained elsewhere
 
 | Name                                                                  | Type         | Requirements   | potential | spawner | spawn | summon | loot | experience | harvest | leftclick | rightclick | place | effect | Description                                                                                                                                                                                                                                                                                                                                                                                           |
 |-----------------------------------------------------------------------|--------------|----------------|-----------|---------|-------|--------|------|------------|---------|-----------|------------|-------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -400,7 +401,7 @@ Possible types:
 | mob                                                                   | `S/[S]`      |                |           |         | V     | V      | V    | V          |         |           |            |       |        | an ID for a mob like `minecraft:creeper` and so on. Modded mobs should also work                                                                                                                                                                                                                                                                                                                      |
 | mod                                                                   | `S/[S]`      |                |           |         | V     | V      | V    | V          |         | V         | V          |       |        | a mod id. By using this you can block spawns of mobs that belong to some mod. Use `minecraft` for vanilla mobs                                                                                                                                                                                                                                                                                        |
 | block                                                                 | `S/[S]/JSON` |                | V         |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | a block filter as explained above                                                                                                                                                                                                                                                                                                                                                                     |
-| blockoffset                                                           | `JSON`       |                | V         |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | modify the position of the block that is being used by the block test (or the setblock action). This json can contain tags like `x`, `y`, or `z` which will be added (as offset) to the original block position or else the boolean tag look in which case the position will be the position the player is looking at (only in case there is a player involved which isn't the case for `spawn.json`) |
+| blockoffset                                                           | `JSON`       |                | V         |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | modify the position of the block that is being used by the block test (or the setblock action). This JSON can contain tags like `x`, `y`, or `z` which will be added (as offset) to the original block position or else the boolean tag look in which case the position will be the position the player is looking at (only in case there is a player involved which isn't the case for `spawn.json`) |
 | biome                                                                 | `S/[S]`      |                | V         |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | the biome of the current block (like `minecraft:plains` for example)                                                                                                                                                                                                                                                                                                                                  |
 | biometype                                                             | `S/[S]`      |                | V         |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | the biome type (from the biome dictionary). Examples are `WARN`, `COLD`, `ICY`, `DESERT`, and `DESERT_LEGACY`                                                                                                                                                                                                                                                                                         |
 | dimension                                                             | `S/[S]`      |                | V         | V       | V     | V      | V    | V          | V       | V         | V          | V     | V      | the dimension of the current block or player (for example `minecraft:overworld`)                                                                                                                                                                                                                                                                                                                      |
@@ -409,7 +410,7 @@ Possible types:
 | player / fakeplayer / realplayer                                      | `B`          |                |           |         |       |        | V    | V          |         |           |            |       |        | indicating if the mob was killed by a player (fake or real), a fake player (automation that behaves like a player) and a real player                                                                                                                                                                                                                                                                  |
 | projectile / explosion / magic / fire                                 | `B`          |                |           |         |       |        | V    | V          |         |           |            |       |        | indicating if the mob was killed by a projectile, explosion, magic or fire                                                                                                                                                                                                                                                                                                                            |
 | source                                                                | `S/[S]`      |                |           |         |       |        | V    | V          |         |           |            |       |        | the damage source. Some sources are `lightningBolt`, `lava`, `cactus`, `wither`, `anvil`, `hotFloor`, `inWall`, `cramming`, ...                                                                                                                                                                                                                                                                       |
-| playerhelditem / offhanditem / bothhandsitem                          | `S/[S]/JSON` |                |           |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | a representation of the item(s) that the player is holding in his/her main hand (or offhand). Use a correct item filter (or list of item filters)                                                                                                                                                                                                                                                     |
+| playerhelditem / offhanditem / bothhandsitem                          | `S/[S]/JSON` |                |           |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | a representation of the item(s) that the player is holding in their main hand (or offhand). Use a correct item filter (or list of item filters)                                                                                                                                                                                                                                                       |
 | incity / instreet / inbuilding / insphere                             | `B`          | Lost Cities    |           |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | check if the current position is in a city, street, building or city sphere                                                                                                                                                                                                                                                                                                                           |
 | gamestage                                                             | `S`          | Game Stages    |           |         | V     |        | V    | V          | V       | V         | V          | V     | V      | the current game stage. When a player is not really present (like with spawn.json) the closest player is used                                                                                                                                                                                                                                                                                         |
 | winter / summer / spring / autumn                                     | `B`          | Serene Seasons | V         |         | V     | V      | V    | V          | V       | V         | V          | V     | V      | check the current season (NOT IMPLEMENTED IN 1.16)                                                                                                                                                                                                                                                                                                                                                    |
@@ -441,7 +442,7 @@ For `spawn.json` the following actions are supported:
 * `armorlegs`: is either a single string or a list of strings representing random armor that the spawned mob will wear
 * `armorchest`: is either a single string or a list of strings representing random armor that the spawned mob will wear
 
-In addition, 'gamestage', 'playerhelditem', and related tags (which are tied to a player) are also supported.
+In addition, `gamestage`, `playerhelditem`, and related tags (which are tied to a player) are also supported.
 In that case the nearest player will be used as the basis for deciding the rule.
 
 ### Additional Spawns
@@ -450,7 +451,7 @@ The same conditions as with `spawn.json` are supported.
 However, with `mincount` and `maxcount` you have to use the format `<amount>,<mob>`.
 Instead of actions this rule file supports mob entries that have the following structure:
 
-* `mob`: an entity name in the form Creeper, Skeleton, ... for (1.10.2) and optionally the notation modid:name for 1.11.2
+* `mob`: an entity name in the form Creeper, Skeleton, ... for (1.10.2) and optionally the notation `modid:name` for 1.11.2
 * `weight`: an integer indicating the weight of this spawn. i.e. how important it is compared to other spawns
 * `groupcountmin`: the minimum amount of mobs to spawn at once
 * `groupcountmax`: the minimum amount of mobs to spawn at once
@@ -460,7 +461,8 @@ This is either a string or a list of strings representing mobs that have to be r
 
 ### Loot Control
 
-In contrast with most other rule files every rule is evaluated every time. i.e. a succesful loot rule doesn't prevent the other loot rules from firing. Loot supports the following actions:
+In contrast with most other rule files every rule is evaluated every time. i.e. a successful loot rule doesn't prevent the other loot rules from firing.
+Loot supports the following actions:
 
 * `item`: this is a string or a list of strings representing new loot that will be dropped
 * `itemcount`: this is a string representing how many items should drop (optionally depending on looting level). For example: "5/7-10/20-30" will drop 5 items at looting 0, 7-10 items at looting 1 and 20-30 items at looting 2 or beyond
@@ -479,21 +481,23 @@ This is similar to loot control except that it controls how much experience you 
 
 ### Effects
 
-With effects, you can specify an additional `timeout` keyword in the rule. This represents the number of ticks that will be waited before testing the rule again. Keep in mind that some of these rules can be expensive so using a higher timeout will make the rule fire less frequently.
+With effects, you can specify an additional `timeout` keyword in the rule.
+This represents the number of ticks that will be waited before testing the rule again.
+Keep in mind that some of these rules can be expensive so using a higher timeout will make the rule fire less frequently.
 
 Then there are a number of actions:
 
-* `explosion`: this is a string as follows: `<strength>,<flaming>,<smoking>`. For example '10,true,true' and it will cause an explosion with the given strength
-* `setblock`: this is a json with a block description to place: { 'block': 'minecraft:chest', 'properties': { 'name': 'facing', 'value': 'west' } }
-* `give`: this is either a single string or a list of strings. Every string represents a possible item that the player will get. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
-* `drop`: this is either a single string or a list of strings. Every string represents a possible item that will be dropped. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
-* `potion`: this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example "minecraft:invisibility,10,1"
+* `explosion`: this is a string as follows: `<strength>,<flaming>,<smoking>`. For example `10,true,true` and it will cause an explosion with the given strength
+* `setblock`: this is a JSON with a block description to place: `{ 'block': 'minecraft:chest', 'properties': { 'name': 'facing', 'value': 'west' } }`
+* `give`: this is either a single string or a list of strings. Every string represents a possible item that the player will get. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: `1=minecraft:diamond_sword`, `2=minecraft:iron_sword`
+* `drop`: this is either a single string or a list of strings. Every string represents a possible item that will be dropped. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: `1=minecraft:diamond_sword`, `2=minecraft:iron_sword`
+* `potion`: this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example `minecraft:invisibility,10,1`
 * `fire`: this is an integer representing the number of seconds that the player should be put on fire
 * `clear`: clear all potion effects
 * `message`: give a message to the player
-* `damage`: this is a string with a damage source name followed by an amount of damage. For example "fall=1.0" which would give 1.0 fall damage. All vanilla damage sources are supported (like 'inFire', 'lightningBolt', 'lava', 'cramming', outOfWorld', 'magic', ...)
-* `setstate`: if EnigmaScript is present this can be used to set a state with a string like this "state=value"
-* `setpstate`: if EnigmaScript is present this can be used to set a player state with a string like this "state=value"
+* `damage`: this is a string with a damage source name followed by an amount of damage. For example `fall=1.0` which would give `1.0` fall damage. All vanilla damage sources are supported (like 'inFire', 'lightningBolt', 'lava', 'cramming', outOfWorld', 'magic', ...)
+* `setstate`: if EnigmaScript is present this can be used to set a state with a string like this `state=value`
+* `setpstate`: if EnigmaScript is present this can be used to set a player state with a string like this `state=value`
 
 ### Break and Place
 
@@ -975,7 +979,7 @@ Every spawner rule has two parts:
 * A part describing what will be spawned and how often the rule will fire
 * A part describing conditions for spawning
 
-The following json keys are possible in the root of every rule:
+The following JSON keys are possible in the root of every rule:
 
 * `phase`: a string or list of strings representing all phases that must be active for this rule to work
 * `mob`: a single mob or list of mobs (like 'minecraft:zombie'). The entire rule will be evalulated for every mob specified in this list. This is a required setting
@@ -983,10 +987,10 @@ The following json keys are possible in the root of every rule:
 * `mobsfrombiome`: this is a string that can be equal to 'monster', 'creature', 'ambient', 'water_creature', 'water_ambient', or 'misc'. Use this instead of specifying 'mob' manually. This will let the spawn take a random mob (given weight) that is valid for the current biome
 * `attempts`: the number of times In Control will attempt to find a good position to spawn the mob. By default, this is 1
 * `persecond`: a floating point number indicating the chance of this rule firing. If this is 0.5 then there is 50% chance that this rule will spawn a mob (meaning that on average it will fire every 2 seconds). The default of this value is 1 (which means the rules fire onces per second). The maximum is also 1
-* `amount`: a json object containing a 'minimum', 'maximum' and an optional 'groupdistance'. This is the number of mobs that the spawnwer will attempt to spawn at once. The default is 1 for both. If 'groupdistance' is set then these mobs will spawn in groups (near each other). Note that 'groupdistance' is only for 1.18 and higher
-* `conditions`: a json object containing a set of conditions (see below)
+* `amount`: a JSON object containing a 'minimum', 'maximum' and an optional 'groupdistance'. This is the number of mobs that the spawnwer will attempt to spawn at once. The default is 1 for both. If 'groupdistance' is set then these mobs will spawn in groups (near each other). Note that 'groupdistance' is only for 1.18 and higher
+* `conditions`: a JSON object containing a set of conditions (see below)
 
-The following json keys are possible in the conditions block (and ONLY those, for other conditions combine with regular spawn rules):
+The following JSON keys are possible in the conditions block (and ONLY those, for other conditions combine with regular spawn rules):
 
 * `dimension`: a single dimension or list of dimensions (like 'minecraft:overworld'). This is required. If you don't specify any dimensions then nothing will happen
 * `mindaycount` and `maxdaycount`: the minimum/maximum daycount to allow this rule to work

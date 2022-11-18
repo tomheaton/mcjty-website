@@ -4,7 +4,7 @@ EFab is a steampunk styled crafting system meant for pack makers who want to gat
 
 ## Introduction
 
-Using EFab you can define recipes (with a json system) that use various mechanics like the 3x3 crafting grid, liquids, steam, mana, RF and so on.
+Using EFab you can define recipes (with a JSON system) that use various mechanics like the 3x3 crafting grid, liquids, steam, mana, RF and so on.
 In a way it extends the usual 3x3 crafting system with additional requirements. The recipes show up in JEI.
 
 ## Commands

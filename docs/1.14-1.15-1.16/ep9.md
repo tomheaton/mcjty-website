@@ -297,7 +297,7 @@ public class FancyBakedModel implements IDynamicBakedModel {
 ```
 ===Stitching and baking===
 
-To make sure that Minecraft knows about both the texture as well as the model we need to add some code to ClientRegistration. Minecraft stores all block textures on a big 'atlas'. This is a large texture that is filled with all the smaller (usually) 16x16 textures. This helps greatly with rendering speed as texture switching on 3D hardware is rather expensive. To put our texture on this atlas we need to subscribe to the TextureStitchEvent.Pre event because we don't have it as a texture in a json (these are stitched automatically).
+To make sure that Minecraft knows about both the texture as well as the model we need to add some code to ClientRegistration. Minecraft stores all block textures on a big 'atlas'. This is a large texture that is filled with all the smaller (usually) 16x16 textures. This helps greatly with rendering speed as texture switching on 3D hardware is rather expensive. To put our texture on this atlas we need to subscribe to the TextureStitchEvent.Pre event because we don't have it as a texture in a JSON (these are stitched automatically).
 
 Similarly we also need to subscribe tot the ModelBakeEvent event to make sure our model is known. We register two variations. One for the in-world model ("") and one for the inventory ("inventory").
 ```

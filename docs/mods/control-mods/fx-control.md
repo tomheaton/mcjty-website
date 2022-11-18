@@ -21,7 +21,7 @@ Note, everywhere in the rules below that you can specify items you can use the f
 * ''minecraft:stained_hardened_clay@13'' (adds metadata 13)
 * With NBT (same format as for /give command): ''`minecraft:stained_hardened_clay@13/{display:{Lore:[\"My Clay\"]}}`''
 
-When checking for items you can also use a json like this:
+When checking for items you can also use a JSON like this:
 
 ```json
 [
@@ -69,9 +69,9 @@ In this section the rules in effects.json are explained. Every rule is basically
 * '''chestplate''': a string or a list of strings representing the item that the player is wearing. The rule will match if the player has any of these items
 * '''leggings''': a string or a list of strings representing the item that the player is wearing. The rule will match if the player has any of these items
 * '''boots''': a string or a list of strings representing the item that the player is wearing. The rule will match if the player has any of these items
-* '''helditem''': a string or a list of strings representing the item that the player is holding in his/her main hand. The rule will match if the player has any of these items
-* '''offhanditem''': a string or a list of strings representing the item that the player is holding in his/her off hand. The rule will match if the player has any of these items
-* '''bothhandsitem''': a string or a list of strings representing the item that the player is holding in his/her main or off hand. The rule will match if the player has any of these items
+* '''helditem''': a string or a list of strings representing the item that the player is holding in their main hand. The rule will match if the player has any of these items
+* '''offhanditem''': a string or a list of strings representing the item that the player is holding in their off hand. The rule will match if the player has any of these items
+* '''bothhandsitem''': a string or a list of strings representing the item that the player is holding in their main or off hand. The rule will match if the player has any of these items
 * '''gamestage''': a string indicating the current game stage. This only works if the 'gamestages' mod is present
 * '''winter''': true if Serene Seasons is installed and it is winter
 * '''summer''': true if Serene Seasons is installed and it is summer
@@ -90,7 +90,7 @@ In this section the rules in effects.json are explained. Every rule is basically
 Then there are a number of actions:
 
 * '''explosion''': this is a string as follows: `<strength>,<flaming>,<smoking>`. For example '10,true,true' and it will cause an explosion with the given strength
-* '''setblock''': this is a json with a block description to place: { 'block': 'minecraft:chest', 'properties': { 'name': 'facing', 'value': 'west' } }
+* '''setblock''': this is a JSON with a block description to place: { 'block': 'minecraft:chest', 'properties': { 'name': 'facing', 'value': 'west' } }
 * '''give''': this is either a single string or a list of strings. Every string represents a possible item that the player will get. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
 * '''drop''': this is either a single string or a list of strings. Every string represents a possible item that will be dropped. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
 * '''potion''': this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example "minecraft:invisibility,10,1"

@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Render Block Basic
 
-Rendering a basic block is very similar to a basic item except that you need two json files now.
+Rendering a basic block is very similar to a basic item except that you need two JSON files now.
 One for the blockstates:
 
 ```java title="SimpleTexturedBlock.java"
@@ -23,7 +23,7 @@ public class SimpleTexturedBlock extends Block {
 }
 ```
 
-Now the blockstate json (`resources/assets/firstmod/blockstates/simpletexturedblock.json`):
+Now the blockstate JSON (`resources/assets/firstmod/blockstates/simpletexturedblock.json`):
 (Please note that `simpletexturedblock.json` is the exact same name as the name set in your unlocalizedName and RegistryName above!)
 
 ```json title="resources/assets/firstmod/blockstates/simpletexturedblock.json"

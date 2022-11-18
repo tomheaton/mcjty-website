@@ -66,7 +66,7 @@ public class MultiModelItem extends Item {
 }
 ```
 
-In addition to the `myitem.json` that we already added you also have to add a new json for the two models (`multimodelitem_red.json` and `multimodelitem_blue.json`):
+In addition to the `myitem.json` that we already added you also have to add a new JSON for the two models (`multimodelitem_red.json` and `multimodelitem_blue.json`):
 
 ```json title="multimodelitem_red.json"
 {

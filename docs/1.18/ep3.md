@@ -555,10 +555,10 @@ That's the most efficient way to render blocks as usually blocks don't need to c
 If you have something that looks different every tick then you probably want to use a block entity renderer.
 We will cover that later.
 
-You can do a lot of things with regular json models since can be driven by properties and allow for flexible modifications to the static model depending on those properties.
+You can do a lot of things with regular JSON models since can be driven by properties and allow for flexible modifications to the static model depending on those properties.
 We saw an example of that in the powergenerator model which used the POWERED blockstate property to change the model.
 However, sometimes you want a static model with even more flexibility.
-Perhaps the number of possible configurations are too large for expressing with properties and json models, or perhaps you need to bake the geometry from another block into your geometry.
+Perhaps the number of possible configurations are too large for expressing with properties and JSON models, or perhaps you need to bake the geometry from another block into your geometry.
 In that case you need to make a **baked model**.
 
 Baked models are still static.
@@ -845,10 +845,10 @@ public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction 
 ### The Model Loader
 
 To be able to use our baked model we need to define a model loader.
-The model loader enables support for json files that we can use for models that want to use this baked model.
+The model loader enables support for JSON files that we can use for models that want to use this baked model.
 
 Some notes:
-* The model loader has a unique identifier (represented by a ResourceLocation) so that you can refer to that from the model json file.
+* The model loader has a unique identifier (represented by a ResourceLocation) so that you can refer to that from the model JSON file.
 * The model system uses materials. A material is basically a combined key representing a texture on a given atlas. Using `ForgeHooksClient.getBlockMaterial()` you can create such a material for the default block atlas.
 * It's important to return all materials that you want to use in your baked model in the geometry. That way Minecraft knows that it has to bake those onto the main block atlas.
 * In the 'bake' method you can give all the data that you need to the baked model as it is responsible for actually creating a new baked model.
@@ -937,7 +937,7 @@ public class TutBlockStates extends BlockStateProvider {
     }
 
     private void registerGenerator() {
-        // Using CustomLoaderBuilder we can define a json file for our model that will use our baked model
+        // Using CustomLoaderBuilder we can define a JSON file for our model that will use our baked model
         BlockModelBuilder generatorModel = models().getBuilder(Registration.GENERATOR.getId().getPath())
                 .parent(models().getExistingFile(mcLoc("cube")))
                 .customLoader((blockModelBuilder, helper) -> new CustomLoaderBuilder<BlockModelBuilder>(GENERATOR_LOADER, blockModelBuilder, helper) { })

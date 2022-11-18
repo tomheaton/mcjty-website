@@ -77,7 +77,7 @@ Every block of this mod that has an identifier (which you can set in the GUI) ca
 It is good practice (but not required) to use scopes in the identifier.
 For example, say you have different parts in your map then you could name your blocks with identifiers like: 'part1.reward1', 'part1.screenX', 'part2.collector' and so on.
 By doing this it is easy to use wildcards in all the Quest Utils commands.
-This allows you to (for example) save the state from all blocks for part1 in a single json and all blocks for part2 in another json.
+This allows you to (for example) save the state from all blocks for part1 in a single JSON and all blocks for part2 in another json.
 
 Here are some examples:
 
@@ -102,7 +102,7 @@ Example:
 
 * `/qu save file.json * 0,65,0@100`
 
-Even if you saved everything in one single json you can still load part of it because the load command also supports the wildcard notation.
+Even if you saved everything in one single JSON you can still load part of it because the load command also supports the wildcard notation.
 It will only load state for all blocks for which the identifier matches the input.
 
 :::info Note

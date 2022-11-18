@@ -33,13 +33,13 @@ In 1.14 blocks have no drops by default. You have to add a loot table entry to m
 }
 </syntaxhighlight>
 ```
-A few notes. In contrast with vanilla, modded loot table pools require a name. That's why there is 'pool1' there. This json also doesn't go to the assets folder like the blockstates and models. Instead it goes to the data folder. In this case in data/mytutorial/loot_tables/blocks
+A few notes. In contrast with vanilla, modded loot table pools require a name. That's why there is 'pool1' there. This JSON also doesn't go to the assets folder like the blockstates and models. Instead it goes to the data folder. In this case in data/mytutorial/loot_tables/blocks
 
 Loot tables are very powerful. You can customize this in many ways and in the future we will explain some more features related to this.
 
 === Recipe ===
 
-We also want to make our block craftable. Again this requires a new json in the data folder:
+We also want to make our block craftable. Again this requires a new JSON in the data folder:
 ```
 <syntaxhighlight lang="json">
 {

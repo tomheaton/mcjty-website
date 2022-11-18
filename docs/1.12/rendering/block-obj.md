@@ -60,7 +60,7 @@ public class ModelBlock extends Block {
 ```
 
 Then you also need a blockstate as usual (`blockstates/modelblock.json`).
-Here instead of using another json as a model we directly refer to the obj that is exported from Blender.
+Here instead of using another JSON as a model we directly refer to the obj that is exported from Blender.
 Because Blender and Forge apparently don't agree on vertical texture coordinate (the `v` axis) you need to add the `flip-v` attribute:
 
 ```json title="blockstates/modelblock.json"

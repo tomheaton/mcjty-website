@@ -36,8 +36,8 @@ Before 1.8 you had to use metadata for blocks directly (4 bits). Starting with 1
 
 ###  TileEntitySpecialRenderer (TESR)
 
-A TESR is a class that can be used to render tile entity information in the world. In order to use one of these your block must have an associated tile entity. Note that TESR's are rendered every frame so be careful not to overuse them. TESR's are mostly useful if you have a block that changes appearance very often so it doesn't make sense to include it in the static geometry of a chunk.
+A TESR is a class that can be used to render tile entity information in the world. In order to use one of these block must have an associated tile entity. Note that TESR's are rendered every frame so be careful not to overuse them. TESR's are mostly useful if you have a block that changes appearance very often so it doesn't make sense to include it in the static geometry of a chunk.
 
 ###  IBakedModel
 
-A baked model is a class that can be used to render a block statically. It should be used if you cannot find a way to express your static block geometry using the regular json system. You don't need a tile entity to have a custom baked model. They are mostly useful when you have relatively complex geometry that doesn't change often but still needs to render differently depending on (external) conditions. A good exmaple is a conduit system where you need to render every conduit based on the presence of adjacent conduit blocks.
+A baked model is a class that can be used to render a block statically. It should be used if you cannot find a way to express your static block geometry using the regular JSON system. You don't need a tile entity to have a custom baked model. They are mostly useful when you have relatively complex geometry that doesn't change often but still needs to render differently depending on (external) conditions. A good exmaple is a conduit system where you need to render every conduit based on the presence of adjacent conduit blocks.

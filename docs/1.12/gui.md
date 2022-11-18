@@ -149,7 +149,7 @@ public class TestContainerTileEntity extends TileEntity {
 }
 ```
 
-Here is the blockstate json (`blockstates/testcontainerblock.json`).
+Here is the blockstate JSON (`blockstates/testcontainerblock.json`).
 Note that in this example we don't have our own block model but instead use the vanilla cube_all model:
 
 ```json title="blockstates/testcontainerblock.json"

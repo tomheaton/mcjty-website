@@ -84,7 +84,7 @@ The following comparators are supported: `''>'', ''>='', ''<'', ''<='', ''='', a
 
 ## Item filters
 
-Many conditions are very simple but when testing for items things can be a bit more complicated. That's why there is a specific syntax that can be used when testing on items. In this section we will go over all the possibilities and also present a few examples. In most cases when testing for an item (like test if the player holds a specific item in his/her hand) you can either use a single item filter or else a list of item filters. Let's talk about the case of an individual item filter. The following possibilities are supported:
+Many conditions are very simple but when testing for items things can be a bit more complicated. That's why there is a specific syntax that can be used when testing on items. In this section we will go over all the possibilities and also present a few examples. In most cases when testing for an item (like test if the player holds a specific item in their hand) you can either use a single item filter or else a list of item filters. Let's talk about the case of an individual item filter. The following possibilities are supported:
 
 * ''minecraft:sand'' (just normal minecraft sand)
 * ''minecraft:stained_hardened_clay@13'' (adds metadata 13)
@@ -261,7 +261,7 @@ A powered button:
 
 ## Mob Counter
 
-The 'maxcount' and 'mincount' tags to control mob spawning can be either a simple number or string containing a number and a mob but it can also be a more complex json with various conditions. The following tags are supported:
+The 'maxcount' and 'mincount' tags to control mob spawning can be either a simple number or string containing a number and a mob but it can also be a more complex JSON with various conditions. The following tags are supported:
 
 * ''amount'': the amount to compare with (can be scaled!)
 * ''perplayer'': if this is true the amount will be scaled with the amount of players present
@@ -343,7 +343,7 @@ In this section all possible conditions are explained. Some conditions are not u
 * '''mob''' (only for In Control rule files): this is either a single string or a list of strings. Every string is an ID for a mob. On 1.10.2 this has to be a name like 'Creeper', 'Skeleton', ... On 1.11.2 you can also use names like 'minecraft:creeper' and so on
 * '''mod''' (only for In Control rule files): this is either a single string or a list of strings. Every string represents a mod id. By using this you can block spawns of certain mods
 * '''block''': this is a block filter as explained above
-* '''blockoffset''': a json that can modify the position of the block that is being used by the ''block'' test (or the ''setblock'' action). This json can contain tags like ''x'', ''y'', or ''z'' which will be added (as offset) to the original block position or else the boolean tag ''look'' in which case the position will be the position the player is looking at (only in case there is a player involved which isn't the case for ''spawn.json'')
+* '''blockoffset''': a JSON that can modify the position of the block that is being used by the ''block'' test (or the ''setblock'' action). This JSON can contain tags like ''x'', ''y'', or ''z'' which will be added (as offset) to the original block position or else the boolean tag ''look'' in which case the position will be the position the player is looking at (only in case there is a player involved which isn't the case for ''spawn.json'')
 * '''biome''': this is either a single string or a list of strings. This represents the biome of the current block
 * '''biometype''': this is either a single string or a list of strings. This represents the biome type (from the biome dictionary). Examples are WARN, COLD, ...
 * '''dimension''': this is either a single integer or a list of integers. This represents the dimension of the current block or player
@@ -357,9 +357,9 @@ In this section all possible conditions are explained. Some conditions are not u
 * '''magic''' (only for ''loot.json'' and ''experience.json''): boolean value indicating if the mob was killed by magic
 * '''fire''' (only for ''loot.json'' and ''experience.json''): boolean value indicating if the mob was killed by fire
 * '''source''' (only for ''loot.json'' and ''experience.json''): a string or a list of strings representing the damage source. Some sources are 'lightningBolt', 'lava', 'cactus', 'wither', 'anvil', ...
-* '''playerhelditem''': a string or a list of strings representing the item that the player is holding in his/her main hand. Use a correct item filter (or list of item filters) (this used to be 'helditem' which is still supported but no longer recommended)
-* '''offhanditem''': a string or a list of strings representing the item that the player is holding in his/her off hand. Use a correct item filter (or list of item filters)
-* '''bothhandsitem''': a string or a list of strings representing the item that the player is holding in his/her main or off hand. Use a correct item filter (or list of item filters)
+* '''playerhelditem''': a string or a list of strings representing the item that the player is holding in their main hand. Use a correct item filter (or list of item filters) (this used to be 'helditem' which is still supported but no longer recommended)
+* '''offhanditem''': a string or a list of strings representing the item that the player is holding in their off hand. Use a correct item filter (or list of item filters)
+* '''bothhandsitem''': a string or a list of strings representing the item that the player is holding in their main or off hand. Use a correct item filter (or list of item filters)
 
 Conditions that are present with Lost Cities:
 
@@ -459,7 +459,7 @@ With effects you can specify an additional ''timeout'' keyword in the rule. This
 Then there are a number of actions:
 
 * '''explosion''': this is a string as follows: `<strength>,<flaming>,<smoking>`. For example '10,true,true' and it will cause an explosion with the given strength
-* '''setblock''': this is a json with a block description to place: { 'block': 'minecraft:chest', 'properties': { 'name': 'facing', 'value': 'west' } }
+* '''setblock''': this is a JSON with a block description to place: { 'block': 'minecraft:chest', 'properties': { 'name': 'facing', 'value': 'west' } }
 * '''give''': this is either a single string or a list of strings. Every string represents a possible item that the player will get. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
 * '''drop''': this is either a single string or a list of strings. Every string represents a possible item that will be dropped. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
 * '''potion''': this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example "minecraft:invisibility,10,1"

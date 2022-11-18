@@ -182,13 +182,13 @@ In addition, make a new folder called `resources/data/<modid>/worldgen/template_
 ```
 
 Do the same for the `thiefden` structure.
-This json represents the start of our jigsaw structure.
+This JSON represents the start of our jigsaw structure.
 Since we only have one part that's also all we need.
 
 #### Main Structures class
 
 Here we define the main Structures class which will properly setup and register our structures.
-Because Minecraft itself doesn't fully have proper json support for structures and Forge doesn't have the proper hooks yet, we still need to do a lot of things manually.
+Because Minecraft itself doesn't fully have proper JSON support for structures and Forge doesn't have the proper hooks yet, we still need to do a lot of things manually.
 In this tutorial we present a way to do this relatively safe.
 
 Some notes:
@@ -547,7 +547,7 @@ public class ThiefDenStructure extends StructureFeature<JigsawConfiguration> {
                 5       // In our case our structure is 1 chunk only but by using 5 here it can be replaced with something larger in datapacks
         );
 
-        // Create a new context with the new config that has our json pool. We will pass this into JigsawPlacement.addPieces
+        // Create a new context with the new config that has our JSON pool. We will pass this into JigsawPlacement.addPieces
         var newContext = Structures.createContextWithConfig(context, newConfig);
         // Last 'true' parameter means the structure will automatically be placed at ground level
         var generator = JigsawPlacement.addPieces(newContext,
@@ -603,7 +603,7 @@ public class PortalStructure extends StructureFeature<JigsawConfiguration> {
                 5       // In our case our structure is 1 chunk only but by using 5 here it can be replaced with something larger in datapacks
         );
 
-        // Create a new context with the new config that has our json pool. We will pass this into JigsawPlacement.addPieces
+        // Create a new context with the new config that has our JSON pool. We will pass this into JigsawPlacement.addPieces
         var newContext = Structures.createContextWithConfig(context, newConfig);
         var generator = JigsawPlacement.addPieces(newContext,
                         PoolElementStructurePiece::new, blockpos, false, !overworld);
@@ -718,7 +718,7 @@ And here is the dimension.
 Some notes:
 
 * We refer to our custom chunkgenerator that we will define in a moment
-* The 'settings' json block is something that we have defined for ourselves
+* The 'settings' JSON block is something that we have defined for ourselves
 * Look at the minecraft wiki (see link at the top of this tutorial) to see what other configuration options are available for dimensions
 
 ```json
@@ -739,7 +739,7 @@ Some notes:
 
 In most cases, when making your own custom dimension you actually want to use the standard vanilla NoiseBasedChunkGenerator. It is very configurable and for most situations you will be able to completely change it for your custom dimension needs. However sometimes it is good to be able to do something special and that's what we will show in this tutorial. Note that if you would use NoiseBasedChunkGenerator then you actually would have been able to define this dimension without any code.
 
-Worldgen very often uses codecs. A codec is a definition that knows how to serialize data to and from either NBT or JSON. The big advantage of codecs is that you can express how your custom worldgen data needs to be persisted without having to worry about the actual medium that will be used for persistance. Using a codec, Minecraft will be able to read your custom object from json and then save it to the world in NBT format later. Codecs seem a bit confusing at first but they are actually not very hard to use. In our custom chunk generator we have two codecs: one is to be able to save our custom Settings object (SETTINGS_CODEC) and the other for the total chunk generator configuration.
+Worldgen very often uses codecs. A codec is a definition that knows how to serialize data to and from either NBT or JSON. The big advantage of codecs is that you can express how your custom worldgen data needs to be persisted without having to worry about the actual medium that will be used for persistance. Using a codec, Minecraft will be able to read your custom object from JSON and then save it to the world in NBT format later. Codecs seem a bit confusing at first but they are actually not very hard to use. In our custom chunk generator we have two codecs: one is to be able to save our custom Settings object (SETTINGS_CODEC) and the other for the total chunk generator configuration.
 
 If you look at (for example) SETTINGS_CODEC you can see that it is based on a RecordCodecBuilder which has three fields: 'base', 'verticalvariance', and 'horizontalvariance'. Because the fields are defined in this order the 'apply()' method also expects a consumer that takes these three parameters. Every field itself also has an associated getter ('forGetter()'). With this consumer and the getters the codec is able to create and inspect our custom Settings object.
 

@@ -10,8 +10,8 @@ The information here is not yet included in the ModTut GitHub and needs to be wo
 
 More information on recipes can be found at the official forge documentation: https://mcforge.readthedocs.io/en/latest/utilities/recipes/
 
-Recipes are now handled through json. Here is how you can define a simple recipe (no code changes are required).
-Simply place this json (name doesn't matter) in assets/modname/recipes, and it will work:
+Recipes are now handled through JSON. Here is how you can define a simple recipe (no code changes are required).
+Simply place this JSON (name doesn't matter) in `assets/modname/recipes`, and it will work:
 
 ```json
 {
@@ -110,7 +110,7 @@ public interface INBTPreservingIngredient {
 
 Just implement that interface in your Block or Item and this will work.
 
-To actually use this in your recipes you have to use a json similar to this one:
+To actually use this in your recipes you have to use a JSON similar to this one:
 
 ```json
 {

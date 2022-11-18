@@ -62,7 +62,7 @@ public class MultiTexturedBlock extends Block {
 }
 ```
 
-Here is the blockstate json (`blockstates/multitexturedblock.json`):
+Here is the blockstate JSON (`blockstates/multitexturedblock.json`):
 
 ```json title="blockstates/multitexturedblock.json"
 {

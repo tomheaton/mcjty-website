@@ -23,7 +23,7 @@ Note, everywhere in the rules below that you can specify items you can use the f
 * ''minecraft:stained_hardened_clay@13'' (adds metadata 13)
 * With NBT (same format as for /give command): ''`minecraft:stained_hardened_clay@13/{display:{Lore:[\"My Clay\"]}}`''
 
-When checking for items you can also use a json like this:
+When checking for items you can also use a JSON like this:
 
 ```json
 [
@@ -136,9 +136,9 @@ Here we explain how you can control the loot given by mobs when they are killed.
 * '''magic''': boolean value indicating if the mob was killed by magic
 * '''fire''': boolean value indicating if the mob was killed by fire
 * '''source''': a string or a list of strings representing the damage source. Some sources are 'lightningBolt', 'lava', 'cactus', 'wither', 'anvil', ...
-* '''helditem''': a string or a list of strings representing the item that the player is holding in his/her main hand. The rule will match if the player has any of these items
-* '''offhanditem''': a string or a list of strings representing the item that the player is holding in his/her off hand. The rule will match if the player has any of these items
-* '''bothhandsitem''': a string or a list of strings representing the item that the player is holding in his/her main or off hand. The rule will match if the player has any of these items
+* '''helditem''': a string or a list of strings representing the item that the player is holding in their main hand. The rule will match if the player has any of these items
+* '''offhanditem''': a string or a list of strings representing the item that the player is holding in their off hand. The rule will match if the player has any of these items
+* '''bothhandsitem''': a string or a list of strings representing the item that the player is holding in their main or off hand. The rule will match if the player has any of these items
 * '''gamestage''': a string indicating the current game stage. This only works if the 'gamestages' mod is present
 
 In addition, there are the following possible outputs:

@@ -64,7 +64,7 @@ public class StateTexturedBlock extends Block {
 }
 ```
 
-And here is the blockstate json (`blockstates/statetexturedblock.json`).
+And here is the blockstate JSON (`blockstates/statetexturedblock.json`).
 Here you see how we change the front texture when the `enabled` property is true.
 This work because in our model file (see later) we added a `#front` parameter for one of the textures:
 

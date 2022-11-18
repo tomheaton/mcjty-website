@@ -49,9 +49,9 @@ All these functions return a string and can be used inside other strings to cont
 
 * `isblock(position,block)`: Return true if the block at the given position is equal to the specific named blockstate (see the 'blockstate' command).
 * `blockname(position)`: Return the name of the block at the given position if it is a defined blockname. If not then this returns the empty string.
-* `hasitem(item)`: Return true if the current player has the given named item in his/her inventory (see the 'itemstack' command).
-* `hasitemmain(item)`: Return true if the current player has the given named item in his/her main hand (see the 'itemstack' command).
-* `hasitemoff(item)`: Return true if the current player has the given named item in his/her off hand (see the 'itemstack' command).
+* `hasitem(item)`: Return true if the current player has the given named item in their inventory (see the 'itemstack' command).
+* `hasitemmain(item)`: Return true if the current player has the given named item in their main hand (see the 'itemstack' command).
+* `hasitemoff(item)`: Return true if the current player has the given named item in their off hand (see the 'itemstack' command).
 * `itemstack(name[,amount[,meta]])`: Return an itemstack with the given item or block. This item or block should follow the standard `<modid>:<name>` convention (for example, 'minecraft:diamond'). You can use this function everywhere that you can otherwise use a named stack.
 * `itemstack(namedstack)`: Directly get the itemstack from a named itemstack.
 

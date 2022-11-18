@@ -27,7 +27,7 @@ The following events are supported (used for the 'on' command):
 * `leftclickblock <blockname>`: Fired when the player leftclicks the given named block. The local var `$event_pos` will be set to the position of the clicked block.
 * `rightclickposition <position>`: Fired when the player rightclicks the given position. This position can be given directly using the `pos()` function or else using a named position (see the 'position' command).
 * `leftclickposition <position>`: Fired when the player leftclicks the given position. This position can be given directly using the `pos()` function or else using a named position (see the 'position' command).
-* `rightclickitem <item>`: Fired when the player rightclicks with an item in his/her hand. The item is given using a named item (see the 'itemstack' command).
+* `rightclickitem <item>`: Fired when the player rightclicks with an item in their hand. The item is given using a named item (see the 'itemstack' command).
 * `delay <ticks>`: Fired after `<ticks>` ticks after a scope activates. Note that when the scope deactivates before that time has passed then this will not be fired.
 * `repeat <ticks>`: Like delay but fires every `<ticks>` ticks after a scope activates for as long as the scope remains active.
 
