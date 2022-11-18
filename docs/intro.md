@@ -16,6 +16,8 @@ This wiki was started by McJty ([Twitter](https://twitter.com/McJty))
 
 ## Tutorials
 
+### Modding Tutorials
+
 | Version              | Link                                                              |
 |----------------------|-------------------------------------------------------------------|
 | 1.12                 | [YouTube 1.12 tutorial step-by-step](1.12/1.12.md)                |

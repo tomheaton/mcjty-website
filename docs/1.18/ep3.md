@@ -12,31 +12,36 @@ sidebar_position: 3
 
 ## Introduction
 
-This tutorial explains two new concepts related to rendering of blocks: BakedModels and Block Entity Renderers. We do this by implementing a new advanced block that can generate ores out of ingots.
+This tutorial explains two new concepts related to rendering of blocks: BakedModels and Block Entity Renderers.
+We do this by implementing a new advanced block that can generate ores out of ingots.
 
-===The Generator===
+### The Generator
 
-The generator is the block in the middle. It is a block without a gui and all interaction happens in the world itself. It has two buttons that you can press, an area where you can insert an ore and also a status area:
+The generator is the block in the middle.
+It is a block without a gui and all interaction happens in the world itself.
+It has two buttons that you can press, an area where you can insert an ore and also a status area:
 
-https://i.imgur.com/rNHnnjH.png
+![image](https://i.imgur.com/rNHnnjH.png)
 
-Add the following things to Registration. This time there is no container since the generator does not have a gui:
+Add the following things to Registration.
+This time there is no container since the generator does not have a gui:
+
+```java
+public static final RegistryObject<GeneratorBlock> GENERATOR = BLOCKS.register("generator", GeneratorBlock::new);
+public static final RegistryObject<Item> GENERATOR_ITEM = fromBlock(GENERATOR);
+public static final RegistryObject<BlockEntityType<GeneratorBE>> GENERATOR_BE = BLOCK_ENTITIES.register("generator", () -> BlockEntityType.Builder.of(GeneratorBE::new, GENERATOR.get()).build(null));
 ```
- <syntaxhighlight lang="java">
-    public static final RegistryObject<GeneratorBlock> GENERATOR = BLOCKS.register("generator", GeneratorBlock::new);
-    public static final RegistryObject<Item> GENERATOR_ITEM = fromBlock(GENERATOR);
-    public static final RegistryObject<BlockEntityType<GeneratorBE>> GENERATOR_BE = BLOCK_ENTITIES.register("generator", () -> BlockEntityType.Builder.of(GeneratorBE::new, GENERATOR.get()).build(null));
-</syntaxhighlight>
-```
-===The Generator Block===
 
-This is the actual code of the generator block. It is similar to the code for the power generator block but there are a few differences.
+### The Generator Block
+
+This is the actual code of the generator block.
+It is similar to the code for the power generator block but there are a few differences.
 
 * Instead of using the POWERED property, this block uses the FACING property. The FACING property has six values (NORTH, SOUTH, WEST, EAST, UP, and DOWN) and represents the direction our block is facing.
 * Because our block doesn't take the space of a full block we override getShape() to return a slightly smaller shape depending on the FACING property. You can see this shape in game by looking at the dark overlay lines when you hover over the block in the world.
-* The implementation of 'use' is different. We don't open a gui this time but instead we have to calculate the quadrant of the face that we hit.
-```
- <syntaxhighlight lang="java">
+* The implementation of 'use' is different. We don't open a gui this time, but instead we have to calculate the quadrant of the face that we hit.
+
+```java
 public class GeneratorBlock extends Block implements EntityBlock {
 
     public static final String MESSAGE_GENERATOR = "message.generator";
@@ -158,21 +163,24 @@ public class GeneratorBlock extends Block implements EntityBlock {
         builder.add(BlockStateProperties.FACING);
     }
 }
-</syntaxhighlight>
 ```
-===The Generator Block Entity===
 
-The block entity is a bit more complicated this time (compared to the power generator). That's because we need to implement everything required to communicate data to the baked model. Baked models are potentially rendered in threads and should not access block entity (or any other world related data) directly. For that purpose we need ModelProperties to communicate what the baked model needs from the block entity to the baked model.
+### The Generator Block Entity
 
-* In this block entity we use three different item handler capabilities. One for five input slots, one for a single output slot (coupled to the bottom of this block) and one combined read-only item handler that is returned when getCapability() is called with no given side. It's good practice to support this because mods like The One Probe depend on features like that.
-* Depending on where our block is right clicked (see GeneratorBlock) the setGenerating, setCollecting, or setGeneratingBlock functions will be called. They are called server-side but need to communicate the model property to the client. For that reason they use level.sendBlockUpdated().
-* tickServer() does two things: every 10 ticks (2 times per second) we will collect all ingots in a 3x3x3 area around the generator and (if possible) insert them in the input buffer. In addition we see if we have enough power to convert some of the ingots in our input buffer to ores. If so we make sure our front panel is updated (''actuallyGenerating'') and we insert the ores in the output buffer (or spawn it in the world in case the output buffer is full)
-* getUpdateTag()/handleUpdateTag() are responsible for syncing data to the client version of the block entity whenever the client receives a new chunk.
-* getUpdatePacket()/onDataPacket() do the same but whenever a block update happens or the blockstate changes.
-* We implement our own saveClientData() and loadClientData() and call it from saveAdditional() and load(). The client data versions contain the part of the data that we want to save with our block that we also want to sync to the client. getUpdateTag(), handleUpdateTag(), getUpdatePacket() and onDataPacket() will use these.
-* The ModelProperties as well as getModelData() are used to communicate information to the baked model (more on this in the next section). We need to refresh this data whenever something changes that would need the model to render itself again.
-```
- <syntaxhighlight lang="java">
+The block entity is a bit more complicated this time (compared to the power generator).
+That's because we need to implement everything required to communicate data to the baked model.
+Baked models are potentially rendered in threads and should not access block entity (or any other world related data) directly.
+For that purpose we need ModelProperties to communicate what the baked model needs from the block entity to the baked model.
+
+* In this block entity we use three different item handler capabilities. One for five input slots, one for a single output slot (coupled to the bottom of this block) and one combined read-only item handler that is returned when `getCapability()` is called with no given side. It's good practice to support this because mods like The One Probe depend on features like that.
+* Depending on where our block is right-clicked (see `GeneratorBlock`) the `setGenerating`, `setCollecting`, or `setGeneratingBlock` functions will be called. They are called server-side but need to communicate the model property to the client. For that reason they use `level.sendBlockUpdated()`.
+* `tickServer()` does two things: every 10 ticks (2 times per second) we will collect all ingots in a 3x3x3 area around the generator and (if possible) insert them in the input buffer. In addition, we see if we have enough power to convert some ingots in our input buffer to ores. If so we make sure our front panel is updated (''actuallyGenerating'') and we insert the ores in the output buffer (or spawn it in the world in case the output buffer is full)
+* `getUpdateTag()`/`handleUpdateTag()` are responsible for syncing data to the client version of the block entity whenever the client receives a new chunk.
+* `getUpdatePacket()`/`onDataPacket()` do the same but whenever a block update happens or the blockstate changes.
+* We implement our own `saveClientData()` and `loadClientData()` and call it from `saveAdditional()` and `load()`. The client data versions contain the part of the data that we want to save with our block that we also want to sync to the client. `getUpdateTag()`, `handleUpdateTag()`, `getUpdatePacket()` and `onDataPacket()` will use these.
+* The `ModelProperties` as well as `getModelData()` are used to communicate information to the baked model (more on this in the next section). We need to refresh this data whenever something changes that would need the model to render itself again.
+
+```java
 public class GeneratorBE extends BlockEntity {
 
     public static final int COLLECTING_DELAY = 10;
@@ -420,11 +428,11 @@ public class GeneratorBE extends BlockEntity {
         boolean oldCollecting = collecting;
         boolean oldActuallyGenerating = actuallyGenerating;
         BlockState oldGeneratingBlock = generatingBlock;
-        
+
         CompoundTag tag = pkt.getTag();
         // This will call loadClientData()
         handleUpdateTag(tag);
-        
+
         // If any of the values was changed we request a refresh of our model data and send a block update (this will cause
         // the baked model to be recreated)
         if (oldGenerating != generating || oldCollecting != collecting ||
@@ -520,46 +528,59 @@ public class GeneratorBE extends BlockEntity {
         }
     }
 }
-</syntaxhighlight>
 ```
-https://i.imgur.com/o7hgFpp.png
+
+![image](https://i.imgur.com/o7hgFpp.png)
+
+```java
+@Nonnull
+@Override
+public ModelData getModelData() {
+    return ModelData.builder()
+        .with(GENERATING_BLOCK, generatingBlock)
+        .with(GENERATING, generating)
+        .with(ACTUALLY_GENERATING, actuallyGenerating)
+        .with(COLLECTING, collecting)
+        .build();
+}
 ```
- <syntaxhighlight lang="java">
-    @Nonnull
-    @Override
-    public ModelData getModelData() {
-        return ModelData.builder()
-                .with(GENERATING_BLOCK, generatingBlock)
-                .with(GENERATING, generating)
-                .with(ACTUALLY_GENERATING, actuallyGenerating)
-                .with(COLLECTING, collecting)
-                .build();
-    }
-</syntaxhighlight>
-```
-Use requestModelDataUpdate() instead of ModelDataManager.requestModelDataRefresh(this)
 
-===The Baked Model===
+Use `requestModelDataUpdate()` instead of `ModelDataManager.requestModelDataRefresh(this)`.
 
-When you make '''json models''' you are making '''static geometry'''. Even if the model can change depending on properties it's still static which means that the geometry will be 'baked' into the chunk data as soon as something in the chunk needs refreshing. That's the most efficient way to render blocks as usually blocks don't need to change appearance every tick and thus the baked chunk can usually be reused for several frames. If you have something that looks different every tick then you probably want to use a block entity renderer. We will cover that later.
+### The Baked Model
 
-You can do a lot of things with regular json models since can be driven by properties and allow for flexible modifications to the static model depending on those properties. We saw an example of that in the powergenerator model which used the POWERED blockstate property to change the model. However, sometimes you want a static model with even more flexibility. Perhaps the number of possible configurations are too large for expressing with properties and json models, or perhaps you need to bake the geometry from another block into your geometry. In that case you need to make a '''baked model'''.
+When you make **json models** you are making **static geometry**.
+Even if the model can change depending on properties it's still static which means that the geometry will be 'baked' into the chunk data as soon as something in the chunk needs refreshing.
+That's the most efficient way to render blocks as usually blocks don't need to change appearance every tick and thus the baked chunk can usually be reused for several frames.
+If you have something that looks different every tick then you probably want to use a block entity renderer.
+We will cover that later.
 
-Baked models are still static. They just allow for more flexibility.
+You can do a lot of things with regular json models since can be driven by properties and allow for flexible modifications to the static model depending on those properties.
+We saw an example of that in the powergenerator model which used the POWERED blockstate property to change the model.
+However, sometimes you want a static model with even more flexibility.
+Perhaps the number of possible configurations are too large for expressing with properties and json models, or perhaps you need to bake the geometry from another block into your geometry.
+In that case you need to make a **baked model**.
 
-Here is the baked model class that we are going to use for our generator. A few notes about this:
+Baked models are still static.
+They just allow for more flexibility.
+
+Here is the baked model class that we are going to use for our generator.
+A few notes about this:
 
 * When possible it is a good idea to cache your quads (a quad is a polygon or face of your model). Generating quads can be somewhat expensive and if you can cache them you save some processing time whenever the chunk this baked model is in is rerendered. In this tutorial we cache the generated quads based on a specific configuration which is uniquely identified using the ModelKey (our own custom class to express a configuration of our model)
 * The baked model also has to be used for our item model. In order to properly support that we need to use the given item overrides and item transforms (these come from the model loader which we will see later).
 * Note that a baked model cannot access the world because it's possible that this is called in a render thread. For that reason the only data that you can use in this baked model is the block state and IModelData that you can get from the block entity (more on this soon).
 * Because of this multi-threading it is not a good idea to generate the quad cache on the fly inside getQuads(). It's recommended to generate the cache in the constructor. If you modify this cache in getQuads() it's possible you get concurrent modification exceptions (unless you use a synchronized map but that's usually less performant).
 
-{{warning|1=Baked models can't access the world! Don't try to do this}}
+:::danger Warning
+Baked models can't access the world! Don't try to do this
+:::
 
-{{warning|1=Try to cache your quads if possible. For efficiency reasons}}
+:::danger Warning
+Try to cache your quads if possible. For efficiency reasons
+:::
 
-```
- <syntaxhighlight lang="java">
+```java
 public class GeneratorBakedModel implements IDynamicBakedModel {
 
     private final ModelState modelState;
@@ -794,40 +815,45 @@ public class GeneratorBakedModel implements IDynamicBakedModel {
         return itemTransforms;
     }
 }
-</syntaxhighlight>
 ```
-Here is the ModelKey class. It's a simple class containing all the fields that are relevant to identify a specific visual configuration of our model. To be able to use it as a key it needs a hashCode and equals. We use the new java 'record' feature to make this class:
-```
- <syntaxhighlight lang="java">
+
+Here is the ModelKey class.
+It's a simple class containing all the fields that are relevant to identify a specific visual configuration of our model.
+To be able to use it as a key it needs a hashCode and equals.
+We use the new java 'record' feature to make this class:
+
+```java
 public record ModelKey(boolean generating, boolean collecting, boolean actuallyGenerating, @Nullable ModelState modelState) { }
-</syntaxhighlight>
 ```
-https://i.imgur.com/o7hgFpp.png
+
+![image](https://i.imgur.com/o7hgFpp.png)
 
 For 1.19.2 replace the first part of getQuads() with this:
-```
- <syntaxhighlight lang="java">
-    @Nonnull
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull ModelData extraData, @Nullable RenderType layer) {
 
-        // Are we on the solid render type and are we rendering for side == null
-        if (side != null || (layer != null && !layer.equals(RenderType.solid()))) {
-            return Collections.emptyList();
-        }
-</syntaxhighlight>
-```
-===The Model Loader===
+```java
+@Nonnull
+@Override
+public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull ModelData extraData, @Nullable RenderType layer) {
 
-To be able to use our baked model we need to define a model loader. The model loader enables support for json files that we can use for models that want to use this baked model.
+    // Are we on the solid render type and are we rendering for side == null
+    if (side != null || (layer != null && !layer.equals(RenderType.solid()))) {
+        return Collections.emptyList();
+    }
+}
+```
+
+### The Model Loader
+
+To be able to use our baked model we need to define a model loader.
+The model loader enables support for json files that we can use for models that want to use this baked model.
 
 Some notes:
 * The model loader has a unique identifier (represented by a ResourceLocation) so that you can refer to that from the model json file.
-* The model system uses materials. A material is basically a combined key representing a texture on a given atlas. Using ForgeHooksClient.getBlockMaterial() you can create such a material for the default block atlas.
+* The model system uses materials. A material is basically a combined key representing a texture on a given atlas. Using `ForgeHooksClient.getBlockMaterial()` you can create such a material for the default block atlas.
 * It's important to return all materials that you want to use in your baked model in the geometry. That way Minecraft knows that it has to bake those onto the main block atlas.
 * In the 'bake' method you can give all the data that you need to the baked model as it is responsible for actually creating a new baked model.
-```
- <syntaxhighlight lang="java">
+
+```java
 public class GeneratorModelLoader implements IModelLoader<GeneratorModelLoader.GeneratorModelGeometry> {
 
     public static final ResourceLocation GENERATOR_LOADER = new ResourceLocation(TutorialV3.MODID, "generatorloader");
@@ -853,7 +879,7 @@ public class GeneratorModelLoader implements IModelLoader<GeneratorModelLoader.G
         return new GeneratorModelGeometry();
     }
 
-    
+
     public static class GeneratorModelGeometry implements IModelGeometry<GeneratorModelGeometry> {
 
         @Override
@@ -867,35 +893,37 @@ public class GeneratorModelLoader implements IModelLoader<GeneratorModelLoader.G
         }
     }
 }
-</syntaxhighlight>
 ```
-We also need to register our model loader. To do this add the following to ClientSetup:
 
-https://i.imgur.com/pLm4syY.png
+We also need to register our model loader.
+To do this, add the following to `ClientSetup`:
+
+![image](https://i.imgur.com/pLm4syY.png)
+
+```java
+@SubscribeEvent
+public static void onModelRegistryEvent(ModelRegistryEvent event) {
+    ModelLoaderRegistry.registerLoader(GeneratorModelLoader.GENERATOR_LOADER, new GeneratorModelLoader());
+}
 ```
- <syntaxhighlight lang="java">
-    @SubscribeEvent
-    public static void onModelRegistryEvent(ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(GeneratorModelLoader.GENERATOR_LOADER, new GeneratorModelLoader());
-    }
-</syntaxhighlight>
-```
+
 https://i.imgur.com/o7hgFpp.png
-```
- <syntaxhighlight lang="java">
-    @SubscribeEvent
-    public static void onModelRegistryEvent(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(GeneratorModelLoader.GENERATOR_LOADER.getPath(), new GeneratorModelLoader());
-    }
-</syntaxhighlight>
-```
-Also replace IModelLoader with IGeometryLoader.
 
-===Datagen===
-
-We now have everything that we need in order to make the data generation for our new generator block. Modify the following datagen classes:
+```java
+@SubscribeEvent
+public static void onModelRegistryEvent(ModelEvent.RegisterGeometryLoaders event) {
+    event.register(GeneratorModelLoader.GENERATOR_LOADER.getPath(), new GeneratorModelLoader());
+}
 ```
- <syntaxhighlight lang="java">
+
+Also replace `IModelLoader` with `IGeometryLoader`.
+
+### Datagen
+
+We now have everything that we need in order to make the data generation for our new generator block.
+Modify the following datagen classes:
+
+```java
 public class TutBlockStates extends BlockStateProvider {
 
     public TutBlockStates(DataGenerator gen, ExistingFileHelper helper) {
@@ -916,20 +944,23 @@ public class TutBlockStates extends BlockStateProvider {
                 .end();
         directionalBlock(Registration.GENERATOR.get(), generatorModel);
     }
-</syntaxhighlight>
+}
 ```
-We also need to add tags, recipe, item model, language keys, and loot table. Check the GitHub for details but this is basically the same as what we did for the power generator.
+We also need to add tags, recipe, item model, language keys, and loot table.
+Check the GitHub for details but this is basically the same as what we did for the power generator.
 
-===Block Entity Renderer===
+### Block Entity Renderer
 
-Block Entity Renderers are dynamic geometry. You use them whenever you need to render something that changes every frame. As an example we're going to add a block entity renderer for the power generator from the previous tutorial.
+Block Entity Renderers are dynamic geometry.
+You use them whenever you need to render something that changes every frame.
+As an example we're going to add a block entity renderer for the power generator from the previous tutorial.
 
 Some notes:
 * In contrast with baked models we can safely use the world as well as block entity information (if we would need to do that)
-* Block entity renderers don't use direct OpenGL. Instead you use the rendering api as given by MultiBufferSource and PoseStack.
+* Block entity renderers don't use direct OpenGL. Instead, you use the rendering api as given by MultiBufferSource and PoseStack.
 * Rendering correctly with transparency is always hard because polygons have to be rendered in the correct order (from back to front). There are situations where this renderer will not look correct. In future rendering tutorials we will see ways you can around this problem.
-```
- <syntaxhighlight lang="java">
+
+```java
 public class PowergenRenderer implements BlockEntityRenderer<PowergenBE> {
 
     public static final ResourceLocation HALO = new ResourceLocation(TutorialV3.MODID, "effect/halo");
@@ -955,17 +986,17 @@ public class PowergenRenderer implements BlockEntityRenderer<PowergenBE> {
 
         // Get our texture from the atlas
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(HALO);
-        
+
         // Always remember to push the current transformation so that you can restore it later
         poseStack.pushPose();
-        
+
         // Translate to the middle of the block and 1 unit higher
         poseStack.translate(0.5, 1.5, 0.5);
-        
+
         // Use the orientation of the main camera to make sure the single quad that we are going to render always faces the camera
         Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
         poseStack.mulPose(rotation);
-        
+
         // Actually render the quad in our own custom render type
         VertexConsumer buffer = bufferSource.getBuffer(CustomRenderType.ADD);
         Matrix4f matrix = poseStack.last().pose();
@@ -981,40 +1012,46 @@ public class PowergenRenderer implements BlockEntityRenderer<PowergenBE> {
         BlockEntityRenderers.register(Registration.POWERGEN_BE.get(), PowergenRenderer::new);
     }
 }
-</syntaxhighlight>
 ```
-We need to register this renderer. For that we call 'register()' from ClientSetup:
-```
- <syntaxhighlight lang="java">
-    public static void init(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MenuScreens.register(Registration.POWERGEN_CONTAINER.get(), PowergenScreen::new);
-            ItemBlockRenderTypes.setRenderLayer(Registration.POWERGEN.get(), RenderType.translucent());
-            PowergenRenderer.register();
-        });
-    }
-</syntaxhighlight>
-```
-We also need to stitch our HALO texture on the main atlas. For the baked model that wasn't needed because our model/geometry had a way to communicate the materials that were needed. For block entity renderers you have to manually stitch the textures you want to use on the main atlas. Do this by adding the following to ClientSetup:
-```
- <syntaxhighlight lang="java">
-    @SubscribeEvent
-    public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            return;
-        }
-        event.addSprite(PowergenRenderer.HALO);
-    }
-</syntaxhighlight>
-```
-https://i.imgur.com/o7hgFpp.png
-In the init() method remove the line for setRenderLayer() on 1.19.2. That's done in the model now.
 
-===Custom RenderType===
+We need to register this renderer. For that we call `register()` from ClientSetup:
 
-Later we will have a more advanced rendering tutorial. In that tutorial we will clarify this better. But the point of this custom render type is so that our transparent effect can render with additive blending mode (i.e. the colors of the texture are added to what is already there).
+```java
+public static void init(FMLClientSetupEvent event) {
+    event.enqueueWork(() -> {
+        MenuScreens.register(Registration.POWERGEN_CONTAINER.get(), PowergenScreen::new);
+        ItemBlockRenderTypes.setRenderLayer(Registration.POWERGEN.get(), RenderType.translucent());
+        PowergenRenderer.register();
+    });
+}
 ```
- <syntaxhighlight lang="java">
+
+We also need to stitch our HALO texture on the main atlas.
+For the baked model that wasn't needed because our model/geometry had a way to communicate the materials that were needed.
+For block entity renderers you have to manually stitch the textures you want to use on the main atlas. Do this by adding the following to ClientSetup:
+
+```java
+@SubscribeEvent
+public static void onTextureStitch(TextureStitchEvent.Pre event) {
+    if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
+        return;
+    }
+    event.addSprite(PowergenRenderer.HALO);
+}
+```
+
+![image](https://i.imgur.com/o7hgFpp.png)
+
+In the `init()` method remove the line for `setRenderLayer()` on 1.19.2.
+That's done in the model now.
+
+### Custom RenderType
+
+Later we will have a more advanced rendering tutorial.
+In that tutorial we will clarify this better.
+But the point of this custom render type is so that our transparent effect can render with additive blending mode (i.e. the colors of the texture are added to what is already there).
+
+```java
 public class CustomRenderType extends RenderType {
 
     // Dummy
@@ -1036,7 +1073,5 @@ public class CustomRenderType extends RenderType {
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
             2097152, true, true,
             addState(RENDERTYPE_TRANSLUCENT_SHADER));
-
 }
-</syntaxhighlight>
 ```

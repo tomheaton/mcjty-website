@@ -12,7 +12,9 @@ sidebar_position: 6
 
 ## Introduction
 
-In this tutorial we explain how you can allow users to configure your mod. The Forge config system uses toml files for configuration. There are three types of configuration:
+In this tutorial we explain how you can allow users to configure your mod.
+The Forge config system uses toml files for configuration.
+There are three types of configuration:
 
 * Client: client side configs are only relevant for the client. They are usually related to rendering, sound, and other things that are pure client side. The server doesn't know about these. These config files can be found in the config directory of the Minecraft instance and so are global over all worlds (single and multiplayer)
 * Common: common configs are loaded on both the server and the client and are also stored in the global config directory. They are NOT synced which means that the client side version of these configs can differ from the server side version
@@ -22,7 +24,11 @@ So when do you choose common and when do you choose server? Basically server sho
 
 ### Basic Setup
 
-There are many ways to set up configuration for your mod. In this tutorial we present you one option. Start by making a Config class in the setup package ([`Config.java` on GitHub](https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/Config.java)). In this class we use the `ForgeConfigSpec` helper from Forge to generate configs for client, common, and server. We also split the actual setup of the configuration keys for each module in a separate file for clarity:
+There are many ways to set up configuration for your mod.
+In this tutorial we present you one option.
+Start by making a Config class in the setup package ([`Config.java` on GitHub](https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/setup/Config.java)).
+In this class we use the `ForgeConfigSpec` helper from Forge to generate configs for client, common, and server.
+We also split the actual setup of the configuration keys for each module in a separate file for clarity:
 
 ```java
 public class Config {
@@ -132,7 +138,8 @@ public class PowergenConfig {
 
 #### Others
 
-It's similar in the other modules. Check the GitHub for those.
+It's similar in the other modules.
+Check the GitHub for those.
 
 ### Using the config
 

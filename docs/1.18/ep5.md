@@ -14,28 +14,36 @@ sidebar_position: 5
 
 ## Introduction
 
-{{warning|1=Structures and oregeneration have changed heavily in 1.18.2! This explanation is only useful for 1.18.1. See episode 8 for porting to 1.18.2}}
+:::danger Warning
+Structures and oregeneration have changed heavily in 1.18.2!
+This explanation is only useful for 1.18.1. See episode 8 for porting to 1.18.2
+:::
 
-{{warning|1=For the 1.19.2 version of this code I recommend you look at the 1.19 GitHub as this has also changed considerably}}
+:::danger Warning
+For the 1.19.2 version of this code I recommend you look at the 1.19 GitHub as this has also changed considerably
+:::
 
 This is a more advanced tutorial explaining various worldgen related subjects. You can safely skip this tutorial if you don't want to bother with worldgen right now or don't need it for your mod. This tutorial is based on the structure tutorial by TelepathicGrunt (link above). His tutorial goes a little bit more in-depth so feel free to check that out if you want to go further with this.
 
-===Ore Generation===
+### Ore Generation
 
 In the Ores class we setup oregen for our four different variants. Oregeneration is done using a feature. We use the standard Feature.ORE which is provided by vanilla but we still have to configure it. Objects like Feature.ORE are forge registry objects (similar to blocks, items, entities, ...) but configured features are not. They still have to be registered though but then on the vanilla registry. Some notes:
 
 * Registering things on the vanilla registries can happen at any time before loading the world. The most common place to do this is in FMLCommonSetupEvent.
 * Every type of feature has its own configuration object. Check the vanilla Feature class to find out what configuration object the feature needs. In our case it is OreConfiguration. We configure the blockstate of the ore there as well as the maximum size of ore veins
 * We use different placements to control where our ore can generate:
-  ** CountPlacement to control how many times our vein will generate in a chunk
-  ** InSquarePlacement to spread the ore in our chunk
-  ** BiomeFilter.biome() to ensure that biomes that support our ore will actually generate it
-  ** HeightRangePlacement.uniform to control the height of our oregen
+    * CountPlacement to control how many times our vein will generate in a chunk
+    * InSquarePlacement to spread the ore in our chunk
+    * BiomeFilter.biome() to ensure that biomes that support our ore will actually generate it
+    * HeightRangePlacement.uniform to control the height of our oregen
 * In BiomeLoadingEvent we actually couple the desired features to the biomes. We use the biome category to find out what type of oregen we want to add
 
-{{warning|1=Don't forget to manually register things that need to be registered to a vanilla registry. Best place to do that is FMLCommonSetupEvent}}
-```
- <syntaxhighlight lang="java">
+:::danger Warning
+Don't forget to manually register things that need to be registered to a vanilla registry.
+Best place to do that is `FMLCommonSetupEvent`
+:::
+
+```java title="Ores.java"
 public class Ores {
 
     public static final int OVERWORLD_VEINSIZE = 5;
@@ -106,81 +114,91 @@ public class Ores {
         }
     }
 }
-</syntaxhighlight>
 ```
+
 We have to modify ModSetup as follows:
-```
- <syntaxhighlight lang="java">
-    public static void setup() {
-        IEventBus bus = MinecraftForge.EVENT_BUS;
-        bus.addListener(Ores::onBiomeLoadingEvent);
-    }
 
-    public static void init(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            Ores.registerConfiguredFeatures();
-        });
-    }
-</syntaxhighlight>
+```java title="ModSetup.java"
+public static void setup() {
+    IEventBus bus = MinecraftForge.EVENT_BUS;
+    bus.addListener(Ores::onBiomeLoadingEvent);
+}
+
+public static void init(FMLCommonSetupEvent event) {
+    event.enqueueWork(() -> {
+        Ores.registerConfiguredFeatures();
+    });
+}
 ```
+
 And from our main mod class we call setup() in the constructor:
+
+```java title="TutorialV3.java"
+public TutorialV3() {
+    // Register the deferred registry
+    ModSetup.setup();
+    Registration.init();
+}
 ```
- <syntaxhighlight lang="java">
-    public TutorialV3() {
 
-        // Register the deferred registry
-        ModSetup.setup();
-        Registration.init();
-</syntaxhighlight>
-```
-https://i.imgur.com/o7hgFpp.png
-BiomeLoadingEvent is gone in 1.19. Check the [https://github.com/McJty/TutorialV3/tree/1.19 github for the 1.19 version of the mod] for more information.
+![image](https://i.imgur.com/o7hgFpp.png)
 
-===Jigsaw Structures===
+BiomeLoadingEvent is gone in 1.19. Check the [GitHub for the 1.19 version of the mod](https://github.com/McJty/TutorialV3/tree/1.19) for more information.
 
-Jigsaw structures are used for bigger structures like villages and strongholds. However, in this tutorial we're going to keep it simple and have a structure that has only one part.
+### Jigsaw Structures
 
-====Making a Structure In Game====
+Jigsaw structures are used for bigger structures like villages and strongholds.
+However, in this tutorial we're going to keep it simple and have a structure that has only one part.
 
-The easiest way to make structures is to actually build them in Minecraft and then use structure blocks to actually define and save the structure. Check the tutorial video on how to do this.
+#### Making a Structure In Game
 
-====Setting up the Structure Data====
+The easiest way to make structures is to actually build them in Minecraft and then use structure blocks to actually define and save the structure.
+Check the tutorial video on how to do this.
 
-After making and saving the structure, the nbt file will be saved to `<world folder>/generated`. Copy it inside `resources/data/<modid>/structures/`
+#### Setting up the Structure Data
 
-In addition make a new folder called `resources/data/<modid>/worldgen/template_pool/portal` and put the 'start_pool.json' file in there:
-```
- <syntaxhighlight lang="json">
+After making and saving the structure, the nbt file will be saved to `<world folder>/generated`.
+Copy it inside `resources/data/<modid>/structures/`
+
+In addition, make a new folder called `resources/data/<modid>/worldgen/template_pool/portal` and put the `start_pool.json` file in there:
+
+```json
 {
   "name": "tutorialv3:portal/start_pool",
   "fallback": "minecraft:empty",
 
-"elements": [
-{
-"weight": 1,
-"element": {
-"location": "tutorialv3:portal",
-"processors": "minecraft:empty",
-"projection": "rigid",
-"element_type": "minecraft:single_pool_element"
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "tutorialv3:portal",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
 }
-}
-]
-}
-</syntaxhighlight>
 ```
-Do the same for the 'thiefden' structure. This json represents the start of our jigsaw structure. Since we only have one part that's also all we need.
 
-====Main Structures class====
+Do the same for the `thiefden` structure.
+This json represents the start of our jigsaw structure.
+Since we only have one part that's also all we need.
 
-Here we define the main Structures class which will properly setup and register our structures. Because Minecraft itself doesn't fully have proper json support for structures and Forge doesn't have the proper hooks yet, we still need to do a lot of things manually. In this tutorial we present a way to do this relatively safe. Some notes:
+#### Main Structures class
+
+Here we define the main Structures class which will properly setup and register our structures.
+Because Minecraft itself doesn't fully have proper json support for structures and Forge doesn't have the proper hooks yet, we still need to do a lot of things manually.
+In this tutorial we present a way to do this relatively safe.
+
+Some notes:
 
 * There are a lot of comments in the source code. They should clarify a few things
 * We need to access and modify final and private Minecraft fields. To be able to do that we're going to use access transformers. More on that later
 * Just like with features and configured features we also have the structure and the configured structure. The structures are Forge registry objects (will be put in Registration) while the configured structures have to be registered on a vanilla registry
-* We have to be careful when modifying some of the internal maps because they can be immutable. If that's the case we actually have to make a new map and put that in place
-```
- <syntaxhighlight lang="java">
+* We have to be careful when modifying some internal maps because they can be immutable. If that's the case we actually have to make a new map and put that in place
+
+```java title="Structures.java"
 public class Structures {
     /**
      * Static instances of our structures so we can reference it and add it to biomes easily.
@@ -406,71 +424,82 @@ public class Structures {
         }
     }
 }
-</syntaxhighlight>
 ```
-We also have to modify ModSetup.
 
-{{warning|1=Note that Forge provides various events for setting up various things. Always use the event when something is available!}}
+We also have to modify `ModSetup`.
+
+:::danger Warning
+Note that Forge provides various events for setting up various things.
+Always use the event when something is available!
+:::
+
+```java title="ModSetup.java"
+public static void setup() {
+    IEventBus bus = MinecraftForge.EVENT_BUS;
+    bus.addListener(Ores::onBiomeLoadingEvent);
+    bus.addListener(EventPriority.NORMAL, Structures::addDimensionalSpacing);
+    bus.addListener(EventPriority.NORMAL, Structures::setupStructureSpawns);
+}
+
+public static void init(FMLCommonSetupEvent event) {
+    event.enqueueWork(() -> {
+        Ores.registerConfiguredFeatures();
+        Structures.setupStructures();
+        Structures.registerConfiguredStructures();
+    });
+}
 ```
- <syntaxhighlight lang="java">
-    public static void setup() {
-        IEventBus bus = MinecraftForge.EVENT_BUS;
-        bus.addListener(Ores::onBiomeLoadingEvent);
-        bus.addListener(EventPriority.NORMAL, Structures::addDimensionalSpacing);
-        bus.addListener(EventPriority.NORMAL, Structures::setupStructureSpawns);
-    }
 
-    public static void init(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            Ores.registerConfiguredFeatures();
-            Structures.setupStructures();
-            Structures.registerConfiguredStructures();
-        });
-    }
-</syntaxhighlight>
-```
-https://i.imgur.com/o7hgFpp.png
-Structures have changed considerably in 1.19.2. Check [https://github.com/McJty/TutorialV3/tree/1.19 the 1.19 github] for more information.
+![image](https://i.imgur.com/o7hgFpp.png)
 
-====Access Transformers====
+Structures have changed considerably in 1.19.2.
+Check [the 1.19 GitHub](https://github.com/McJty/TutorialV3/tree/1.19) for more information.
 
-In order to be able to change private and/or final values in Minecraft you can either use Reflection or else use access transformers. An access transformer is a system added by Forge that allows you to change the 'private' or 'final' status of an internal Minecraft field or method. It should be used ONLY when no other solution is available! Most of the times there is a reason that something is private or final and you shouldn't change it. However, in this particular case there is no other reasonable solution.
+#### Access Transformers
 
-{{warning|1=Only use access transformers if there is no other solution!}}
+In order to be able to change private and/or final values in Minecraft you can either use Reflection or else use access transformers.
+An access transformer is a system added by Forge that allows you to change the 'private' or 'final' status of an internal Minecraft field or method.
+It should be used ONLY when no other solution is available! Most of the time there is a reason that something is private or final, and you shouldn't change it.
+However, in this particular case there is no other reasonable solution.
 
-To do this add the following accesstransformer.cfg file to the META-INF directory:
-```
- <syntaxhighlight>
+:::danger Warning
+Only use access transformers if there is no other solution!
+:::
+
+To do this, add the following `accesstransformer.cfg` file to the META-INF directory:
+
+```cfg title="accesstransformer.cfg"
 public-f net.minecraft.world.level.levelgen.feature.StructureFeature f_67031_ # NOISE_AFFECTING_FEATURES
 public-f net.minecraft.world.level.levelgen.StructureSettings f_64580_ # DEFAULTS
 public-f net.minecraft.world.level.levelgen.StructureSettings f_64582_ # structureConfig
 public-f net.minecraft.world.level.levelgen.StructureSettings f_189361_ #configuredStructures
-</syntaxhighlight>
 ```
+
 You can use the Forge-bot on discord (using !mcp SomeName) to find the right AT to use. In the tutorial video this usage is demonstrated.
 
-Then modify build.gradle as follows:
+Then modify `build.gradle` as follows:
+
+```gradle title="build.gradle"
+mappings channel: 'parchment', version: "2021.12.19-1.18.1"
+accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 ```
- <syntaxhighlight>
-    mappings channel: 'parchment', version: "2021.12.19-1.18.1"
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-</syntaxhighlight>
-```
+
 Then refresh gradle and do genIntellijRuns again and the fields should now be public.
 
-====The ThiefDenStructure====
+#### The ThiefDenStructure
 
-https://i.imgur.com/DdhliV8.png
+![image](https://i.imgur.com/DdhliV8.png)
 
 The ThiefDenStructure is our actual structure object in the game. It's a registry object which means we have to register it in our Registration class. Some notes:
 * We want this structure to generate on the surface. That's the easiest situation because then we can simply pass 'true' as the last parameter of addPieces() and don't worry about the 'y' coordinate of our structure start
 * In isFeatureChunk() we test if the top block is actually solid (and not a liquid)
 * createPiecesGenerator() is the place where we actually replace the dummy pool start with our own. We do that by subtituting a new JigsawConfiguration object into the context
 
-{{warning|1=We cannot access the world inside this so everything we do has to be done through the chunk that is being generated}}
+:::danger Warning
+We cannot access the world inside this so everything we do has to be done through the chunk that is being generated
+:::
 
-```
- <syntaxhighlight lang="java">
+```java title="ThiefDenStructure"
 public class ThiefDenStructure extends StructureFeature<JigsawConfiguration> {
 
     public ThiefDenStructure() {
@@ -533,18 +562,18 @@ public class ThiefDenStructure extends StructureFeature<JigsawConfiguration> {
         return generator;
     }
 }
-</syntaxhighlight>
 ```
-====The PortalStructure====
 
-https://i.imgur.com/cOvncxh.png
+#### The PortalStructure
+
+![image](https://i.imgur.com/cOvncxh.png)
 
 PortalStructure is very similar to ThiefDenStructure. The big difference is that in the overworld we want to generate our structure underground. Preferably in a cave or connected to a cave. Some notes:
 * In this structure we don't have a test for a suitable structure. We simply always find a spot to spawn it
 * findSuitableSpot() will try to find a good location for this dungeon. Preferably in an open area underground. If it can't find such an area then it will generate it underground embedded in stone
 * This structure will also generate in our custom dimension (more on that later). In that case we simply generate on the surface since our custom dimension doesn't have caves
-```
- <syntaxhighlight lang="java">
+
+```java title="PortalStructure.java"
 public class PortalStructure extends StructureFeature<JigsawConfiguration> {
 
     public PortalStructure(boolean overworld) {
@@ -625,13 +654,13 @@ public class PortalStructure extends StructureFeature<JigsawConfiguration> {
     }
 
 }
-</syntaxhighlight>
 ```
-====Registration====
+
+#### Registration
 
 Since features are registry objects we need to register them in Registration. Make the following changes:
-```
- <syntaxhighlight lang="java">
+
+```java title="Registration.java"
 public class Registration {
     ...
     private static final DeferredRegister<StructureFeature<?>> STRUCTURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MODID);
@@ -648,21 +677,21 @@ public class Registration {
         () -> new PortalStructure(true));
     public static final RegistryObject<StructureFeature<JigsawConfiguration>> PORTAL_MYSTERIOUS = STRUCTURES.register("portal_mysterious",
         () -> new PortalStructure(false));
-</syntaxhighlight>
 ```
-===Custom Dimension===
+
+### Custom Dimension
 
 In contrast with structures, dimensions are much better defined using JSON. In fact it's possible to completely define a custom dimension without a single line of Java code. You don't even need to register it. However, in this tutorial we are going to use some code in order to show you the kind of thing that is possible.
 
-https://i.imgur.com/uwAE1YO.png
+![image](https://i.imgur.com/uwAE1YO.png)
 
-====Dimension Type and Dimension====
+#### Dimension Type and Dimension
 
 Let's first define the dimension type and the actual dimension. A dimension type is the base for creating dimensions from. In many cases every dimension type will have one dimension but it is perfectly possible to have multiple dimensions sharing the same dimension type.
 
 Here is the dimension type:
-```
- <syntaxhighlight lang="json">
+
+```json
 {
   "name": "Mysterious Dimension",
   "ultrawarm": false,
@@ -683,14 +712,16 @@ Here is the dimension type:
   "infiniburn": "minecraft:infiniburn_overworld",
   "effects": "minecraft:overworld"
 }
-</syntaxhighlight>
 ```
-And here is the dimension. Some notes:
+
+And here is the dimension.
+Some notes:
+
 * We refer to our custom chunkgenerator that we will define in a moment
 * The 'settings' json block is something that we have defined for ourselves
 * Look at the minecraft wiki (see link at the top of this tutorial) to see what other configuration options are available for dimensions
-```
- <syntaxhighlight lang="json">
+
+```json
 {
   "type": "tutorialv3:mysterious",
   "generator": {
@@ -702,9 +733,9 @@ And here is the dimension. Some notes:
     }
   }
 }
-</syntaxhighlight>
 ```
-====Custom Chunk Generator====
+
+#### Custom Chunk Generator
 
 In most cases, when making your own custom dimension you actually want to use the standard vanilla NoiseBasedChunkGenerator. It is very configurable and for most situations you will be able to completely change it for your custom dimension needs. However sometimes it is good to be able to do something special and that's what we will show in this tutorial. Note that if you would use NoiseBasedChunkGenerator then you actually would have been able to define this dimension without any code.
 
@@ -714,8 +745,7 @@ If you look at (for example) SETTINGS_CODEC you can see that it is based on a Re
 
 The codec for our chunk generator itself is again a RecordCodecBuilder which expects a RegistryLookupCodec first. That's used to be able to give the biome registry to our constructor. The second field is the SETTINGS_CODEC.
 
-```
- <syntaxhighlight lang="java">
+```java title="MysteriousChunkGenerator.java"
 public class MysteriousChunkGenerator extends ChunkGenerator {
 
     private static final Codec<Settings> SETTINGS_CODEC = RecordCodecBuilder.create(instance ->
@@ -858,13 +888,13 @@ public class MysteriousChunkGenerator extends ChunkGenerator {
 
     private record Settings(int baseHeight, float verticalVariance, float horizontalVariance) { }
 }
-</syntaxhighlight>
 ```
-====Custom Biome Provider====
+
+#### Custom Biome Provider
 
 Our custom dimension will have only one biome. Strictly speaking we could have used the vanilla FixedBiomeSource but we wanted to give an example so that's why we define our own biome source:
-```
- <syntaxhighlight lang="java">
+
+```java title="MysteriousBiomeProvider.java"
 public class MysteriousBiomeProvider extends BiomeSource {
 
     public static final Codec<MysteriousBiomeProvider> CODEC = RegistryLookupCodec.create(Registry.BIOME_REGISTRY)
@@ -903,13 +933,16 @@ public class MysteriousBiomeProvider extends BiomeSource {
         return biome;
     }
 }
-</syntaxhighlight>
 ```
-====Changing Oregen====
 
-We want to increase oregen for our Mysterious ore in this custom dimension. To do that add a DimensionBiomeFilter class. This class will replace the BiomeFilter.biome() placement that we currently use. In addition to testing for the right biome it will also test for the right dimension. That way we can make sure that the oregen for our custom dimension uses another configuration:
-```
- <syntaxhighlight lang="java">
+#### Changing Oregen
+
+We want to increase oregen for our Mysterious ore in this custom dimension.
+To do that add a DimensionBiomeFilter class. This class will replace the BiomeFilter.biome() placement that we currently use.
+In addition to testing for the right biome it will also test for the right dimension.
+That way we can make sure that the oregen for our custom dimension uses another configuration:
+
+```java title="DimensionBiomeFilter.java"
 public class DimensionBiomeFilter extends PlacementFilter {
 
     private final Predicate<ResourceKey<Level>> levelTest;
@@ -934,12 +967,11 @@ public class DimensionBiomeFilter extends PlacementFilter {
         return PlacementModifierType.BIOME_FILTER;
     }
 }
-</syntaxhighlight>
 ```
-Modify the Ores class as follows:
-```
- <syntaxhighlight lang="java">
 
+Modify the Ores class as follows:
+
+```java title="Ores.java"
     ...
     public static final int MYSTERIOUS_VEINSIZE = 25;
     public static final int MYSTERIOUS_AMOUNT = 10;
@@ -979,13 +1011,13 @@ Modify the Ores class as follows:
             event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DEEPSLATE_OREGEN);
         }
     }
-</syntaxhighlight>
 ```
-====Registration====
+
+#### Registration
 
 Both the chunk generator and the biome source are objects that need to be manually registered on a vanilla registry. Add the following class for that. The MYSTERIOUS ResourceKey is the unique identifier for our dimension. We don't need to register that as the dimension is fully defined in json.
-```
- <syntaxhighlight lang="java">
+
+```java title="Dimensions.java"
 public class Dimensions {
 
     public static final ResourceKey<Level> MYSTERIOUS = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TutorialV3.MODID, "mysterious"));
@@ -997,24 +1029,24 @@ public class Dimensions {
                 MysteriousBiomeProvider.CODEC);
     }
 }
-</syntaxhighlight>
 ```
-Modify ModSetup as follows:
+
+Modify `ModSetup` as follows:
+
+```java title="ModSetup.java"
+public static void init(FMLCommonSetupEvent event) {
+    event.enqueueWork(() -> {
+        ...
+        Dimensions.register();
+    });
+}
 ```
- <syntaxhighlight lang="java">
-    public static void init(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            ...
-            Dimensions.register();
-        });
-    }
-</syntaxhighlight>
-```
-===Portal Block===
+
+### Portal Block
 
 Before we can run all this we also need to define our portal block. We're not going to deep into this as by now you should know how to make blocks. Read the comments with SHAPE and entityInside():
-```
- <syntaxhighlight lang="java">
+
+```java
 public class PortalBlock extends Block {
 
     // Our block is lower then a normal block. That causes the player to sink in it when he stands on the block
@@ -1050,24 +1082,23 @@ public class PortalBlock extends Block {
         Tools.teleport(player, world, new BlockPos(pos.getX(), pos.getY(), pos.getZ()), true);
     }
 }
-</syntaxhighlight>
 ```
+
 We also add a new teleport method to our Tools class. We want to teleport to the topmost solid block (if findTop is true). We can't do that before teleportation since the other dimension might not be ready yet. That's why we pass an instance of ITeleporter. The placeEntity() method will be called as soon as our player arrives in the other dimension and there we can fix the y location:
-```
- <syntaxhighlight lang="java">
-    public static void teleport(ServerPlayer entity, ServerLevel destination, BlockPos pos, boolean findTop) {
-        entity.changeDimension(destination, new ITeleporter() {
-            @Override
-            public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                entity = repositionEntity.apply(false);
-                int y = pos.getY();
-                if (findTop) {
-                    y = destination.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
-                }
-                entity.teleportTo(pos.getX(), y, pos.getZ());
-                return entity;
+
+```java
+public static void teleport(ServerPlayer entity, ServerLevel destination, BlockPos pos, boolean findTop) {
+    entity.changeDimension(destination, new ITeleporter() {
+        @Override
+        public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+            entity = repositionEntity.apply(false);
+            int y = pos.getY();
+            if (findTop) {
+                y = destination.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
             }
-        });
-    }
-</syntaxhighlight>
+            entity.teleportTo(pos.getX(), y, pos.getZ());
+            return entity;
+        }
+    });
+}
 ```
