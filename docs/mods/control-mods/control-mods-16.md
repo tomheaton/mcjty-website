@@ -1,16 +1,21 @@
 # Control Mods 16
 
-==Introduction==
+## Introduction
 
-[https://minecraft.curseforge.com/projects/in-control In Control] is a mod that supports a rule based system that allows you to control various aspects about mobs. There are rule files to control spawning, loot, experience and so on.
+[In Control](https://minecraft.curseforge.com/projects/in-control) is a mod that supports a rule based system that allows you to control various aspects about mobs. There are rule files to control spawning, loot, experience and so on.
 
-[https://minecraft.curseforge.com/projects/fx-control Fx Control] is a mod that supports a rule based system that allows you to control things that happen around the player. There are rule files to give the player potion effects, set him/her on fire, prevent him from interacting with objects and other things related to that.
+[Fx Control](https://minecraft.curseforge.com/projects/fx-control) is a mod that supports a rule based system that allows you to control things that happen around the player. There are rule files to give the player potion effects, set him/her on fire, prevent him from interacting with objects and other things related to that.
 
-Both mods have support for [https://minecraft.curseforge.com/projects/game-stages Game Stages], [https://minecraft.curseforge.com/projects/serene-seasons Serene Seasons], [https://minecraft.curseforge.com/projects/baubles Baubles], [https://wiki.mcjty.eu/mods/index.php?title=Lost_Cities Lost Cities], and [https://wiki.mcjty.eu/mods/index.php?title=Enigma EnigmaScript].
+Both mods have support for:
+- [Game Stages](https://minecraft.curseforge.com/projects/game-stages)
+- [Serene Seasons](https://minecraft.curseforge.com/projects/serene-seasons)
+- [Baubles](https://minecraft.curseforge.com/projects/baubles)
+- [Lost Cities](../lost-cities.md)
+- [EnigmaScript](../enigma/enigma.md)
 
 Because both mods have a very similar structure the documentation for them is merged.
 
-==Common Questions (FAQ)==
+## Common Questions (FAQ)
 
 * Q: How can I add spawns using spawn.json?
     * A: You can't. ''spawn.json'' can only RESTRICT spawns. To add spawns you use the new ''spawner.json''
@@ -23,7 +28,7 @@ Because both mods have a very similar structure the documentation for them is me
     * A: 'Allow' (is standard). With spawn.json you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to spawner.json (possibly refined with rules in spawn.json)
     * A: Having only 'allow' rules in spawn.json is (usually) pretty useless as those mobs will spawn anyway (exceptions are if you want to boost mobs). Typically you want to have 'deny' rules
 
-==Differences between 1.16.5, 1.18.2, 1.19 and older==
+## Differences between 1.16.5, 1.18.2, 1.19 and older
 
 The 1.16.5 version of InControl and FxControl have some important differences which will require you to change rules when you move over from an older version to 1.16.5:
 
@@ -35,7 +40,7 @@ The 1.16.5 version of InControl and FxControl have some important differences wh
 * In 1.15.2 or higher there is a new 'continue' boolean flag that you can use in spawn rules. If this is set to true then if the rule succeeds it will not prevent execution of further rules (which it normally does by default)
 * In 1.19 the 'category' check for biomes is gone. Instead there is the much more flexible 'biometags' test that can check for biome tags
 
-==Commands==
+## Commands
 
 These mods have various commands that allow you to debug and tweak what is going on:
 
@@ -49,7 +54,7 @@ These mods have various commands that allow you to debug and tweak what is going
 * '''fxcontrol reload (Fx Control)''': after editing the rule files you can use this command to reload it and reapply the new rules
 * '''fxcontrol debug (Fx Control)''': dumps debug info about spawning in the log. Warning! This can produce a lot of output
 
-==Rule Files==
+## Rule Files
 
 All rule files can be found in the ''config/incontrol'' and ''config/fxcontrol'' directories. The following rule files are currently supported:
 
@@ -66,7 +71,7 @@ All rule files can be found in the ''config/incontrol'' and ''config/fxcontrol''
 * '''rightclicks.json (Fx Control)''': with this file you can add effects to the player or world when the player right clicks a block (and also prevent interaction)
 * '''leftclicks.json (Fx Control)''': with this file you can add effects to the player or world when the player left clicks a block (and also prevent interaction)
 
-==Rule Structure==
+## Rule Structure
 
 Every rule has three parts:
 
@@ -76,7 +81,7 @@ Every rule has three parts:
 
 Whenever something happens the corresponding rules are evaluated from top to bottom. In most cases the first rule that matches will be executed and further rules are ignored (the rules in ''potentialspawn.json'' and ''loot.json'' are an exception to that. For these all matching rules are executed)
 
-==Expressions==
+## Expressions
 
 In some of the conditions it is possible to use expressions. An expression is basically a string specifying some test to do on an integer value. Here are a few examples:
 
@@ -87,7 +92,7 @@ In some of the conditions it is possible to use expressions. An expression is ba
 
 The following comparators are supported: `''>'', ''>='', ''<'', ''<='', ''='', and ''!=''.`
 
-==Item filters==
+## Item filters
 
 Many conditions are very simple but when testing for items things can be a bit more complicated. That's why there is a specific syntax that can be used when testing on items. In this section we will go over all the possibilities and also present a few examples. In most cases when testing for an item (like test if the player holds a specific item in his/her hand) you can either use a single item filter or else a list of item filters. Let's talk about the case of an individual item filter. The following possibilities are supported:
 
@@ -106,7 +111,7 @@ Many conditions are very simple but when testing for items things can be a bit m
   *** ''value'': the stringified value of the NBT tag to test on
   *** ''contains'': use this instead of ''value'' in case the tag represents a list. The value after contains should be a JSon array which in turn contains nbt matching tags like what we're describing now (see example later to make this more clear)
 
-===Item Filter Examples===
+### Item Filter Examples
 
 The following examples are all applied on ''playerhelditem'' but it is of course possible to use them for any kind of condition that supports items.
 
@@ -176,7 +181,7 @@ In this final example we test if a pickaxe has a specific enchantment (unbreakin
     },
 ```
 
-==Block Filters==
+## Block Filters
 
 Similarly to item filters there is also the ''block'' condition that can test on the existance of a specific block. Like with items it is possible to specify a list or a single block filter. Here are the possibilities on an individual block filter:
 
@@ -191,7 +196,7 @@ Similarly to item filters there is also the ''block'' condition that can test on
   ** ''contains'': either a single JSon object or else an array of JSon objects representing item filters as explained in the item filter section. The contains test will succeed if it finds any matching item in the inventory (if the block to test actually represents an inventory)
   ** ''side'': this is a modifier for both ''energy'' and ''contains''. If present it will indicate the side from which we want to examine the energy or inventory contents. If not present the 'null' side is used. This should be a string like ''east'', ''west'', ''south'', ''north'', ''up'', or ''down''.
 
-===Block Filter Examples===
+### Block Filter Examples
 
 A diamond block:
 
@@ -247,7 +252,7 @@ A powered button:
     },
 ```
 
-==Mob Counter==
+## Mob Counter
 
 The 'maxcount' and 'mincount' tags to control mob spawning can be either a simple number or string containing a number and a mob but it can also be a more complex json with various conditions. The following tags are supported:
 
@@ -260,7 +265,7 @@ The 'maxcount' and 'mincount' tags to control mob spawning can be either a simpl
 * ''all'': if this is set all mobs are counted
 * ''mob'': this is a single mob or a list of mobs. If this is present only those mobs are counted
 
-===Mob Counter Examples===
+### Mob Counter Examples
 
 In spawn.json: deny skeletons if there are already more then 50 hostile vanilla mobs present per player:
 
@@ -303,7 +308,7 @@ Contrast above example with the old syntax where it would compare the amount of 
   }
 ```
 
-==Conditions==
+## Conditions
 
 In this section all possible conditions are explained. Some conditions are not usable in all rules. This will be mentioned here. Whenever a position is tested in a rule the given position depends on the rule. For mob spawns this will be the position where the mob will spawn. For block break events this will be the position of the broken block. For player effects this is the position of the block on which the player is standing.
 
@@ -1057,11 +1062,11 @@ Possible types:
 |}
 ```
 
-==Actions==
+## Actions
 
 In this section all the actions per rule type are listed.
 
-===Spawn and SummonAid===
+### Spawn and SummonAid
 
 For ''spawn.json'' the following actions are supported:
 
@@ -1084,7 +1089,7 @@ For ''spawn.json'' the following actions are supported:
 
 In addition 'gamestage', 'playerhelditem', and related tags (which are tied to a player) are also supported. In that case the nearest player will be used as the basis for deciding the rule.
 
-===Additional Spawns===
+### Additional Spawns
 
 The same conditions as with ''spawn.json'' are supported. However with ''mincount'' and ''maxcount'' you have to use the format `<amount>,<mob>`. Instead of actions this rule file supports mob entries that have the following structure:
 
@@ -1096,7 +1101,7 @@ The same conditions as with ''spawn.json'' are supported. However with ''mincoun
 
 You can also remove mob spawn entries with the remove keyword. This is either a string or a list of strings representing mobs that have to be removed from the possible spawns.
 
-===Loot Control===
+### Loot Control
 
 In contrast with most other rule files every rule is evaluated every time. i.e. a succesful loot rule doesn't prevent the other loot rules from firing. Loot supports the following actions:
 
@@ -1106,7 +1111,7 @@ In contrast with most other rule files every rule is evaluated every time. i.e. 
 * '''remove''': this is a string or a list of strings representing items to remove from the loot
 * '''removeall''': if this is present then all items will be removed from the loot (before new items are added by this rule)
 
-===Experience===
+### Experience
 
 This is similar to loot control except that it controls how much experience you get from killing a mob. All keywords from loot control can be used here except the ones that are about damage type (magic, explosion, ...) as that information is not present in this event. There are four outputs that work for these rules:
 
@@ -1115,7 +1120,7 @@ This is similar to loot control except that it controls how much experience you 
 * '''multxp''': multiple the normal XP with this number
 * '''addxp''': after multiplying the normal XP add this amount to the final XP
 
-===Effects===
+### Effects
 
 With effects you can specify an additional ''timeout'' keyword in the rule. This represents the number of ticks that will be waited before testing the rule again. Keep in mind that some of these rules can be expensive so using a higher timeout will make the rule fire less frequently.
 
@@ -1133,16 +1138,16 @@ Then there are a number of actions:
 * '''setstate''': if EnigmaScript is present this can be used to set a state with a string like this "state=value"
 * '''setpstate''': if EnigmaScript is present this can be used to set a player state with a string like this "state=value"
 
-===Break and Place===
+### Break and Place
 
 There is no ''timeout'' keyword here. In addition to the actions that you can do for effects this also has a ''result'' output which can be ''allow'' or ''deny''. Note that (in contrast with ''spawn.json'') the other actions are still executed even if the rule says ''deny''!
 
 
-===Left click and Right click===
+### Left click and Right click
 
 There is no ''timeout'' keyword here. In addition to the actions that you can do for effects this also has a ''result'' output which can be ''allow'' or ''deny''. Note that (in contrast with ''spawn.json'') the other actions are still executed even if the rule says ''deny''!
 
-==Phase System==
+## Phase System
 
 The phase system allows you to define global conditions and give them a name. In Control rules can then use these phases so that they are only active if one or more phases are active. This is much more efficient as the global conditions are evalulated once every 10 ticks as opposed to every time a mob tries to spawn. In addition it is much cleaner. Phases only work with a limited set of conditions (only conditions that are globally true):
 
@@ -1152,11 +1157,11 @@ The phase system allows you to define global conditions and give them a name. In
 * '''winter''', '''summer''', '''spring''', and '''autumn'''
 * '''state'''
 
-==Examples==
+## Examples
 
 Sometimes it is best to explain things with examples. In this section we will present many examples that you can use as a basis to make your own rules:
 
-===Phases===
+### Phases
 
 Define a phase that is true if we are after day 10. You can then use this phase in all In Control rules:
 
@@ -1172,7 +1177,7 @@ Define a phase that is true if we are after day 10. You can then use this phase 
 ```
 
 
-===Spawn===
+### Spawn
 
 This example allows only spawns in plains biomes. All other spawns are prevented:
 
@@ -1337,7 +1342,7 @@ Make all zombies slower but have more health:
 ]
 ```
 
-===Loot===
+### Loot
 
 Here are some examples for ''loot.json'':
 
@@ -1396,7 +1401,7 @@ In this example zombies will drop an enchanted diamond sword:
   }
 ```
 
-===Effects===
+### Effects
 
 Here are a few examples for ''effects.json'':
 
@@ -1454,7 +1459,7 @@ With this example the player will be put on fire if he even looks at lava:
 ]
 ```
 
-===Break Events===
+### Break Events
 
 Here are a few examples for ''breakevents.json'':
 
@@ -1537,7 +1542,7 @@ With 50% chance give an extra diamond when the player mines a diamond ore block:
 ```
 
 
-===Examples for Right Clicks===
+### Examples for Right Clicks
 
 Here are a few examples for ''rightclicks.json'':
 
@@ -1587,7 +1592,7 @@ If we extend this example with another rule then we can also make sure that the 
 ]
 ```
 
-==Custom Spawner System==
+## Custom Spawner System
 
 Starting with 1.16 In Control supports a new spawning system that replaces the potentialspawn system. Rules of this type are put in '''spawner.json'''. Every rule in this file represents an option for one of more mobs to spawn under certain circumstances. The spawning system works per dimension and only attempts to spawn mobs every second.
 
@@ -1627,7 +1632,7 @@ The following json keys are possible in the conditions block (and ONLY those, fo
 * '''maxneutral''': the maximum amount of neutral mobs
 * '''maxlocal''': this will cause counting in the spawn box around the player. This is somewhat more expensive so use with care
 
-===Basic Example===
+### Basic Example
 
 Spawns random villagers near the player in water. Using 'groupdistance' these villager groups will spawn near each other (only for 1.18 and higher):
 
@@ -1655,7 +1660,7 @@ Spawns random villagers near the player in water. Using 'groupdistance' these vi
 ]
 ```
 
-===Example using Phases===
+### Example using Phases
 
 In the following example we globally increase hostile mob spawns after day 20 (using phases).
 
@@ -1693,7 +1698,7 @@ Then ''spawner.json'':
 ]
 ```
 
-===Advanced Example===
+### Advanced Example
 
 Here is a more advanced example where spawn.json and spawner.json are used together to get full control. Let's say you want to spawn some extra mobs in deserts but otherwise keep vanilla spawn rates the same. So first add a rule to spawner.json to add new spawns. Basically we add skeletons and zombies with a maximum of 100 per mob (so maximum 100 skeletons and maximum 100 zombies):
 

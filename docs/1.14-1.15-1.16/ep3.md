@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Episode 3
 
-Back: [Index](/1.14-1.15-1.16/1.14-1.15-1.16.md)
+Back: [Index](./1.14-1.15-1.16.md)
 
 ===Block Properties===
 

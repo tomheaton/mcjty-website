@@ -13,11 +13,11 @@ The first approach is the easiest to set up but also the least flexible.
 It is based on a tutorial from LatvianModder: [LatvianModder's tutorial on this subject](https://latmod.com/moddingtutorials/?page=multimods).
 This approach is hard to get working right if you have different AT's in different mods though.
 
-### Approach two (single project): [Single Project Approach](./single)
+### Approach two (single project): [Single Project Approach](./single.md)
 
 The second approach is more automated, but it is a slow process to set up with multiple mods, and it has the same stability issue with AT's.
 It was created with the help of Jared:
 
-### Approach three (use the Forge!): [Single Forge Approach](./single-forge)
+### Approach three (use the Forge!): [Single Forge Approach](./single-forge.md)
 
 The third approach was created together with KingLemmings. It is the least automated to set up, but it is VERY efficient and works really well with AT's:

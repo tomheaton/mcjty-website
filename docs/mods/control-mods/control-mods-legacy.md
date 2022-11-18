@@ -4,14 +4,19 @@
 
 :::danger Warning
 This page is for versions of Minecraft 1.15 or older!
-If you want documentation for the latest 1.16 version please go to [this page](./control-mods-16) instead!
+If you want documentation for the latest 1.16 version please go to [this page](./control-mods-16.md) instead!
 :::
 
-[https://minecraft.curseforge.com/projects/in-control In Control] is a mod that supports a rule based system that allows you to control various aspects about mobs. There are rule files to control spawning, loot, experience and so on.
+[In Control](https://minecraft.curseforge.com/projects/in-control) is a mod that supports a rule based system that allows you to control various aspects about mobs. There are rule files to control spawning, loot, experience and so on.
 
-[https://minecraft.curseforge.com/projects/fx-control Fx Control] is a mod that supports a rule based system that allows you to control things that happen around the player. There are rule files to give the player potion effects, set him/her on fire, prevent him from interacting with objects and other things related to that.
+[Fx Control](https://minecraft.curseforge.com/projects/fx-control) is a mod that supports a rule based system that allows you to control things that happen around the player. There are rule files to give the player potion effects, set him/her on fire, prevent him from interacting with objects and other things related to that.
 
-Both mods have support for [https://minecraft.curseforge.com/projects/game-stages Game Stages], [https://minecraft.curseforge.com/projects/serene-seasons Serene Seasons], [https://minecraft.curseforge.com/projects/baubles Baubles], [https://wiki.mcjty.eu/mods/index.php?title=Lost_Cities Lost Cities], and [https://wiki.mcjty.eu/mods/index.php?title=Enigma EnigmaScript].
+Both mods have support for:
+- [Game Stages](https://minecraft.curseforge.com/projects/game-stages)
+- [Serene Seasons](https://minecraft.curseforge.com/projects/serene-seasons)
+- [Baubles](https://minecraft.curseforge.com/projects/baubles)
+- [Lost Cities](../lost-cities.md)
+- [EnigmaScript](../enigma/enigma.md)
 
 Because both mods have a very similar structure the documentation for them is merged.
 
@@ -23,7 +28,7 @@ The 1.16.3 version of InControl and FxControl have some important differences wh
 * 'tempcategory' is removed and replaced with a more generic 'category' for biomes. It is now a list and supports the following categories: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, the_end, beach, forest, ocean, desert, river, swamp, mushroom and nether
 * 'biometype' now supports the following values: desert, desert_legacy, warm, cool, and icy
 * Numerical dimension ID's no longer work (like 0 for the overworld. Use 'minecraft:overworld' instead). This is also possible in the 1.15.2 versions of InControl and FxControl (and recommended). But in 1.16.3 and later the numerical ID's are gone.
-* The '/incontrol reload' command will no longer be able to reload the potentialrule file (at least with regards to adding new spawns)
+* The '/incontrol reload' command will no longer be able to reload the potentialrule file (at least in regard to adding new spawns)
 * In 1.15.2 and 1.16.3 there is a new 'continue' boolean flag that you can use in spawn rules. If this is set to true then if the rule succeeds it will not prevent execution of further rules (which it normally does by default)
 
 ## Commands

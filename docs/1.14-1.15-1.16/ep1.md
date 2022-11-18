@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Episode 1
 
-Back: [Index](/1.14-1.15-1.16/1.14-1.15-1.16.md)
+Back: [Index](./1.14-1.15-1.16.md)
 
 === IDEA Setup ===
 
