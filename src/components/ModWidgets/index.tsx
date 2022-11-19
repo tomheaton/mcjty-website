@@ -19,9 +19,7 @@ const ModWidgets: React.FC = () => {
     useEffect(() => {
         fetch("https://api.cfwidget.com/author/search/mcjty")
             .then(res => res.json())
-            .then(data => {
-                setMods(data.projects.map(m => m.id));
-            });
+            .then(data => setMods(data.projects?.map(m => m?.id)))
     }, []);
 
     return (

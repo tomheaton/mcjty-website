@@ -3,6 +3,8 @@
   "description": "mcjty-website",
   "version": "1.0.0",
   "author": "tomheaton",
+  "license": "MIT",
+  "repository": "https://github.com/tomheaton/mcjty-website",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
