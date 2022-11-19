@@ -34,8 +34,8 @@ All these functions return a string and can be used inside other strings to cont
 
 * `istr(v)`: Convert a possibly interned string to a real string. For efficiency purposes some internal strings (like state names) are interned to a hashed integer.
 * `intern(v)`: Convert a string to an interned string (integer).
-* `max(v,...)`: Return the maximum (largest value) of the given values. Works for numbers and strings.
-* `min(v,...)`: Return the minimum (smallest value) of the given values. Works for numbers and strings.
+* `max(v,...)`: Return the maximum (the largest value) of the given values. Works for numbers and strings.
+* `min(v,...)`: Return the minimum (the smallest value) of the given values. Works for numbers and strings.
 * `str(v)`: Convert the value to a string.
 * `int(v)`: Convert the value to an integer.
 * `double(v)`: Convert the value to a double.
@@ -51,13 +51,14 @@ All these functions return a string and can be used inside other strings to cont
 * `blockname(position)`: Return the name of the block at the given position if it is a defined blockname. If not then this returns the empty string.
 * `hasitem(item)`: Return true if the current player has the given named item in their inventory (see the 'itemstack' command).
 * `hasitemmain(item)`: Return true if the current player has the given named item in their main hand (see the 'itemstack' command).
-* `hasitemoff(item)`: Return true if the current player has the given named item in their off hand (see the 'itemstack' command).
+* `hasitemoff(item)`: Return true if the current player has the given named item in their offhand (see the 'itemstack' command).
 * `itemstack(name[,amount[,meta]])`: Return an itemstack with the given item or block. This item or block should follow the standard `<modid>:<name>` convention (for example, 'minecraft:diamond'). You can use this function everywhere that you can otherwise use a named stack.
 * `itemstack(namedstack)`: Directly get the itemstack from a named itemstack.
 
 ## Position based functions
 
-Note that most of these functions also accept areas. For example if you do up(area,1) you get a new area that is one higher.
+Note that most of these functions also accept areas.
+For example if you do `up(area,1)` you get a new area that is one higher.
 
 * `distance(pos1[,pos2])`: Calculate the distance between the two positions. If 'pos2' is not given then this will calculate the distance between the given position and the current player.
 * `pos(x,y,z[,dimension])`: Define a position for an optional dimension. If the dimension is not given then the dimension will depend on the presence of a current player. Without such a player the dimension will be 0 (overworld). Otherwise it will be the dimension where the current player is.

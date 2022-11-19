@@ -1049,7 +1049,7 @@ Before we can run all this we also need to define our portal block. We're not go
 ```java
 public class PortalBlock extends Block {
 
-    // Our block is lower then a normal block. That causes the player to sink in it when he stands on the block
+    // Our block is lower then a normal block. That causes the player to sink in it when they stands on the block
     // And that in turn causes our 'entityInside' test to detect the player
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, .8, 1);
 

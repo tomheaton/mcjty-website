@@ -11,18 +11,20 @@ The plan is that some of these higher-level dungeons are really hard to conquer.
 Preferably having modded benefits shouldn’t give too much benefit.
 That’s something that has to be balanced still.
 
-The different dungeons are varied in difficulty and also in how to solve them. Sometimes it is just a matter of fighting the enemies. Sometimes you have to find a hidden key somewhere so you can open a door elsewhere. To conquer a city/dungeon you basically have to destroy the AI core(s) (some dungeons have multiple cores).
+The different dungeons are varied in difficulty and also in how to solve them.
+Sometimes it is just a matter of fighting the enemies.
+Sometimes you have to find a hidden key somewhere, so you can open a door elsewhere.
+To conquer a city/dungeon you basically have to destroy the AI core(s) (some dungeons have multiple cores).
 
 ## Discord
 
-If you want to task about Ariente or discuss features please visit my discord at:
-https://discord.gg/Z6r7kUT
+If you want to task about Ariente or discuss features please visit my discord [here](https://discord.gg/Z6r7kUT).
 
 ## Features
 
 Features that are currently already in Ariente:
 
-* Many cosmetic blocks based on the marble that you find in the Ariente dimension. Also some blocks that give lighting
+* Many cosmetic blocks based on the marble that you find in the Ariente dimension. Also, some blocks that give lighting
 * A holographic gui for all/most machines
 
 ### Custom dimension
@@ -40,7 +42,8 @@ Features that are currently already in Ariente:
 
 ### Dual power system
 
-Based on negarite, posirite. Main features are:
+Based on negarite, posirite.
+Main features are:
 
 * Not storable. Machines can use a capacitor to build up a small amount of power but that is very volatile and can only be maintained under constant power
 * Currently, no wireless transfer possible. May change. Have to think about that

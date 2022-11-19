@@ -61,7 +61,7 @@ public class FancyBlock extends Block {
 }
 </syntaxhighlight>
 ```
-Because we are going to use baked models we don't need a lot of jsons here. We can suffice with this blockstate json:
+Because we are going to use baked models we don't need a lot of JSON files here. We can suffice with this blockstate json:
 ```
 <syntaxhighlight lang="json">
 {

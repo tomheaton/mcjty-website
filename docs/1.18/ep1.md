@@ -206,7 +206,7 @@ public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(TAB_NAME) {
 
 ### Data Generation
 
-If we run our mod now you will see that the blocks and items are not correctly textured and that the blocks don't have a good name. To fix that we need to make models and a bunch of other jsons. We will be using data generation to generate those as that's the most flexible way to do things. With only a small mod it may not seem very beneficial to do this but in the end it's a very nice technique and will help you avoid many errors caused by hand-written jsons.
+If we run our mod now you will see that the blocks and items are not correctly textured and that the blocks don't have a good name. To fix that we need to make models and a bunch of other JSON files. We will be using data generation to generate those as that's the most flexible way to do things. With only a small mod it may not seem very beneficial to do this but in the end it's a very nice technique and will help you avoid many errors caused by hand-written JSON files.
 
 First make a datagen package and create the following class in it:
 
@@ -256,7 +256,7 @@ public class DataGenerators {
 }
 ```
 
-This class uses the `@Mod.EventBusSubscriber` annotation to ensure that it will be registered on the correct bus for receiving `GatherDataEvent` events. This event is fired when your mod is started using the 'runData' profile. This is a special mode where there will be no normal Minecraft screen but objects are registered as usual and then GatherDataEvent is fired giving this event a chance to generate jsons. These jsons will be generated in the 'generated' folder in your project. Don't make manual changes inside that folder because they will be overwritten whenever you do this generation again!
+This class uses the `@Mod.EventBusSubscriber` annotation to ensure that it will be registered on the correct bus for receiving `GatherDataEvent` events. This event is fired when your mod is started using the 'runData' profile. This is a special mode where there will be no normal Minecraft screen but objects are registered as usual and then GatherDataEvent is fired giving this event a chance to generate JSON files. These JSON files will be generated in the 'generated' folder in your project. Don't make manual changes inside that folder because they will be overwritten whenever you do this generation again!
 
 :::danger Warning
 Whenever you use an annotation like `@Mod.EventBusSubscriber` on a class all 'event' methods (methods that use `@SubscribeEvent`) need to be static!

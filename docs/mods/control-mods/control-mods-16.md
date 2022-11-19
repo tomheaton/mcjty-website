@@ -12,7 +12,7 @@ Both mods have support for:
 - [Game Stages](https://minecraft.curseforge.com/projects/game-stages)
 - [Serene Seasons](https://minecraft.curseforge.com/projects/serene-seasons)
 - [Baubles](https://minecraft.curseforge.com/projects/baubles)
-- [Lost Cities](../lost-cities.md)
+- [Lost Cities](../lost-cities/lost-cities.md)
 - [EnigmaScript](../enigma/enigma.md)
 
 Because both mods have a very similar structure the documentation for them is merged.
@@ -111,7 +111,7 @@ Many conditions are very simple but when testing for items things can be a bit m
 
 * `minecraft:sand` (just normal minecraft sand)
 * With NBT (same format as for `/give` command): `minecraft:stained_hardened_clay/{display:{Lore:[\"My Clay\"]}}`
-* A Json descriptor which supports the following tags:
+* A JSON descriptor which supports the following tags:
   * `item`: an item ID (like `minecraft:sand` or `rftools:powercell`)
   * `empty`: a boolean (true or false) indicating if the item is empty or not. If this is present no other tags will be considered
   * `damage`: an expression (see above) which will be evaluated on the damage from the item
@@ -465,14 +465,16 @@ In contrast with most other rule files every rule is evaluated every time. i.e. 
 Loot supports the following actions:
 
 * `item`: this is a string or a list of strings representing new loot that will be dropped
-* `itemcount`: this is a string representing how many items should drop (optionally depending on looting level). For example: "5/7-10/20-30" will drop 5 items at looting 0, 7-10 items at looting 1 and 20-30 items at looting 2 or beyond
+* `itemcount`: this is a string representing how many items should drop (optionally depending on looting level). For example: `5/7-10/20-30` will drop `5` items at looting `0`, `7-10` items at looting `1` and `20-30` items at looting `2` or beyond
 * `nbt`: this is a JSON specifying the NBT that will be used for the loot items
 * `remove`: this is a string or a list of strings representing items to remove from the loot
 * `removeall`: if this is present then all items will be removed from the loot (before new items are added by this rule)
 
 ### Experience
 
-This is similar to loot control except that it controls how much experience you get from killing a mob. All keywords from loot control can be used here except the ones that are about damage type (magic, explosion, ...) as that information is not present in this event. There are four outputs that work for these rules:
+This is similar to loot control except that it controls how much experience you get from killing a mob.
+All keywords from loot control can be used here except the ones that are about damage type (magic, explosion, ...) as that information is not present in this event.
+There are four outputs that work for these rules:
 
 * `result`: set this to 'deny' to not give any experience at all
 * `setxp`: set a fixed XP instead of the default one
@@ -774,8 +776,8 @@ In this example zombies will drop an enchanted diamond sword:
 
 Here are a few examples for `effects.json`:
 
-This example makes the player get poison effect if he is outside in the overworld.
-He will be put on fire if he goes to the nether, and he will get the slowness effect if he is holding a stone tool:
+This example makes the player get poison effect if they are outside in the overworld.
+They will be put on fire if they goe to the nether, and they will get the slowness effect if they are holding a stone tool:
 
 ```json title="effects.json"
 [
@@ -798,7 +800,7 @@ He will be put on fire if he goes to the nether, and he will get the slowness ef
 ]
 ```
 
-In the following example the player will get hurt if he stands on an RFTools powercell that has a lot of energy in it:
+In the following example the player will get hurt if they stand on an RFTools powercell that has a lot of energy in it:
 
 ```json title="effects.json"
 [
@@ -813,7 +815,7 @@ In the following example the player will get hurt if he stands on an RFTools pow
 ]
 ```
 
-With this example the player will be put on fire if he even looks at lava:
+With this example the player will be put on fire if they even look at lava:
 
 ```json title="effects.json"
 [

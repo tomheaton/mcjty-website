@@ -40,7 +40,7 @@ After fixing possible compile errors this should be everything you need to do.
 
 ===Data Generators===
 
-A relatively new thing in Forge (and Minecraft) is the ability to generate jsons for recipes, loot tables, advancements and tags from code. Especially for big projects this can help a great deal with generating many jsons.
+A relatively new thing in Forge (and Minecraft) is the ability to generate JSON files for recipes, loot tables, advancements and tags from code. Especially for big projects this can help a great deal with generating many JSON files.
 
 ====build.gradle====
 To get this working you need to add a new 'run' to build.gradle like this:
@@ -83,7 +83,7 @@ After this you need to refresh gradle again and also run 'genIntellijRuns'. This
 
 ====The Gather Event====
 
-To actually generate these jsons in your code I recommend creating a new 'datagen' package. There you need a few new classes. It all starts with this class:
+To actually generate these JSON files in your code I recommend creating a new 'datagen' package. There you need a few new classes. It all starts with this class:
 ```
 <syntaxhighlight lang="java">
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

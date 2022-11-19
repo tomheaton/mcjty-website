@@ -110,7 +110,7 @@ Before starting to actually port you should follow [this guide](https://gist.git
 
 #### More JSON
 
-Various things should now be defined in json. Like for the ores you can use jsons in `worldgen/configured_feature` and `worldgen/placed_feature`.
+Various things should now be defined in json. Like for the ores you can use JSON files in `worldgen/configured_feature` and `worldgen/placed_feature`.
 See the tutorial GitHub for examples.
 
 #### Various Removals

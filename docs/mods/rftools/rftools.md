@@ -8,4 +8,4 @@
 
 ## Changelogs
 
-[7.00 Changelog WIP](./changelog)
+[7.00 Changelog WIP](./changelog.md)
