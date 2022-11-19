@@ -6,11 +6,13 @@ sidebar_position: 2
 
 Back: [Index](./1.14-1.15-1.16.md)
 
-=== Loot tables ===
+### Loot tables
 
-In 1.14 blocks have no drops by default. You have to add a loot table entry to make sure that when the player harvests a block it will get loot. This can be done like this:
-```
-<syntaxhighlight lang="json">
+In 1.14 blocks have no drops by default.
+You have to add a loot table entry to make sure that when the player harvests a block it will get loot.
+This can be done like this:
+
+```json
 {
   "type": "minecraft:block",
   "pools": [
@@ -31,17 +33,23 @@ In 1.14 blocks have no drops by default. You have to add a loot table entry to m
     }
   ]
 }
-</syntaxhighlight>
 ```
-A few notes. In contrast with vanilla, modded loot table pools require a name. That's why there is 'pool1' there. This JSON also doesn't go to the assets folder like the blockstates and models. Instead it goes to the data folder. In this case in data/mytutorial/loot_tables/blocks
 
-Loot tables are very powerful. You can customize this in many ways and in the future we will explain some more features related to this.
+A few notes.
+In contrast with vanilla, modded loot table pools require a name.
+That's why there is `pool1` there.
+This JSON also doesn't go to the assets folder like the blockstates and models.
+Instead, it goes to the data folder.
+In this case in `data/mytutorial/loot_tables/blocks`
 
-=== Recipe ===
+Loot tables are very powerful.
+You can customize this in many ways and in the future we will explain some more features related to this.
+
+### Recipe
 
 We also want to make our block craftable. Again this requires a new JSON in the data folder:
-```
-<syntaxhighlight lang="json">
+
+```json
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
@@ -61,25 +69,28 @@ We also want to make our block craftable. Again this requires a new JSON in the 
     "item": "mytutorial:firstblock"
   }
 }
-</syntaxhighlight>
 ```
-If you have modded in 1.12 you probably remember the ore dictionary. This is now gone since vanilla has its own system (tags) for that.
 
-=== Localisation ===
+If you have modded in 1.12 you probably remember the ore dictionary.
+This is now gone since vanilla has its own system (tags) for that.
 
-If you want to have proper names for your blocks and items you should add a language file. This goes in assets:
-```
-<syntaxhighlight lang="json">
+### Localisation
+
+If you want to have proper names for your blocks and items you should add a language file.
+This goes in assets:
+
+```json
 {
     "block.mytutorial.firstblock": "First Block"
 }
-</syntaxhighlight>
 ```
-=== Our first item ===
 
-So now lets add our first simple item. Make a new package called 'items' and add a class called FirstItem there:
-```
-<syntaxhighlight lang="java">
+### Our first item
+
+So now let's add our first simple item.
+Make a new package called 'items' and add a class called FirstItem there:
+
+```java title="FirstItem.java"
 public class FirstItem extends Item {
 
     public FirstItem() {
@@ -89,11 +100,12 @@ public class FirstItem extends Item {
         setRegistryName("firstitem");
     }
 }
-</syntaxhighlight>
 ```
-Again, same principle as with blocks. Now lets register this in our main mod class:
-```
-<syntaxhighlight lang="java">
+
+Again, same principle as with blocks.
+Now lets register this in our main mod class:
+
+```java
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
         ...
@@ -104,32 +116,32 @@ Again, same principle as with blocks. Now lets register this in our main mod cla
             event.getRegistry().register(new FirstItem());
         }
 
-</syntaxhighlight>
 ```
+
 Similar to blocks we also add a ModItems class where we keep all object holders:
-```
-<syntaxhighlight lang="java">
+
+```java title="ModItems.java"
 public class ModItems {
 
     @ObjectHolder("mytutorial:firstitem")
     public static FirstItem FIRSTITEM;
 }
-</syntaxhighlight>
 ```
+
 Again to make it look nice we need a model and a texture:
-```
-<syntaxhighlight lang="json">
+
+```json
 {
   "parent": "item/handheld",
   "textures": {
     "layer0": "mytutorial:item/firstitem"
   }
 }
-</syntaxhighlight>
 ```
+
 And let us add a recipe as well:
-```
-<syntaxhighlight lang="json">
+
+```json
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
@@ -149,5 +161,4 @@ And let us add a recipe as well:
     "item": "mytutorial:firstitem"
   }
 }
-</syntaxhighlight>
 ```

@@ -10,7 +10,7 @@ In addition, the block will also use blockstates to orient itself according to h
 Note that blockstates roughly translate to metadata as you would use in older versions of Minecraft.
 The blockstate system is much cleaner but remember that in 1.8.9 the metadata is still represented by 4 bits (for blocks at least) so you are limited to 16 different states.
 In the example below we define a property called 'FACING' which is a direction property.
-Based on this property we will decide how to rotate our model in the blockstate json.
+Based on this property we will decide how to rotate our model in the blockstate JSON.
 
 ![image](https://i.imgur.com/ne5i9nJ.png)
 

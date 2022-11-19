@@ -23,7 +23,7 @@ Then change the minecraft dependency to that version.
 
 For example:
 
-```gradle
+```gradle title="build.gradle"
 minecraft 'net.minecraftforge:forge:1.19.2-42.0.1'
 ```
 
@@ -34,7 +34,7 @@ Check [The Parchment Wiki](https://github.com/ParchmentMC/Parchment/wiki/Getting
 
 As of this moment there are no parchment mappings for 1.19, so we use official mappings instead:
 
-```gradle
+```gradle title="build.gradle"
 mappings channel: 'official', version: "1.19.2"
 ```
 
@@ -45,7 +45,7 @@ Consult [The JEI wiki](https://github.com/mezz/JustEnoughItems/wiki/Getting-Star
 
 As of this writing we use this:
 
-```gradle
+```gradle title="build.gradle"
 // compile against the JEI API but do not include it at runtime
 compileOnly fg.deobf("mezz.jei:jei-1.19.1-common-api:${jei_version}")
 compileOnly fg.deobf("mezz.jei:jei-1.19.1-forge-api:${jei_version}")
@@ -55,7 +55,7 @@ runtimeOnly fg.deobf("mezz.jei:jei-1.19.1-forge:${jei_version}")
 
 In `gradle.properties` we then set this:
 
-```gradle
+```properties title="gradle.properties"
 jei_version=11.2.0.244
 ```
 
@@ -64,7 +64,7 @@ jei_version=11.2.0.244
 Finally, we want to include The One Probe.
 Check here to find what the latest version is [The TOP Maven](https://maven.k-4u.nl/mcjty/theoneprobe/theoneprobe/.
 
-```gradle
+```gradle title="build.gradle"
 implementation fg.deobf(project.dependencies.create("mcjty.theoneprobe:theoneprobe:${top_version}") {
     transitive = false
 })
@@ -72,7 +72,7 @@ implementation fg.deobf(project.dependencies.create("mcjty.theoneprobe:theonepro
 
 And again in `gradle.properties` we put this:
 
-```gradle
+```properties title="gradle.properties"
 top_version=1.19-6.2.0-6
 ```
 
@@ -110,7 +110,7 @@ Before starting to actually port you should follow [this guide](https://gist.git
 
 #### More JSON
 
-Various things should now be defined in json. Like for the ores you can use JSON files in `worldgen/configured_feature` and `worldgen/placed_feature`.
+Various things should now be defined in JSON. Like for the ores you can use JSON files in `worldgen/configured_feature` and `worldgen/placed_feature`.
 See the tutorial GitHub for examples.
 
 #### Various Removals
@@ -206,7 +206,7 @@ Example of a biome decorator (place in `data/<modid>/forge/biome_modifier`):
 
 #### Structures
 
-Structures now extend Structure and need a codec for persistance.
+Structures now extend Structure and need a codec for persistence.
 The codec has to be registered on the `Registry.STRUCTURE_TYPE_REGISTRY` vanilla registry (you can use `DeferredRegister` for this):
 
 ```java
@@ -263,10 +263,11 @@ Instead, make a model like this:
 #### Baked Models
 
 There have been a lot of render related changes.
-To get some idea of this you can look at [this notion site](https://forge-render-refactor.notion.site/forge-render-refactor/ecd69011d01042c48a0fca80696cb4da?v=dd40865450614d9c9130c3dedcd085e5).
+To get some idea of this you can look at [this Notion site](https://forge-render-refactor.notion.site/forge-render-refactor/ecd69011d01042c48a0fca80696cb4da?v=dd40865450614d9c9130c3dedcd085e5).
 Here is a summary:
 
-`BakedQuadBuilder` has been replaced with `QuadBakingVertexConsumer`. You use it as follows:
+`BakedQuadBuilder` has been replaced with `QuadBakingVertexConsumer`.
+You use it as follows:
 
 ```java
 BakedQuad[] quad = new BakedQuad[1];
@@ -280,7 +281,8 @@ RenderHelper.putVertex(builder, normal, v4.x, v4.y, v4.z, 16, 0, sprite, r, g, b
 return quad[0];
 ```
 
-And building a vertex has also changed. Here is an example:
+And building a vertex has also changed.
+Here is an example:
 
 ```java
 public static void putVertex(VertexConsumer builder, Position normal, double x, double y, double z, float u, float v, TextureAtlasSprite sprite, float r, float g, float b, float a) {

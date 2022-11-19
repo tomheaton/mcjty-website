@@ -6,7 +6,7 @@ sidebar_position: 1
 
 Back: [Index](./1.14-1.15-1.16.md)
 
-=== IDEA Setup ===
+###  IDEA Setup
 
 Download the MDK from: https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.14.2.html
 Extract it somewhere and open 'build.gradle' as a project in IDEA (or Eclipse).
@@ -21,13 +21,12 @@ If you want to use this MDK as a base for a new mod you can make a new directory
 Modify `build.gradle` to change the name of the mod.
 Modify `src/main/resources/META-INF/mods.toml` likewise.
 
-=== Basic Mod Class ===
+###  Basic Mod Class
 
 There are many ways to structure your mod.
 In this tutorial I'll explain how I choose to do it.
 
-```
-<syntaxhighlight lang="java">
+```java
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("mytutorial")
 public class MyTutorial {
@@ -63,7 +62,6 @@ public class MyTutorial {
         }
     }
 }
-</syntaxhighlight>
 ```
 
 A few important things in this.
@@ -79,13 +77,12 @@ So when 'setup' is called we are sure that we can interface with all our blocks 
 The RegistryEvents class is responsible for registering everything we need in our mod.
 It can also be put in a separate class but in this tutorial we just do it like is shown in the MDK.
 
-=== Our First Block ===
+###  Our First Block
 
 We create a new package called 'blocks' inside our project.
 In that package make a new class called FirstBlock like this:
 
-```
-<syntaxhighlight lang="java">
+```java
 public class FirstBlock extends Block {
 
     public FirstBlock() {
@@ -97,7 +94,6 @@ public class FirstBlock extends Block {
         setRegistryName("firstblock");
     }
 }
-</syntaxhighlight>
 ```
 
 The constructor sets up the block properties and also sets a registry name.
@@ -107,23 +103,21 @@ Again, a matter of taste mostly.
 
 Then we need to add an entry to our main mod class inside the block register:
 
-```
-<syntaxhighlight lang="java">
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> event) {
-            event.getRegistry().register(new FirstBlock());
-        }
-
-        @SubscribeEvent
-        public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-            Item.Properties properties = new Item.Properties()
-                    .group(setup.itemGroup);
-            event.getRegistry().register(new BlockItem(ModBlocks.FIRSTBLOCK, properties).setRegistryName("firstblock"));
-        }
+```java
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+public static class RegistryEvents {
+    @SubscribeEvent
+    public static void onBlocksRegistry(final RegistryEvent.Register<Block> event) {
+        event.getRegistry().register(new FirstBlock());
     }
-</syntaxhighlight>
+
+    @SubscribeEvent
+    public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
+        Item.Properties properties = new Item.Properties()
+                .group(setup.itemGroup);
+        event.getRegistry().register(new BlockItem(ModBlocks.FIRSTBLOCK, properties).setRegistryName("firstblock"));
+    }
+}
 ```
 
 So we have to register both the block and a BlockItem.
@@ -133,14 +127,12 @@ If you don't register such an item then the block can only exist in the world.
 We also need to add a class where we store all references to our blocks.
 Add a class called ModBlocks:
 
-```
-<syntaxhighlight lang="java">
+```java
 public class ModBlocks {
 
     @ObjectHolder("mytutorial:firstblock")
     public static FirstBlock FIRSTBLOCK;
 }
-</syntaxhighlight>
 ```
 The ObjectHolder annotation will be automatically recognized by Forge.
 As soon as a block with the given name is registered this variable will get populated.

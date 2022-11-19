@@ -1015,7 +1015,7 @@ Modify the Ores class as follows:
 
 #### Registration
 
-Both the chunk generator and the biome source are objects that need to be manually registered on a vanilla registry. Add the following class for that. The MYSTERIOUS ResourceKey is the unique identifier for our dimension. We don't need to register that as the dimension is fully defined in json.
+Both the chunk generator and the biome source are objects that need to be manually registered on a vanilla registry. Add the following class for that. The MYSTERIOUS ResourceKey is the unique identifier for our dimension. We don't need to register that as the dimension is fully defined in JSON.
 
 ```java title="Dimensions.java"
 public class Dimensions {

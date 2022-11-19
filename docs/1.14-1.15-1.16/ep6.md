@@ -6,13 +6,14 @@ sidebar_position: 6
 
 Back: [Index](./1.14-1.15-1.16.md)
 
-===Calling markDirty===
+### Calling markDirty
 
-Something we forgot to do last episode is calling markDirty() when something in our inventory handler changes. Calling TileEntity.markDirty() has to be done whenever something changes so that Minecraft knows that it has to save this tile entity when the world is saved.
+Something we forgot to do last episode is calling markDirty() when something in our inventory handler changes.
+Calling TileEntity.markDirty() has to be done whenever something changes so that Minecraft knows that it has to save this tile entity when the world is saved.
 
 To fix this we change our createItemHandler (in FirstBlockTile) as follows:
-```
-<syntaxhighlight lang="java">
+
+```java
     private IItemHandler createHandler() {
         return new ItemStackHandler(1) {
 
@@ -24,47 +25,50 @@ To fix this we change our createItemHandler (in FirstBlockTile) as follows:
             ...
         };
     }
-</syntaxhighlight>
 ```
+
 For our energy storage we don't have to do this since we control that ourselves (no other device can insert or extract power, this is all done in our tick function).
 
-===Sending out Power===
+### Sending out Power
 
-Forge Energy typically works with a 'push' system. That means that power generators and energy cells push power to nearby machines. It is not the machines that extract power out of a generator. To implement this functionality we have to change our tick method as follows:
-```
-<syntaxhighlight lang="java">
-    @Override
-    public void tick() {
-        if (world.isRemote) {
-            return;
-        }
+Forge Energy typically works with a 'push' system.
+That means that power generators and energy cells push power to nearby machines.
+It is not the machines that extract power out of a generator.
+To implement this functionality we have to change our tick method as follows:
 
-        if (counter > 0) {
-            counter--;
-            if (counter <= 0) {
-                energy.ifPresent(e -> ((CustomEnergyStorage) e).addEnergy(1000));
-            }
-            markDirty();
-        }
-
-        if (counter <= 0) {
-            handler.ifPresent(h -> {
-                ItemStack stack = h.getStackInSlot(0);
-                if (stack.getItem() == Items.DIAMOND) {
-                    h.extractItem(0, 1, false);
-                    counter = 20;
-                    markDirty();
-                }
-            });
-        }
-
-        sendOutPower();
+```java
+@Override
+public void tick() {
+    if (world.isRemote) {
+        return;
     }
-</syntaxhighlight>
+
+    if (counter > 0) {
+        counter--;
+        if (counter <= 0) {
+            energy.ifPresent(e -> ((CustomEnergyStorage) e).addEnergy(1000));
+        }
+        markDirty();
+    }
+
+    if (counter <= 0) {
+        handler.ifPresent(h -> {
+            ItemStack stack = h.getStackInSlot(0);
+            if (stack.getItem() == Items.DIAMOND) {
+                h.extractItem(0, 1, false);
+                counter = 20;
+                markDirty();
+            }
+        });
+    }
+
+    sendOutPower();
+}
 ```
-We changed the if structure a bit so that we can immediatelly start extracting a new diamond as soon as the previous one has done generating (the reason for that is so that our machine doesn't temporarily turn off for one tick, this is important for a later part of this tutorial). We also call a new sendOutPower method:
-```
-<syntaxhighlight lang="java">
+
+We changed the if structure a bit so that we can immediately start extracting a new diamond as soon as the previous one has done generating (the reason for that is so that our machine doesn't temporarily turn off for one tick, this is important for a later part of this tutorial). We also call a new sendOutPower method:
+
+```java
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             AtomicInteger capacity = new AtomicInteger(energy.getEnergyStored());
@@ -92,17 +96,21 @@ We changed the if structure a bit so that we can immediatelly start extracting a
             }
         });
     }
-</syntaxhighlight>
 ```
-This function will (if there is any power present in our generator) loop over all six directions and check if there is a power receiver there that is willing to get power from us. Our map function that we use for handling the capability will return true in case we still have enough power to check the next direction. That way we can exit early if power is depleted. We use an AtomicInteger for our capacity because it is possible to modify those from inside a lambda.
+This function will (if there is any power present in our generator) loop over all six directions and check if there is a power receiver there that is willing to get power from us.
+Our map function that we use for handling the capability will return true in case we still have enough power to check the next direction.
+That way we can exit early if power is depleted.
+We use an AtomicInteger for our capacity because it is possible to modify those from inside a lambda.
 
 This should make it send out power. We will test this later when we actually have a machine that can accept power.
 
-===Configuration===
+### Configuration
 
-We are using a lot of hardcoded values inside our block. It would be much better if you could configure them. Add a new Config class as follows:
-```
-<syntaxhighlight lang="java">
+We are using a lot of hardcoded values inside our block.
+It would be much better if you could configure them.
+Add a new Config class as follows:
+
+```java
 @Mod.EventBusSubscriber
 public class Config {
 
@@ -176,15 +184,18 @@ public class Config {
     }
 
 }
-</syntaxhighlight>
 ```
-In this config class we define four configurable values. Using push/pop we can define categories inside our config. The common config is used both client and server side. We don't use any client side configs yet.
+
+In this config class we define four configurable values.
+Using push/pop we can define categories inside our config.
+The common config is used both client and server side.
+We don't use any client side configs yet.
 
 The onLoad and onReload event handlers can be useful in case you want to do some calculations based on config values.
 
 In the constructor of our mod we add the following lines:
-```
-<syntaxhighlight lang="java">
+
+```java
     public MyTutorial() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
@@ -195,14 +206,15 @@ In the constructor of our mod we add the following lines:
         Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("mytutorial-client.toml"));
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("mytutorial-common.toml"));
     }
-</syntaxhighlight>
 ```
-The first two lines do the actual registration of our config while the two last lines make sure the configs are loaded/saved to disk. Doing this in the constructor has the advantage that the config values will be usable at every future stage (during registration and initialization of our mod).
+
+The first two lines do the actual registration of our config while the two last lines make sure the configs are loaded/saved to disk.
+Doing this in the constructor has the advantage that the config values will be usable at every future stage (during registration and initialization of our mod).
 
 
 To use the new config values in our tile entity we have to make the following modifications to FirstBlockTile:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class FirstBlockTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     ...
@@ -215,16 +227,22 @@ public class FirstBlockTile extends TileEntity implements ITickableTileEntity, I
         ...
     }
 
-</syntaxhighlight>
+    ...
+
+}
 ```
-So basically everywhere that you use a hardcoded value you can change it with the config value. Check out the github for the other locations that were changed.
+
+So basically everywhere that you use a hardcoded value you can change it with the config value.
+Check out the GitHub for the other locations that were changed.
 
 
-===Front panel animation===
+### Front panel animation
 
-It would be nice if our power generation actually had a different front panel when it is generating power. To do that we need to add a new property to our block. Modify FirstBlock as follows:
-```
-<syntaxhighlight lang="java">
+It would be nice if our power generation actually had a different front panel when it is generating power.
+To do that we need to add a new property to our block.
+Modify FirstBlock as follows:
+
+```java
 public class FirstBlock extends Block {
 
     ...
@@ -244,13 +262,12 @@ public class FirstBlock extends Block {
     ...
 
 }
-</syntaxhighlight>
 ```
 So basically we use a new property (POWERED) and we also change the light value from our block to zero when it is not powered.
 
 We need to add a new model with a different front face (see GitHub) and the blockstate we modify as follows:
-```
-<syntaxhighlight lang="json">
+
+```json
 {
   "variants": {
     "facing=north,powered=false": { "model": "mytutorial:block/firstblock" },
@@ -267,23 +284,26 @@ We need to add a new model with a different front face (see GitHub) and the bloc
     "facing=down,powered=true": { "model": "mytutorial:block/firstblock_powered", "x": 90 }
   }
 }
-</syntaxhighlight>
 ```
-Finally we need to modify our tile entity to actually set this property when it is generating power. Modify FirstBlockTile as follows:
-```
-<syntaxhighlight lang="java">
-    @Override
-    public void tick() {
 
-        ...
+Finally, we need to modify our tile entity to actually set this property when it is generating power.
+Modify FirstBlockTile as follows:
 
-        BlockState blockState = world.getBlockState(pos);
-        if (blockState.get(BlockStateProperties.POWERED) != counter > 0) {
-            world.setBlockState(pos, blockState.with(BlockStateProperties.POWERED, counter > 0), 3);
-        }
+```java title="FirstBlockTile.java"
+@Override
+public void tick() {
 
-        sendOutPower();
+    ...
+
+    BlockState blockState = world.getBlockState(pos);
+    if (blockState.get(BlockStateProperties.POWERED) != counter > 0) {
+        world.setBlockState(pos, blockState.with(BlockStateProperties.POWERED, counter > 0), 3);
     }
-</syntaxhighlight>
+
+    sendOutPower();
+}
 ```
-To prevent unneeded changing of our blockstate we make sure to compare our current value of POWERED with the desired value. Only if it is different do we call world.setBlockState. Make sure to use flag 3 to notify the client that this changed (tick is only working server side in our case).
+
+To prevent unneeded changing of our blockstate we make sure to compare our current value of POWERED with the desired value.
+Only if it is different do we call world.setBlockState.
+Make sure to use flag 3 to notify the client that this changed (tick is only working server side in our case).

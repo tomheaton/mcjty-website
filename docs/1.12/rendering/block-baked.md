@@ -144,7 +144,7 @@ public class BakedModelBlock extends Block {
 To get our baked model working we need three things.
 First we need a model (implementation of IModel).
 That doesn't do much more than act as a way to create our baked model (IBakedModel implementation) which does the actual work.
-And finally we need a custom model loader (implementation of ICustomModelLoader) so that we can load our new model from within json.
+And finally we need a custom model loader (implementation of ICustomModelLoader) so that we can load our new model from within JSON.
 
 First we make our model. This is the class that is responsible for making our baked model:
 

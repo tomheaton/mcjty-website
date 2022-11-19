@@ -42,7 +42,7 @@ For development, it's nice to have JEI and TOP available.
 To do that you can change the following in your `build.gradle`.
 First change the `repositories` like this:
 
-```gradle
+```gradle title="build.gradle"
 repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
@@ -58,7 +58,7 @@ repositories {
 
 Then change `dependencies` to this:
 
-```gradle
+```gradle title="build.gradle"
 dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
@@ -92,7 +92,7 @@ There are many ways to structure your mod.
 In this tutorial we will try to keep our main mod class small and do all needed setup in helper classes.
 So here is our main mod class:
 
-```java
+```java title="TutorialV3.java"
 @Mod(TutorialV3.MODID)
 public class TutorialV3 {
 
@@ -116,15 +116,19 @@ public class TutorialV3 {
 
 In addition, we also add a new 'setup' package with the following three java classes in it (put every class in its own java file with the same name as the class):
 
-```java
+```java title="setup/Registration.java"
 public class Registration {
 }
+```
 
+```java title="setup/ModSetup.java"
 public class ModSetup {
     public static void init(final FMLCommonSetupEvent event) {
     }
 }
+```
 
+```java title="setup/ClientSetup.java"
 @Mod.EventBusSubscriber(modid = TutorialV3.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientSetup {
     public static void init(final FMLClientSetupEvent event) {
@@ -144,13 +148,14 @@ In the following image there are three columns:
 
 ### First Simple Blocks
 
-In this section we will add four new blocks. These blocks represent four different variants of an ore that we will be adding in this mod.
+In this section we will add four new blocks.
+These blocks represent four different variants of an ore that we will be adding in this mod.
 
 ![image](https://i.imgur.com/bzbNZac.png)
 
 Add this code to the Registration class:
 
-```java
+```java title="Registration.java"
 public class Registration {
 
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
@@ -183,17 +188,23 @@ public class Registration {
 }
 ```
 
-The DeferredRegister is a very easy way to handle registration of various objects in the Minecraft game (blocks, items, containers, dimensions, entities, ...). It's important to note that in this register we will always register singletons. i.e. the objects in the 'Definition' column of our previous image. For every object that we want to add to our mod we declare a RegistryObject and then register it on the appropriate deferred register. In that registration we also give a supplier (lambda) to actually generate the instance of our registry object at the appropriate time.
+The DeferredRegister is a very easy way to handle registration of various objects in the Minecraft game (blocks, items, containers, dimensions, entities, ...).
+It's important to note that in this register we will always register singletons. i.e. the objects in the 'Definition' column of our previous image.
+For every object that we want to add to our mod we declare a RegistryObject and then register it on the appropriate deferred register.
+In that registration we also give a supplier (lambda) to actually generate the instance of our registry object at the appropriate time.
 
-Note: objects are registered pretty early. That means that at the time the FMLCommonSetupEvent is fired all objects from all mods will be registered and ready.
+Note: objects are registered pretty early.
+That means that at the time the FMLCommonSetupEvent is fired all objects from all mods will be registered and ready.
 
-Note how we make a corresponding item (using BlockItem) for every block. That's because we need to be able to hold these blocks in our inventory (in case someone does silk touch on them).
+Note how we make a corresponding item (using BlockItem) for every block.
+That's because we need to be able to hold these blocks in our inventory (in case someone does silk touch on them).
 
-In this specific example we use the standard vanilla Block and Item classes. Later we will show you how you can make your own custom blocks and items using subclasses.
+In this specific example we use the standard vanilla Block and Item classes.
+Later we will show you how you can make your own custom blocks and items using subclasses.
 
 We also need to add a new creative tab to ModSetup like this:
 
-```java
+```java title="ModSetup.java"
 public static final String TAB_NAME = "tutorialv3";
 
 public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(TAB_NAME) {
@@ -206,13 +217,16 @@ public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(TAB_NAME) {
 
 ### Data Generation
 
-If we run our mod now you will see that the blocks and items are not correctly textured and that the blocks don't have a good name. To fix that we need to make models and a bunch of other JSON files. We will be using data generation to generate those as that's the most flexible way to do things. With only a small mod it may not seem very beneficial to do this but in the end it's a very nice technique and will help you avoid many errors caused by hand-written JSON files.
+If we run our mod now you will see that the blocks and items are not correctly textured and that the blocks don't have a good name.
+To fix that we need to make models and a bunch of other JSON files.
+We will be using data generation to generate those as that's the most flexible way to do things.
+With only a small mod it may not seem very beneficial to do this but in the end it's a very nice technique and will help you avoid many errors caused by handwritten JSON files.
 
 First make a datagen package and create the following class in it:
 
 ![image](https://i.imgur.com/pLm4syY.png)
 
-```java
+```java title="DataGenerators.java"
 @Mod.EventBusSubscriber(modid = TutorialV3.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
 
@@ -237,7 +251,7 @@ public class DataGenerators {
 
 ![image](https://i.imgur.com/o7hgFpp.png)
 
-```java
+```java title="DataGenerators.java"
 @Mod.EventBusSubscriber(modid = TutorialV3.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
 
@@ -256,7 +270,9 @@ public class DataGenerators {
 }
 ```
 
-This class uses the `@Mod.EventBusSubscriber` annotation to ensure that it will be registered on the correct bus for receiving `GatherDataEvent` events. This event is fired when your mod is started using the 'runData' profile. This is a special mode where there will be no normal Minecraft screen but objects are registered as usual and then GatherDataEvent is fired giving this event a chance to generate JSON files. These JSON files will be generated in the 'generated' folder in your project. Don't make manual changes inside that folder because they will be overwritten whenever you do this generation again!
+This class uses the `@Mod.EventBusSubscriber` annotation to ensure that it will be registered on the correct bus for receiving `GatherDataEvent` events.
+This event is fired when your mod is started using the 'runData' profile.
+This is a special mode where there will be no normal Minecraft screen but objects are registered as usual and then GatherDataEvent is fired giving this event a chance to generate JSON files. These JSON files will be generated in the 'generated' folder in your project. Don't make manual changes inside that folder because they will be overwritten whenever you do this generation again!
 
 :::danger Warning
 Whenever you use an annotation like `@Mod.EventBusSubscriber` on a class all 'event' methods (methods that use `@SubscribeEvent`) need to be static!

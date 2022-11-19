@@ -6,11 +6,11 @@ sidebar_position: 3
 
 Back: [Index](./1.14-1.15-1.16.md)
 
-===Block Properties===
+### Block Properties
 
 We want to let our block have a different look from the front side. To do that we add a block property. Change the FirstBlock class as follows:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class FirstBlock extends Block {
 
     ...
@@ -31,13 +31,16 @@ public class FirstBlock extends Block {
         builder.add(BlockStateProperties.FACING);
     }
 }
-</syntaxhighlight>
 ```
-We use one of the standard vanilla properties called FACING. This represents a direction with six possible values (north, south, east, west, up, down). In fillStateContainer we add our property to the state container builder so that the system knows this block supports this property. Then we override onBlockPlacedBy to make sure our block faces the right direction when it is placed by a player.
+
+We use one of the standard vanilla properties called FACING.
+This represents a direction with six possible values (north, south, east, west, up, down).
+In fillStateContainer we add our property to the state container builder so that the system knows this block supports this property.
+Then we override onBlockPlacedBy to make sure our block faces the right direction when it is placed by a player.
 
 We need to change our blockstate JSON now:
-```
-<syntaxhighlight lang="json">
+
+```json
 {
   "variants": {
     "facing=north": { "model": "mytutorial:block/firstblock" },
@@ -48,13 +51,13 @@ We need to change our blockstate JSON now:
     "facing=down": { "model": "mytutorial:block/firstblock", "x": 90 }
   }
 }
-</syntaxhighlight>
 ```
+
 So basically we have six variants which all use the same model but with a different rotation.
 
 We also have to change the model so that the north side has a different texture:
-```
-<syntaxhighlight lang="json">
+
+```json
 {
   "parent": "block/cube",
   "textures": {
@@ -67,13 +70,15 @@ We also have to change the model so that the north side has a different texture:
     "south": "mytutorial:block/firstblock"
   }
 }
-</syntaxhighlight>
 ```
-===Tile Entity===
 
-Now it is time to start adding functionality to our block. This is done with a tile entity. Create a new class called FirstBlockTile:
-```
-<syntaxhighlight lang="java">
+### Tile Entity
+
+Now it is time to start adding functionality to our block.
+This is done with a tile entity.
+Create a new class called FirstBlockTile:
+
+```java
 public class FirstBlockTile extends TileEntity implements ITickableTileEntity {
 
     public FirstBlockTile() {
@@ -84,13 +89,13 @@ public class FirstBlockTile extends TileEntity implements ITickableTileEntity {
     public void tick() {
     }
 }
-</syntaxhighlight>
 ```
+
 Because we know we're going to need a tile entity that does some work we implement ITickableTileEntity (don't use ITickable! That's something else) so that our tile entity gets notified every tick.
 
 Now we have to define our TileEntityType (FIRSTBLOCK_TILE). We do this in ModBlocks:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class ModBlocks {
 
     @ObjectHolder("mytutorial:firstblock")
@@ -99,28 +104,29 @@ public class ModBlocks {
     @ObjectHolder("mytutorial:firstblock")
     public static TileEntityType<FirstBlockTile> FIRSTBLOCK_TILE;
 }
-</syntaxhighlight>
 ```
-And we need to register it. This is done in your main mod class:
+
+And we need to register it.
+This is done in your main mod class:
+
+```java
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+public static class RegistryEvents {
+
+    ...
+
+    @SubscribeEvent
+    public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
+        event.getRegistry().register(TileEntityType.Builder.create(FirstBlockTile::new, ModBlocks.FIRSTBLOCK).build(null).setRegistryName("firstblock"));
+    }
+}
 ```
-<syntaxhighlight lang="java">
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
 
-        ...
-
-        @SubscribeEvent
-        public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
-            event.getRegistry().register(TileEntityType.Builder.create(FirstBlockTile::new, ModBlocks.FIRSTBLOCK).build(null).setRegistryName("firstblock"));
-        }
-
-</syntaxhighlight>
-```
 Don't forget to set a registry name and also don't forget to associate the tile entity type with the blocks that need it (in this case FIRSTBLOCK).
 
 We also have to add some extra methods to our block to make sure the tile entity is actually associated with it. Modify FirstBlock as follows:
-```
-<syntaxhighlight lang="java">
+
+```java title="FirstBlock.java"
 public class FirstBlock extends Block {
 
     ...
@@ -138,16 +144,15 @@ public class FirstBlock extends Block {
 
     ...
 }
-</syntaxhighlight>
 ```
 
-===Item Handler===
+### Item Handler
 
 Now we want to add an item handler so that our block has an inventory (note, the code here differs from the code at the end of tutorial 3 because in the beginning of tutorial 4 we make some corrections).
 
 First expand FirstBlockTile as follows:
-```
-<syntaxhighlight lang="java">
+
+```java title="FirstBlockTile.java"
 public class FirstBlockTile extends TileEntity implements ITickableTileEntity {
 
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
@@ -190,37 +195,44 @@ public class FirstBlockTile extends TileEntity implements ITickableTileEntity {
         return super.getCapability(cap, side);
     }
 }
-</syntaxhighlight>
 ```
-Our LazyOptional handler is the instance that will contain our inventory. It is a lazy optional which means it will be created the first time it is needed and cached after that. createHandler() actually creates the item handler. The ItemStackHandler is a handy class provided by Forge that allows you to quickly make inventories of a certain size. In this case we only need 1 slot.
 
-To associate the inventory with our tile entity we use a Forge system called capabilities. Using capabilities you can attach various things (energy, inventories, ...) to tile entities, entities and so on. You can also define your own capabilities which we will be doing in a future episode. To give our tile entity the item handler capability you have to override getCapability and return the handler.
+Our LazyOptional handler is the instance that will contain our inventory.
+It is a lazy optional which means it will be created the first time it is needed and cached after that. createHandler() actually creates the item handler.
+The ItemStackHandler is a handy class provided by Forge that allows you to quickly make inventories of a certain size.
+In this case we only need 1 slot.
 
-To make sure our inventory gets stored when Minecraft saves and restored when it loads we also have to implement read() and write() in our tile entity. Here we see how you can use the ifPresent() call on a LazyOptional to safely access the contained handler (and do nothing if it happens to be missing for whatever reason).
+To associate the inventory with our tile entity we use a Forge system called capabilities.
+Using capabilities you can attach various things (energy, inventories, ...) to tile entities, entities and so on.
+You can also define your own capabilities which we will be doing in a future episode.
+To give our tile entity the item handler capability you have to override getCapability and return the handler.
+
+To make sure our inventory gets stored when Minecraft saves and restored when it loads we also have to implement read() and write() in our tile entity.
+Here we see how you can use the ifPresent() call on a LazyOptional to safely access the contained handler (and do nothing if it happens to be missing for whatever reason).
 
 Our block doesn't have a GUI yet but using a hopper you can test that it is actually working.
 
-=== Restricting the type of item===
+### Restricting the type of item
 
-We are going to create a power generator that runs on diamonds so we need to make sure that our handler can only contain diamonds. To do that we change our createHander() as follows:
-```
-<syntaxhighlight lang="java">
-    private IItemHandler createHandler() {
-        return new ItemStackHandler(1) {
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == Items.DIAMOND;
-            }
+We are going to create a power generator that runs on diamonds, so we need to make sure that our handler can only contain diamonds.
+To do that we change our createHander() as follows:
 
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if (stack.getItem() != Items.DIAMOND) {
-                    return stack;
-                }
-                return super.insertItem(slot, stack, simulate);
+```java
+private IItemHandler createHandler() {
+    return new ItemStackHandler(1) {
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return stack.getItem() == Items.DIAMOND;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            if (stack.getItem() != Items.DIAMOND) {
+                return stack;
             }
-        };
-    }
-</syntaxhighlight>
+            return super.insertItem(slot, stack, simulate);
+        }
+    };
+}
 ```

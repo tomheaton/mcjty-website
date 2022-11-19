@@ -6,15 +6,18 @@ sidebar_position: 8
 
 Back: [Index](./1.14-1.15-1.16.md)
 
-===Introduction===
+### Introduction
 
-In this tutorial we create a very simple entity that doesn't do anything. This is basically a 'getting started on entities' tutorial.
+In this tutorial we create a very simple entity that doesn't do anything.
+This is basically a 'getting started on entities' tutorial.
 
-===The Basic Entity Class===
+### The Basic Entity Class
 
-What you need first is the basic entity class. In this tutorial we decide to make it an animal so we extend from AnimalEntity. That means we also have to override createChild() but we don't support this yet so just return null there:
-```
-<syntaxhighlight lang="java">
+What you need first is the basic entity class.
+In this tutorial we decide to make it an animal, so we extend from AnimalEntity.
+That means we also have to override createChild() but we don't support this yet so just return null there:
+
+```java
 public class WeirdMobEntity extends AnimalEntity {
 
     public WeirdMobEntity(EntityType<? extends AnimalEntity> type, World worldIn) {
@@ -27,22 +30,22 @@ public class WeirdMobEntity extends AnimalEntity {
         return null;
     }
 }
-</syntaxhighlight>
 ```
+
 This entity has to be registered. So first we add a new ModEntities class which keeps our object holder:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class ModEntities {
 
     @ObjectHolder("mytutorial:weirdmob")
     public static EntityType<WeirdMobEntity> WEIRDMOB;
 
 }
-</syntaxhighlight>
 ```
+
 And then we extend our RegistryEvents class in the MyTutorial class with the following registry event handler:
-```
-<syntaxhighlight lang="java">
+
+```java
         @SubscribeEvent
         public static void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {
             event.getRegistry().register(EntityType.Builder.create(WeirdMobEntity::new, EntityClassification.CREATURE)
@@ -51,13 +54,14 @@ And then we extend our RegistryEvents class in the MyTutorial class with the fol
                     .build("weirdmob").setRegistryName(MyTutorial.MODID, "weirdmob"));
 
         }
-</syntaxhighlight>
 ```
-===Model and Renderer===
 
-On the client side our entity needs a model and a renderer. In our example we make very simple ones. Create the following two classes:
-```
-<syntaxhighlight lang="java">
+### Model and Renderer
+
+On the client side our entity needs a model and a renderer.
+In our example we make very simple ones. Create the following two classes:
+
+```java
 public class WeirdMobModel extends EntityModel<WeirdMobEntity> {
 
     public RendererModel body;
@@ -78,11 +82,11 @@ public class WeirdMobModel extends EntityModel<WeirdMobEntity> {
 
     }
 }
-</syntaxhighlight>
 ```
+
 And also the renderer:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class WeirdMobRenderer extends MobRenderer<WeirdMobEntity, WeirdMobModel> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(MyTutorial.MODID, "textures/entity/weirdmob.png");
@@ -97,23 +101,27 @@ public class WeirdMobRenderer extends MobRenderer<WeirdMobEntity, WeirdMobModel>
         return TEXTURE;
     }
 }
-</syntaxhighlight>
 ```
+
 We also need to register this renderer. For this we add a new line to ClientProxy:
-```
-<syntaxhighlight lang="java">
+
+```java
     @Override
     public void init() {
         ...
         RenderingRegistry.registerEntityRenderingHandler(WeirdMobEntity.class, WeirdMobRenderer::new);
     }
-</syntaxhighlight>
 ```
-===Spawn Egg===
 
-The above code is sufficient for the entity itself. However, we also want to add a spawn egg. Because the default vanilla SpawnEggItem requires EntityType as a parameter and items are registered before entities we can't use it easily. So as a solution here we will make our own custom spawn egg item. It's just an item so you don't have to extend from SpawnEggItem. This is basically a modified copy from the vanilla SpawnEggItem:
-```
-<syntaxhighlight lang="java">
+### Spawn Egg
+
+The above code is sufficient for the entity itself.
+However, we also want to add a spawn egg.
+Because the default vanilla SpawnEggItem requires EntityType as a parameter and items are registered before entities we can't use it easily.
+So as a solution here we will make our own custom spawn egg item. It's just an item, so you don't have to extend from SpawnEggItem.
+This is basically a modified copy from the vanilla SpawnEggItem:
+
+```java
 public class WeirdMobEggItem extends Item {
 
     public WeirdMobEggItem() {
@@ -165,21 +173,22 @@ public class WeirdMobEggItem extends Item {
     }
 
 }
-</syntaxhighlight>
 ```
+
 We also have to make an object holder and register it as usual:
+
+```java
+@SubscribeEvent
+public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
+    ...
+    event.getRegistry().register(new WeirdMobEggItem());
+}
 ```
-<syntaxhighlight lang="java">
-        @SubscribeEvent
-        public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-            ...
-            event.getRegistry().register(new WeirdMobEggItem());
-        }
-</syntaxhighlight>
-```
-Our spawn egg uses the same item model as the vanilla spawn eggs (check github for that) so it needs a color (the spawn egg texture is an uncolored texture that has to be colored in code). To do that we add a new ClientRegistration class to listen to the ColorHandlerEvent.Item event:
-```
-<syntaxhighlight lang="java">
+
+Our spawn egg uses the same item model as the vanilla spawn eggs (check GitHub for that) so it needs a color (the spawn egg texture is an uncolored texture that has to be colored in code).
+To do that we add a new `ClientRegistration` class to listen to the `ColorHandlerEvent.Item` event:
+
+```java
 @Mod.EventBusSubscriber(modid = MyTutorial.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
 
@@ -188,6 +197,6 @@ public class ClientRegistration {
         event.getItemColors().register((stack, i) -> 0xff0000, ModItems.WEIRDMOB_EGG);
     }
 }
-</syntaxhighlight>
 ```
-That concludes this tutorial
+
+That concludes this tutorial.

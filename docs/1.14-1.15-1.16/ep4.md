@@ -6,11 +6,10 @@ sidebar_position: 4
 
 Back: [Index](./1.14-1.15-1.16.md)
 
-===The Container===
+### The Container
 
 For creating a gui one of the most important classes is the container. This is a class that exists on the client and the server and it makes sure that changes the user does on the client are communicated properly to the server and the other way around (i.e. the player having a gui open while a hopper is inserting items into the block). Create a class called FirstBlockContainer as follows:
-```
-<syntaxhighlight lang="java">
+```java
 public class FirstBlockContainer extends Container {
 
     private TileEntity tileEntity;
@@ -62,13 +61,11 @@ public class FirstBlockContainer extends Container {
     }
 
 }
-</syntaxhighlight>
 ```
 In the container we store the inventory of the player (as we need to manipulate player inventory slots too) and the inventory of our tile entity (the item handler we created the previous episode). For every slot that we want to manipulate we call addSlot() with SlotItemHandler which is a conveniant way to wrap an IItemHandler to a slot (added by Forge). In canInteractWith we test if the player is near enough to the block to open the inventory.
 
 We also need a container type (FIRSTBLOCK_CONTAINER) that we add to ModBlocks and register in your main class:
-```
-<syntaxhighlight lang="java">
+```java
 public class ModBlocks {
 
     ...
@@ -76,10 +73,8 @@ public class ModBlocks {
     @ObjectHolder("mytutorial:firstblock")
     public static ContainerType<FirstBlockContainer> FIRSTBLOCK_CONTAINER;
 }
-</syntaxhighlight>
 ```
-```
-<syntaxhighlight lang="java">
+```java
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
 
@@ -93,15 +88,13 @@ public class ModBlocks {
             }).setRegistryName("firstblock"));
         }
     }
-</syntaxhighlight>
 ```
 The container type is only used client-side so we can use your proxy getClientWorld and getClientPlayer to get a reference to the world and player. We also need our tile entity and for that we use a custom data packet that is sent from the server to the client. In our case we simply send the position of our block over to this factory (more on that later).
 
-===The Screen===
+### The Screen
 
 The container is present on both sides but the Screen (the actual GUI) is only present on the client. Make a new class called FirstBlockScreen:
-```
-<syntaxhighlight lang="java">
+```java
 public class FirstBlockScreen extends ContainerScreen<FirstBlockContainer> {
 
     private ResourceLocation GUI = new ResourceLocation(MyTutorial.MODID, "textures/gui/firstblock_gui.png");
@@ -130,13 +123,11 @@ public class FirstBlockScreen extends ContainerScreen<FirstBlockContainer> {
         this.blit(relX, relY, 0, 0, this.xSize, this.ySize);
     }
 }
-</syntaxhighlight>
 ```
 When our gui is opened we will get a reference to the client side version of the container. We basically render our custom background (a normal gui texture with the player slots and a single inventory slot for our diamond) and leave the rest to Minecraft.
 
 We also have to couple our container to this screen. This we do in the ClientProxy:
-```
-<syntaxhighlight lang="java">
+```java
 public class ClientProxy implements IProxy {
 
     @Override
@@ -154,15 +145,13 @@ public class ClientProxy implements IProxy {
         return Minecraft.getInstance().player;
     }
 }
-</syntaxhighlight>
 ```
 By doing ScreenManager.registerFactory Minecraft knows that our container is associated with the given Screen.
 
-===Tile Entity and Block===
+### Tile Entity and Block
 
 On the server side we have to extend our block and tile entity to support this new gui. First the tile entity. Add this to FirstBlockTile:
-```
-<syntaxhighlight lang="java">
+```java
 public class FirstBlockTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     ...
@@ -178,13 +167,11 @@ public class FirstBlockTile extends TileEntity implements ITickableTileEntity, I
         return new FirstBlockContainer(i, world, pos, playerInventory, playerEntity);
     }
 }
-</syntaxhighlight>
 ```
 So first we need to implement INamedContainerProvider. I choose to do it in the tile entity but you can also make a separate implementation of this. Again a matter of taste. The important method here is createMenu(). This is responsible for creating the server-side version of the container.
 
 Finally we need to add a method to our block. Extend FirstBlock as follows:
-```
-<syntaxhighlight lang="java">
+```java
 public class FirstBlock extends Block {
 
     ...
@@ -203,7 +190,6 @@ public class FirstBlock extends Block {
         return super.onBlockActivated(state, world, pos, player, hand, result);
     }
 }
-</syntaxhighlight>
 ```
 This method will be called when the user activates (right clicks) our block. Since we have a server-side component to our gui we only open the gui on the server side. That's the reason for the !world.isRemote test. After that we find our tile entity and check that it is a INamedContainerProvider. If so we can call NetworkHooks.openGui. Note the tileEntity.getPos(). That position will be communicated to the client using a packet (and in our client side container factory we read it again). If you want to communicate more information to the client you can make your own custom data here.
 

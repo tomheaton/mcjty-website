@@ -6,7 +6,7 @@ sidebar_position: 1
 
 In order to have a basic model for our first item we need to make a JSON file and access this. Again there are many approaches that one can follow and this tutorial just presents one possibility:
 
-First we have to extend our item class so that we can initialize where Minecraft can find our model. The name 'inventory' refers to the variant in the json. It is commonly used to indicate the model as it should render in the inventory itself:
+First we have to extend our item class so that we can initialize where Minecraft can find our model. The name 'inventory' refers to the variant in the JSON. It is commonly used to indicate the model as it should render in the inventory itself:
 
 ```java
 public class SimpleTexturedItem extends Item {

@@ -6,21 +6,24 @@ sidebar_position: 7
 
 Back: [Index](./1.14-1.15-1.16.md)
 
-===Updating build.gradle===
+### Updating build.gradle
 
-First go to https://files.minecraftforge.net/ to see what the latest Forge version is. In our case it is 28.1.1. Update build.gradle to this version:
-```
-<syntaxhighlight lang="gradle">
+First go to https://files.minecraftforge.net/ to see what the latest Forge version is.
+In our case it is 28.1.1.
+Update `build.gradle` to this version:
+
+```gradle title="build.gradle"
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.14.4-28.1.1'
-</syntaxhighlight>
+}
 ```
-Then go to http://export.mcpbot.bspk.rs/ to check out the latest mappings and also update this in build.gradle:
-```
-<syntaxhighlight lang="gradle">
+
+Then go to http://export.mcpbot.bspk.rs/ to check out the latest mappings and also update this in `build.gradle`:
+
+```gradle title="build.gradle"
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   Snapshot are built nightly.
@@ -28,24 +31,26 @@ minecraft {
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'snapshot', version: '20190914-1.14.3'
-</syntaxhighlight>
+}
 ```
 Open the gradle tab in IDEA and refresh it:
-```
-<img src="https://i.imgur.com/G9uDLjo.png" alt="Refresh Gradle">
-```
+
+![Refresh Gradle](https://i.imgur.com/G9uDLjo.png)
+
 And also run the 'genIntellijRuns' task again.
 
 After fixing possible compile errors this should be everything you need to do.
 
-===Data Generators===
+### Data Generators
 
-A relatively new thing in Forge (and Minecraft) is the ability to generate JSON files for recipes, loot tables, advancements and tags from code. Especially for big projects this can help a great deal with generating many JSON files.
+A relatively new thing in Forge (and Minecraft) is the ability to generate JSON files for recipes, loot tables, advancements and tags from code.
+Especially for big projects this can help a great deal with generating many JSON files.
 
-====build.gradle====
-To get this working you need to add a new 'run' to build.gradle like this:
-```
-<syntaxhighlight lang="gradle">
+#### build.gradle
+
+To get this working you need to add a new 'run' to `build.gradle` like this:
+
+```gradle title="build.gradle"
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
@@ -75,17 +80,23 @@ To get this working you need to add a new 'run' to build.gradle like this:
             }
         }
     }
-</syntaxhighlight>
 ```
-The only addition is the 'args' line. When your mod is called using these arguments it will not run as normal but instead it will kick off data generation events. Note that in this example the generation will happen in a separate folder ('src/generated'). But it is perfectly possible to generate directly into your normal 'src/main' folder. That's basically up to you.
 
-After this you need to refresh gradle again and also run 'genIntellijRuns'. This will create a new 'runData' (in addition to the existing 'runClient' and 'runServer').
+The only addition is the 'args' line.
+When your mod is called using these arguments it will not run as normal, but instead it will kick off data generation events.
+Note that in this example the generation will happen in a separate folder (`src/generated`).
+But it is perfectly possible to generate directly into your normal `src/main` folder.
+That's basically up to you.
 
-====The Gather Event====
+After this you need to refresh gradle again and also run 'genIntellijRuns'.
+This will create a new 'runData' (in addition to the existing 'runClient' and 'runServer').
 
-To actually generate these JSON files in your code I recommend creating a new 'datagen' package. There you need a few new classes. It all starts with this class:
-```
-<syntaxhighlight lang="java">
+#### The Gather Event
+
+To actually generate these JSON files in your code I recommend creating a new 'datagen' package.
+There you need a few new classes. It all starts with this class:
+
+```java
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
 
@@ -96,15 +107,17 @@ public class DataGenerators {
         generator.addProvider(new LootTables(generator));
     }
 }
-</syntaxhighlight>
 ```
-When our mod is run with data gathering option enabled this event will get fired after all things are registered. Using 'addProvider' you can add your own generators to the data gathering. In this tutorial we add a generator for the recipes and loot tables (and automatically handle advancements as well).
 
-====Recipes====
+When our mod is run with data gathering option enabled this event will get fired after all things are registered.
+Using 'addProvider' you can add your own generators to the data gathering.
+In this tutorial we add a generator for the recipes and loot tables (and automatically handle advancements as well).
+
+#### Recipes
 
 The Recipes class looks like this:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class Recipes extends RecipeProvider {
 
     public Recipes(DataGenerator generatorIn) {
@@ -114,25 +127,29 @@ public class Recipes extends RecipeProvider {
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.FIRSTBLOCK)
-                .patternLine("xxx")
-                .patternLine("x#x")
-                .patternLine("xxx")
-                .key('x', Blocks.COBBLESTONE)
-                .key('#', Tags.Items.DYES_RED)
-                .setGroup("mytutorial")
-                .addCriterion("cobblestone", InventoryChangeTrigger.Instance.forItems(Blocks.COBBLESTONE))
-                .build(consumer);
+            .patternLine("xxx")
+            .patternLine("x#x")
+            .patternLine("xxx")
+            .key('x', Blocks.COBBLESTONE)
+            .key('#', Tags.Items.DYES_RED)
+            .setGroup("mytutorial")
+            .addCriterion("cobblestone", InventoryChangeTrigger.Instance.forItems(Blocks.COBBLESTONE))
+            .build(consumer);
     }
 }
-</syntaxhighlight>
 ```
-This is a simple example. To see a more complicated and powerful example check out the Forge github here: https://github.com/MinecraftForge/MinecraftForge/blob/1.14.x/src/test/java/net/minecraftforge/debug/DataGeneratorTest.java
 
-====Loot Tables====
+This is a simple example.
+To see a more complicated and powerful example check out the Forge GitHub [here](https://github.com/MinecraftForge/MinecraftForge/blob/1.14.x/src/test/java/net/minecraftforge/debug/DataGeneratorTest.java)
 
-Loot tables are somewhat more complicated. On the tutorial github you can find an abstract baseclass that you can reuse and adapt for your own projects. Here it is for reference. The YouTube video explains how it works:
-```
-<syntaxhighlight lang="java">
+#### Loot Tables
+
+Loot tables are somewhat more complicated.
+On the tutorial GitHub you can find an abstract baseclass that you can reuse and adapt for your own projects.
+Here it is for reference.
+The YouTube video explains how it works:
+
+```java
 public abstract class BaseLootTableProvider extends LootTableProvider {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -154,15 +171,15 @@ public abstract class BaseLootTableProvider extends LootTableProvider {
     // Subclasses can call this if they want a standard loot table. Modify this for your own needs
     protected LootTable.Builder createStandardTable(String name, Block block) {
         LootPool.Builder builder = LootPool.builder()
-                .name(name)
-                .rolls(ConstantRange.of(1))
-                .addEntry(ItemLootEntry.builder(block)
-                        .acceptFunction(CopyName.builder(CopyName.Source.BLOCK_ENTITY))
-                        .acceptFunction(CopyNbt.func_215881_a(CopyNbt.Source.BLOCK_ENTITY)
-                                .func_216055_a("inv", "BlockEntityTag.inv", CopyNbt.Action.REPLACE)
-                                .func_216055_a("energy", "BlockEntityTag.energy", CopyNbt.Action.REPLACE))
-                        .acceptFunction(SetContents.func_215920_b()
-                                .func_216075_a(DynamicLootEntry.func_216162_a(new ResourceLocation("minecraft", "contents"))))
+            .name(name)
+            .rolls(ConstantRange.of(1))
+            .addEntry(ItemLootEntry.builder(block)
+                .acceptFunction(CopyName.builder(CopyName.Source.BLOCK_ENTITY))
+                .acceptFunction(CopyNbt.func_215881_a(CopyNbt.Source.BLOCK_ENTITY)
+                    .func_216055_a("inv", "BlockEntityTag.inv", CopyNbt.Action.REPLACE)
+                    .func_216055_a("energy", "BlockEntityTag.energy", CopyNbt.Action.REPLACE))
+                .acceptFunction(SetContents.func_215920_b()
+                    .func_216075_a(DynamicLootEntry.func_216162_a(new ResourceLocation("minecraft", "contents"))))
                 );
         return LootTable.builder().addLootPool(builder);
     }
@@ -197,11 +214,11 @@ public abstract class BaseLootTableProvider extends LootTableProvider {
         return "MyTutorial LootTables";
     }
 }
-</syntaxhighlight>
 ```
+
 Then to actually use this we create the actual loot table generator which is now very simple:
-```
-<syntaxhighlight lang="java">
+
+```java
 public class LootTables extends BaseLootTableProvider {
 
     public LootTables(DataGenerator dataGeneratorIn) {
@@ -213,6 +230,6 @@ public class LootTables extends BaseLootTableProvider {
         lootTables.put(ModBlocks.FIRSTBLOCK, createStandardTable("firstblock", ModBlocks.FIRSTBLOCK));
     }
 }
-</syntaxhighlight>
 ```
-When all is ready you can run 'runData' from IDEA and after a while you should have a new 'src/generated' folder containing recipes, advancements, and loot tables.
+
+When all is ready you can run 'runData' from IDEA and after a while you should have a new `src/generated` folder containing recipes, advancements, and loot tables.

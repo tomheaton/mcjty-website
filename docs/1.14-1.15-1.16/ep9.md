@@ -6,15 +6,17 @@ sidebar_position: 9
 
 Back: [Index](./1.14-1.15-1.16.md)
 
-===Introduction===
+### Introduction
 
 In this tutorial we make a new block that has a baked model that allows us to mimic the appearance of other blocks.
 
-===Creating a new fancy block===
+### Creating a new fancy block
 
-First we create a new block. In this block we use a smaller default voxel shape (see getShape). We also implement onBlockActivated() which makes sure of changing the block that we are mimicing by setting that on the tile entity.
-```
-<syntaxhighlight lang="java">
+First we create a new block.
+In this block we use a smaller default voxel shape (see getShape).
+We also implement onBlockActivated() which makes sure of changing the block that we are mimicking by setting that on the tile entity.
+
+```java
 public class FancyBlock extends Block {
 
     private final VoxelShape shape = VoxelShapes.create(.2, .2, .2, .8, .8, .8);
@@ -59,27 +61,30 @@ public class FancyBlock extends Block {
         return super.onBlockActivated(state, world, pos, player, hand, result);
     }
 }
-</syntaxhighlight>
 ```
-Because we are going to use baked models we don't need a lot of JSON files here. We can suffice with this blockstate json:
-```
-<syntaxhighlight lang="json">
+
+Because we are going to use baked models we don't need a lot of JSON files here.
+We can suffice with this blockstate json:
+
+```json
 {
   "variants": {
     "": { "model": "mytutorial:block/fancyblock" }
   }
 }
-</syntaxhighlight>
 ```
+
 We add the usual ObjectHolder in ModBlocks and the proper registration lines in MyTutorial.
 
-===The tile entity===
+### The tile entity
 
-The tile entity is responsible for actually remembering what block we are mimicing and also for notifying the client / baked model whenever a change is needed. To communicate the mimic state we use a ModelProperty and implement getModelData() to communicate the value of that property to the baked model (see later on that one). Keep in mind that getModelData() can be run in the rendering thread so it should avoid accessing things like World and so on.
+The tile entity is responsible for actually remembering what block we are mimicking and also for notifying the client / baked model whenever a change is needed.
+To communicate the mimic state we use a ModelProperty and implement getModelData() to communicate the value of that property to the baked model (see later on that one).
+Keep in mind that getModelData() can be run in the rendering thread, so it should avoid accessing things like World and so on.
 
 In our TileEntity we use getUpdatePacket() (called server-side) to construct the data needed for the client and onDataPacket() (called client-side) to actually retrieve that data and notify the renderer.
-```
-<syntaxhighlight lang="java">
+
+```java
 public class FancyBlockTile extends TileEntity {
 
     public static final ModelProperty<BlockState> MIMIC = new ModelProperty<>();
@@ -143,15 +148,19 @@ public class FancyBlockTile extends TileEntity {
         return super.write(tag);
     }
 }
-</syntaxhighlight>
 ```
-===The baked model===
 
-The baked model is what is actually going to do the rendering of our model. If we are not mimicing anything we just show a small green block. As soon as the player right-clicks with something it will attempt to mimic that block and get the quads (rectangles) from that. This baked model has a VertexFormat parameter in its constructor so that we can use it both for the in-world block as well as the inventory model (these are baked with a different format). putVertex() makes sure to correctly distribute the vertex data based on the desired format.
+### The baked model
 
-The 'extraData' parameter that is given to getQuads() will contain our MIMIC property that we can use to find the right model to mimic.
-```
-<syntaxhighlight lang="java">
+The baked model is what is actually going to do the rendering of our model.
+If we are not mimicking anything we just show a small green block.
+As soon as the player right-clicks with something it will attempt to mimic that block and get the quads (rectangles) from that.
+This baked model has a `VertexFormat` parameter in its constructor so that we can use it both for the in-world block and the inventory model (these are baked with a different format).
+`putVertex()` makes sure to correctly distribute the vertex data based on the desired format.
+
+The `extraData` parameter that is given to getQuads() will contain our MIMIC property that we can use to find the right model to mimic.
+
+```java
 public class FancyBakedModel implements IDynamicBakedModel {
 
     private final VertexFormat format;
@@ -291,17 +300,22 @@ public class FancyBakedModel implements IDynamicBakedModel {
         }
         return ItemTransformVec3f.DEFAULT;
     }
-
 }
-</syntaxhighlight>
 ```
-===Stitching and baking===
 
-To make sure that Minecraft knows about both the texture as well as the model we need to add some code to ClientRegistration. Minecraft stores all block textures on a big 'atlas'. This is a large texture that is filled with all the smaller (usually) 16x16 textures. This helps greatly with rendering speed as texture switching on 3D hardware is rather expensive. To put our texture on this atlas we need to subscribe to the TextureStitchEvent.Pre event because we don't have it as a texture in a JSON (these are stitched automatically).
+### Stitching and baking
 
-Similarly we also need to subscribe tot the ModelBakeEvent event to make sure our model is known. We register two variations. One for the in-world model ("") and one for the inventory ("inventory").
-```
-<syntaxhighlight lang="java">
+To make sure that Minecraft knows about both the texture and the model we need to add some code to ClientRegistration.
+Minecraft stores all block textures on a big 'atlas'.
+This is a large texture that is filled with all the smaller (usually) 16x16 textures.
+This helps greatly with rendering speed as texture switching on 3D hardware is rather expensive.
+To put our texture on this atlas we need to subscribe to the TextureStitchEvent.Pre event because we don't have it as a texture in a JSON (these are stitched automatically).
+
+Similarly, we also need to subscribe tot the ModelBakeEvent event to make sure our model is known.
+We register two variations.
+One for the in-world model ("") and one for the inventory ("inventory").
+
+```java
     @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
         if (!event.getMap().getBasePath().equals("textures")) {
@@ -317,8 +331,11 @@ Similarly we also need to subscribe tot the ModelBakeEvent event to make sure ou
         event.getModelRegistry().put(new ModelResourceLocation(ModBlocks.FANCYBLOCK.getRegistryName(), "inventory"),
                 new FancyBakedModel(DefaultVertexFormats.ITEM));
     }
-</syntaxhighlight>
 ```
-===Conclusion===
 
-If all is done well thisi should work. Note that there are still some issues with this code. For example, it doesn't work properly for models that use transparent textures (like torches, flowers, ...). This is also solvable but requires tinkering with render layers.
+### Conclusion
+
+If all is done well this should work.
+Note that there are still some issues with this code.
+For example, it doesn't work properly for models that use transparent textures (like torches, flowers, ...).
+This is also solvable but requires tinkering with render layers.
