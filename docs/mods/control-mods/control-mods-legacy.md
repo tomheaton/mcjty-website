@@ -1,4 +1,4 @@
-# Control Mods Legacy
+# Control Mods Legacy (1.12)
 
 ## Introduction
 

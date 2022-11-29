@@ -1,4 +1,4 @@
-# Control Mods
+# Control Mods (In Control and Fx Control)
 
 ## Introduction
 
