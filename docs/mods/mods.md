@@ -31,11 +31,6 @@ Expect more content in the near future as we are working on this.
 * [Quest Utilities](./quest-utilities.md)
 * [EFab](./efab.md)
 
-Outdated information:
-
-* [In Control!](./control-mods/in-control.md)
-* [Fx Control!](./control-mods/fx-control.md)
-
 ## Lets Plays
 
 McJty has two Lets Plays where he often uses his own mods (and others).
