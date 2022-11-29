@@ -1,4 +1,4 @@
-# Control Mods For 1.16, 1.18 and 1.19
+# Control Mods New (1.16+)
 
 ## Introduction
 
