@@ -21,7 +21,7 @@ Because both mods have a very similar structure the documentation for them is me
 
 * Q: How can I add spawns using spawn.json?
     * A: You can't. `spawn.json` can only RESTRICT spawns. To add spawns you use the new `spawner.json`
-    * A: `potentialspawn.json` or `spawner.json` are used to ADD spawns. `spawn.json` is used to RESTRICT spawns
+    * A: `spawner.json` is used to ADD spawns. `spawn.json` is used to RESTRICT spawns
 
 * Q: Why can't I seem to control mobs from mod 'X' using `spawn.json`?
     * A: Occasionally modded mobs don't follow the rules completely. It may help in such situations to use `'onjoin': true` in your rule
@@ -29,6 +29,9 @@ Because both mods have a very similar structure the documentation for them is me
 * Q: I added a rule to spawn.json to allow a mod but nothing is happening. Why is that?
     * A: 'Allow' (is standard). With `spawn.json` you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to `spawner.json` (possibly refined with rules in `spawn.json`)
     * A: Having only 'allow' rules in `spawn.json` is (usually) pretty useless as those mobs will spawn anyway (exceptions are if you want to boost mobs). Typically, you want to have 'deny' rules
+
+* Q: I'm trying /summon and spawn eggs but my rules don't seem to work?
+    * A: In Control only affects natural spawns and spawns done by mob spawners. Eggs and /summon is not affected
 
 ## Differences between 1.16.5, 1.18.2, 1.19 and older
 
@@ -110,7 +113,7 @@ The following comparators are supported: `>`, `>=`, `<`, `<=`, `=`, and `!=`.
 Many conditions are very simple but when testing for items things can be a bit more complicated. That's why there is a specific syntax that can be used when testing on items. In this section we will go over all the possibilities and also present a few examples. In most cases when testing for an item (like test if the player holds a specific item in their hand) you can either use a single item filter or else a list of item filters. Let's talk about the case of an individual item filter. The following possibilities are supported:
 
 * `minecraft:sand` (just normal minecraft sand)
-* With NBT (same format as for `/give` command): `minecraft:stained_hardened_clay/{display:{Lore:[\"My Clay\"]}}`
+* With NBT (same format as for `/give` command): `minecraft:stained_hardened_clay{display:{Lore:[\"My Clay\"]}}`
 * A JSON descriptor which supports the following tags:
   * `item`: an item ID (like `minecraft:sand` or `rftools:powercell`)
   * `empty`: a boolean (true or false) indicating if the item is empty or not. If this is present no other tags will be considered
@@ -149,7 +152,7 @@ The same block with some NBT data:
 
 ```json
 {
-  "playerhelditem": "minecraft:stained_hardened_clay/{display:{Lore:[\"My Clay\"]}}"
+  "playerhelditem": "minecraft:stained_hardened_clay{display:{Lore:[\"My Clay\"]}}"
 }
 ```
 
@@ -444,20 +447,6 @@ For `spawn.json` the following actions are supported:
 
 In addition, `gamestage`, `playerhelditem`, and related tags (which are tied to a player) are also supported.
 In that case the nearest player will be used as the basis for deciding the rule.
-
-### Additional Spawns
-
-The same conditions as with `spawn.json` are supported.
-However, with `mincount` and `maxcount` you have to use the format `<amount>,<mob>`.
-Instead of actions this rule file supports mob entries that have the following structure:
-
-* `mob`: an entity name in the form Creeper, Skeleton, ... for (1.10.2) and optionally the notation `modid:name` for 1.11.2
-* `weight`: an integer indicating the weight of this spawn. i.e. how important it is compared to other spawns
-* `groupcountmin`: the minimum amount of mobs to spawn at once
-* `groupcountmax`: the minimum amount of mobs to spawn at once
-
-You can also remove mob spawn entries with the remove keyword.
-This is either a string or a list of strings representing mobs that have to be removed from the possible spawns.
 
 ### Loot Control
 
