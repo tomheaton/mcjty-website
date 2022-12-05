@@ -1,6 +1,8 @@
 import type {NextPage} from 'next'
 import Head from 'next/head'
 import styles from '../styles/Index.module.css'
+import React from "react";
+import Link from "next/link";
 
 const Index: NextPage = () => {
   return (
@@ -16,9 +18,11 @@ const Index: NextPage = () => {
           McJty Redirector
         </h1>
 
-        <p className={styles.description}>
-          Redirecting you to the new wiki!
-        </p>
+        <Link href={"https://www.mcjty.eu/"}>
+          <p className={styles.description}>
+            Redirect to the new site!
+          </p>
+        </Link>
       </main>
     </div>
   );

@@ -2,6 +2,7 @@ import type {NextPage} from 'next';
 import Head from 'next/head';
 import styles from '../../styles/Index.module.css';
 import {useRouter} from "next/router";
+import Link from "next/link";
 
 const Modding: NextPage = () => {
   // TODO: use middleware instead
@@ -22,7 +23,13 @@ const Modding: NextPage = () => {
           Modding - McJty Redirector
         </h1>
 
-        <p className={styles.description}>
+        <Link href={"https://www.mcjty.eu/"}>
+          <p className={styles.description}>
+            Redirect to the new site!
+          </p>
+        </Link>
+
+        <p>
           {JSON.stringify(query, null, 2)}
         </p>
       </main>
