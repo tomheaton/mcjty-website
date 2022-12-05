@@ -5,12 +5,12 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/modding',
+        source: '/modding/:path*',
         destination: 'https://www.mcjty.eu/docs/intro/',
         permanent: true,
       },
       {
-        source: '/mods',
+        source: '/mods/:path*',
         destination: 'https://www.mcjty.eu/docs/mods/',
         permanent: true,
       },
