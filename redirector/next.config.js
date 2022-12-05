@@ -5,6 +5,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/:path*',
+        destination: 'https://www.mcjty.eu/',
+        permanent: true,
+      },
+      {
         source: '/modding/:path*',
         destination: 'https://www.mcjty.eu/docs/intro/',
         permanent: true,
