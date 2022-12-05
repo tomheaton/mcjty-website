@@ -19,13 +19,13 @@ const HomepageHeader: React.FC = () => {
           {siteConfig.tagline}
         </p>
         {/*<div className={styles.buttons}>
-                    <Link
-                        className={"button button--secondary button--lg"}
-                        to={"/docs/intro"}
-                    >
-                        Docusaurus Tutorial - 5min ⏱️
-                    </Link>
-                </div>*/}
+          <Link
+            className={"button button--secondary button--lg"}
+            to={"/docs/intro"}
+          >
+            Docusaurus Tutorial - 5min ⏱️
+          </Link>
+        </div>*/}
       </div>
     </header>
   );
@@ -55,7 +55,21 @@ const Home: React.FC = () => {
         {/*TODO: fix mobile styling*/}
         <ModWidgets />
         {/*TODO: fix mobile styling*/}
-        <div className={styles.romeloInfo}>
+        <div className={styles.infoBox}>
+          <p className={styles.text} style={{textAlign: "center"}}>
+            Want to support what I do?
+          </p>
+          <Link
+            href={"https://www.patreon.com/McJty"}
+          >
+            <img
+              src={"img/patreon.png"}
+              alt={"McJty Patreon badge"}
+            />
+          </Link>
+        </div>
+        {/*TODO: fix mobile styling*/}
+        <div className={styles.infoBox}>
           <p className={styles.text} style={{textAlign: "center"}}>
             Did you know McJty&apos;s son makes mods too?
           </p>

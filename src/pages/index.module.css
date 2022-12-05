@@ -8,6 +8,10 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  background-image: url("/static/img/splash.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 @media screen and (max-width: 996px) {
@@ -35,12 +39,7 @@
   border-radius: 20px;
 }
 
-.text {
-  width: 50%;
-  font-size: 2rem;
-}
-
-.romeloInfo {
+.infoBox {
   padding: 4rem;
   width: 100%;
   display: flex;
@@ -48,4 +47,9 @@
   align-items: center;
   justify-content: center;
   text-align-all: center;
+}
+
+.text {
+  width: 50%;
+  font-size: 2rem;
 }
