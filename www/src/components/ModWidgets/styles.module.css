@@ -6,16 +6,13 @@
   width: 100%;
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
-}
-
-.modWidget {
-
-}
-
 .modWidgetContainer {
   width: 50%;
   margin: 0 auto;
+}
+
+@media screen and (max-width: 996px) {
+  .modWidgetContainer {
+    width: 100%;
+  }
 }

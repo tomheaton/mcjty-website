@@ -2,14 +2,14 @@ import React, {useEffect, useState} from "react";
 import styles from "./styles.module.css";
 
 const ModWidget: React.FC<{id: number}> = ({id}) => {
+  // TODO: fix mobile styling
   return (
-    <div className={styles.modWidget}>
-      <iframe
-        src={`https://www.cfwidget.com/${id}`}
-        width={"100%"}
-        style={{border: "none"}}
-      />
-    </div>
+    <iframe
+      src={`https://www.cfwidget.com/${id}`}
+      width={"100%"}
+      style={{border: "none"}}
+      scrolling={"no"}
+    />
   );
 };
 

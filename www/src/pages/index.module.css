@@ -14,12 +14,6 @@
   background-size: cover;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
-}
-
 .buttons {
   display: flex;
   align-items: center;
@@ -33,6 +27,7 @@
   align-items: center;
   justify-content: center;
   column-gap: 4rem;
+  row-gap: 4rem;
 }
 
 .mcjtyInfo img {
@@ -51,5 +46,20 @@
 
 .text {
   width: 50%;
-  font-size: 2rem;
+  font-size: 1.5rem;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+  .text {
+    width: 100%;
+  }
+  .mcjtyInfo {
+    flex-direction: column;
+  }
+  iframe {
+    overflow: hidden;
+  }
 }

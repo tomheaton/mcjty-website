@@ -39,7 +39,6 @@ const Home: React.FC = () => {
       <HomepageHeader />
       <main>
         {/*<HomepageFeatures />*/}
-        {/*TODO: fix mobile styling*/}
         <div className={styles.mcjtyInfo}>
           <img src={require("@site/static/img/mcjty.png").default} alt={"McJty Logo"} />
           <p className={styles.text}>
@@ -52,9 +51,7 @@ const Home: React.FC = () => {
             I'm also a member of the popular server group <strong>ForgeCraft</strong>.
           </p>
         </div>
-        {/*TODO: fix mobile styling*/}
         <ModWidgets />
-        {/*TODO: fix mobile styling*/}
         <div className={styles.infoBox}>
           <p className={styles.text} style={{textAlign: "center"}}>
             Want to support what I do?
@@ -68,7 +65,6 @@ const Home: React.FC = () => {
             />
           </Link>
         </div>
-        {/*TODO: fix mobile styling*/}
         <div className={styles.infoBox}>
           <p className={styles.text} style={{textAlign: "center"}}>
             Did you know McJty&apos;s son makes mods too?
