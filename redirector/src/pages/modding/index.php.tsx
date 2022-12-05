@@ -1,8 +1,14 @@
 import type {NextPage} from 'next';
 import Head from 'next/head';
 import styles from '../../styles/Index.module.css';
+import {useRouter} from "next/router";
 
-const Index: NextPage = () => {
+const Modding: NextPage = () => {
+  // TODO: use middleware instead
+  const router = useRouter();
+
+  const query = router.query;
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,15 +19,15 @@ const Index: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          McJty Redirector
+          Modding - McJty Redirector
         </h1>
 
         <p className={styles.description}>
-          Redirecting you to the new wiki!
+          {JSON.stringify(query, null, 2)}
         </p>
       </main>
     </div>
   );
 }
 
-export default Index;
+export default Modding;
