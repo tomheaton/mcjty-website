@@ -5,7 +5,7 @@ type Data = {
 }
 
 const handler: NextApiHandler = (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  return res.status(200).json({name: 'mcjty-redirector'});
+  return res.status(200).json({name: '@mcjty-website/redirector'});
 }
 
 export default handler;
