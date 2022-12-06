@@ -372,6 +372,11 @@ Possible types:
 * `[<type>]`: a list of type (for example, `[S]` is a list of strings)
 * `JSON`: a JSON in a specific format explained elsewhere
 
+:::info
+The table below is very wide.
+Please scroll horizontally to see all fields.
+:::
+
 | Name                                                                  | Type         | Requirements   | potential | spawner | spawn | summon | loot | experience | harvest | leftclick | rightclick | place | effect | Description                                                                                                                                                                                                                                                                                                                                                                                           |
 |-----------------------------------------------------------------------|--------------|----------------|-----------|---------|-------|--------|------|------------|---------|-----------|------------|-------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | phase                                                                 | `S/[S]`      |                |           | V       | V     | V      |      |            |         |           |            |       |        | all phases that must be active for this rule to work. Phases are defined in `phases.json`. Putting conditions in a phase is more efficient and cleaner                                                                                                                                                                                                                                                |
