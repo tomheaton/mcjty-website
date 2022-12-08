@@ -26,6 +26,7 @@ Expect more content in the near future as we are working on this.
 * [The One Probe](./the-one-probe.md)
 * [The Lost Cities](./lost-cities/lost-cities.md)
 * [Control Mods (In Control! and Fx Control!)](./control-mods/control-mods.md)
+* [Fancy Trinkets](./fancy-trinkets/fancy-trinkets.md)
 * [Enigma](./enigma/enigma.md)
 * [Elemental Dimensions](./elemental-dimensions.md)
 * [Quest Utilities](./quest-utilities.md)
