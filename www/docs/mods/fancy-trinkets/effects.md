@@ -22,6 +22,7 @@ are currently 7 possible types of effects:
 * `flight`: gives creative flight
 * `warp`: allows the player to warp (teleport) somewhere
 * `cure`: removes all negative potion effects on the player
+* `growtick`: do random ticks around the player. Increases growticks
 
 Effects can also have an associated `toggle` which allows them to be turned on or off
 and effects can also have an associated `hotkey`. A hotkey doesn't imply that the
@@ -239,6 +240,25 @@ With the cure effect all negative potion effects will be canceled:
   }
 }
 ```
+
+### `growtick`
+
+With the growtick effect you can increase random ticks around the player. This will
+increase the speed at which crops grow.
+
+```json
+{
+  "params": {
+    "type": "growtick",
+    "blocks": 15,
+    "maxdist": 6
+  }
+}
+```
+
+`blocks` is the number of blocks that will be ticked and `maxdist` is how far it will do
+this horizontally. Vertically it always goes from -3 to 3 around the player.
+
 
 ## Default effects
 

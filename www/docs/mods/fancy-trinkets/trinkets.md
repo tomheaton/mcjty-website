@@ -131,8 +131,9 @@ here (https://github.com/McJtyMods/FancyTrinkets/tree/1.19/src/generated/resourc
 * `slowfalling_feather`: Gravity seems to have less effect on you
 * `base_gold_ring`:  Crafting ingredient to make golden ring trinkets
 * `lightness_ring`: Reduce 75% of fall damage
-* `fireresist_ring`: Ring of Coolness", "Reduce all heat related damage (100%)
-* `nightvision_ring`: Night Vision", "Using a hotkey you can see clearly in the dark
+* `fireresist_ring`: Reduce all heat related damage (100%)
+* `nightvision_ring`: Using a hotkey you can see clearly in the dark
+* `grow_charm`: Crops grow faster around you
 * `stepassist_ring`: You can move around much easier now
 * `base_heart`:  Crafting ingredient to make heart trinkets
 * `super_health`: You feel so much more healthy now

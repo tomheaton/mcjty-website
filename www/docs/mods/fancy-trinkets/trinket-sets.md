@@ -28,6 +28,7 @@ This is the trinket set that ships with the mod:
     "fancytrinkets:absorption_ring",
     "fancytrinkets:base_gold_ring",
     "fancytrinkets:slowfalling_feather",
+    "fancytrinkets:grow_charm",
     "fancytrinkets:flight_star",
     "fancytrinkets:lightness_ring",
     "fancytrinkets:warp_pearl",
