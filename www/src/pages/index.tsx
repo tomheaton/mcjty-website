@@ -12,20 +12,12 @@ const HomepageHeader: React.FC = () => {
   return (
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className={"container"}>
-        <h1 className={"hero__title"}>
+        <h1 className={"hero__title"} style={{color: "white"}}>
           {siteConfig.title}
         </h1>
-        <p className={"hero__subtitle"}>
+        <p className={"hero__subtitle"} style={{color: "white"}}>
           {siteConfig.tagline}
         </p>
-        {/*<div className={styles.buttons}>
-          <Link
-            className={"button button--secondary button--lg"}
-            to={"/docs/intro"}
-          >
-            Docusaurus Tutorial - 5min ⏱️
-          </Link>
-        </div>*/}
       </div>
     </header>
   );
@@ -36,22 +28,21 @@ const Home: React.FC = () => {
 
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
-      <HomepageHeader />
+      <HomepageHeader/>
       <main>
-        {/*<HomepageFeatures />*/}
         <div className={styles.mcjtyInfo}>
-          <img src={require("@site/static/img/mcjty.png").default} alt={"McJty Logo"} />
+          <img src={require("@site/static/img/mcjty.png").default} alt={"McJty Logo"}/>
           <p className={styles.text}>
             Hello, I'm McJty.
             I'm a Minecraft mod <strong>developer, modpack developer</strong> and <strong>YouTuber!</strong>
-            <br />
+            <br/>
             I've made several mods for your and my pleasure and also like to help out other members in the
             community.
-            <br />
+            <br/>
             I'm also a member of the popular server group <strong>ForgeCraft</strong>.
           </p>
         </div>
-        <ModWidgets />
+        <ModWidgets/>
         <div className={styles.infoBox}>
           <p className={styles.text} style={{textAlign: "center"}}>
             Want to support what I do?

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styles from "./styles.module.css";
 
-const ModWidget: React.FC<{id: number}> = ({id}) => {
+const ModWidget: React.FC<{ id: number }> = ({id}) => {
   // TODO: fix mobile styling
   return (
     <iframe
@@ -28,7 +28,7 @@ const ModWidgets: React.FC = () => {
         Mods
       </h2>
       <div className={styles.modWidgetContainer}>
-        {mods.map((id) => <ModWidget key={id} id={id} />)}
+        {mods.map((id) => <ModWidget key={id} id={id}/>)}
       </div>
     </section>
   );

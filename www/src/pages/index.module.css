@@ -53,12 +53,15 @@
   .heroBanner {
     padding: 2rem;
   }
+
   .text {
     width: 100%;
   }
+
   .mcjtyInfo {
     flex-direction: column;
   }
+
   iframe {
     overflow: hidden;
   }
