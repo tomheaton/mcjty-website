@@ -266,7 +266,7 @@ const config = {
           width: 135,
           height: 135,
         },
-        copyright: `Copyright &copy; ${new Date().getFullYear()} McJty.Made with &hearts; by <a href="https://tomheaton.dev">tomheaton<a>`,
+        copyright: `Copyright &copy; ${new Date().getFullYear()} McJty. Made with &hearts; by <a href="https://tomheaton.dev">tomheaton<a>`,
       },
       prism: {
         theme: lightCodeTheme,
