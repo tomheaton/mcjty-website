@@ -21,7 +21,7 @@ dependencies {
 }
 ```
 
-Then go to http://export.mcpbot.bspk.rs/ to check out the latest mappings and also update this in `build.gradle`:
+Then go to https://export.mcpbot.bspk.rs/ to check out the latest mappings and also update this in `build.gradle`:
 
 ```gradle title="build.gradle"
 minecraft {

@@ -16,12 +16,12 @@ How to update Forge and get the basic mod going.
 ## Useful Links
 
 * GitHub: https://github.com/McJty/YouTubeModding14
-* Forge: http://files.minecraftforge.net/
+* Forge: https://files.minecraftforge.net/
 * Forge Forums: https://forums.minecraftforge.net/
 * Official Forge Documentation: https://mcforge.readthedocs.io/en/1.15.x/
 * Forge Discord: https://discord.gg/UvedJ9m
 * McJty Discord: https://discord.gg/dRTtrdK
-* Mappings: http://export.mcpbot.bspk.rs/
+* Mappings: https://export.mcpbot.bspk.rs/
 * Official Java Documentation: https://docs.oracle.com/javase/tutorial/
 * Basic Java Tutorial: https://www.codecademy.com/learn/learn-java
 * Online Java Course using assignments: https://java-programming.mooc.fi/

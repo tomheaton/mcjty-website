@@ -6,7 +6,7 @@ sidebar_position: 1
 ## Introduction
 
 Trinkets are the actual items that the player can see and use in game.
-They will be assocated with a set of effects and one of the built-in
+They will be associated with a set of effects and one of the built-in
 trinket items.
 
 ## Details
@@ -121,7 +121,7 @@ And here an example of a more advanced trinkets with multiple effects:
 
 ## Default trinkets
 
-There are lot of default trinkets already included with the mod. You can find all of them
+There are a lot of default trinkets already included with the mod. You can find all of them
 here (https://github.com/McJtyMods/FancyTrinkets/tree/1.19/src/generated/resources/data/fancytrinkets/fancytrinkets/trinkets). Here is a list:
 
 * `base_star`:  Crafting ingredient to make star trinkets

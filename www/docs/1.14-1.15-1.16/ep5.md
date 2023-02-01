@@ -292,7 +292,7 @@ public class FirstBlockContainer extends Container {
     ...
 }
 ```
-This is using a function that hasn't been correctly mapped yet at this stage. Basically it registers a way to get and set an integer and it will also keep track of changes so that any changes are property communicated to the client.
+This is using a function that hasn't been correctly mapped yet at this stage. Basically it registers a way to get and set an integer, and it will also keep track of changes so that any changes are property communicated to the client.
 
 Then we can show this information in our GUI. Modify FirstBlockScreen as follows:
 ```java
@@ -309,4 +309,4 @@ public class FirstBlockScreen extends ContainerScreen<FirstBlockContainer> {
 }
 
 ```
-And that's it. The container handles commmunication of the energy value automatically so we don't have to do anything else.
+And that's it. The container handles communication of the energy value automatically, so we don't have to do anything else.

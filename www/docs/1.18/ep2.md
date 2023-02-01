@@ -427,12 +427,12 @@ public class PowergenBE extends BlockEntity {
 
 ### The Powergen Block Container 
 
-As said before the Container is responsible for communicating between the server and the client when the player has opened a gui. It does this by adding 'slots' for every item that you want to be synchronized. Typically this is all the items of our block entity (the single fuel item slot) and the items of the player inventory.
+As said before the Container is responsible for communicating between the server and the client when the player has opened a gui. It does this by adding 'slots' for every item that you want to be synchronized. Typically, this is all the items of our block entity (the single fuel item slot) and the items of the player inventory.
 
 Some notes:
 
 * This is one case where you get an Inventory instance. To use this properly you can use the InvWrapper forge class which will convert it to an IItemHandler.
-* In addition to the item slots we also want to communicate the current power from the server to the client so that we can display that in the gui. Minecraft supports sending over 16-bit integers for this purpose. Our power is 32-bit however so we need to split it in two data slots.
+* In addition to the item slots we also want to communicate the current power from the server to the client so that we can display that in the gui. Minecraft supports sending over 16-bit integers for this purpose. Our power is 32-bit however, so we need to split it in two data slots.
 * quickMoveStack() is used whenever the player shift-clicks an item in our gui. In this method we need to decide what to do whenever a certain item in a certain slot is shift-clicked. In this implementation we make sure that fuel items get put in the fuel slot.
 
 :::danger Warning

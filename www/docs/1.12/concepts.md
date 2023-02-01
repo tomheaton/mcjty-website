@@ -12,11 +12,11 @@ A block represents a basic block in minecraft. In itself a block cannot contain 
 
 ###  Item
 
-An item is something you have in your inventory. For all blocks there is usually a corresponding item (that is created automatically) but there are also items that have no corresponding block (like a pickaxe, there is no pickaxe block). Like with blocks all items of the same type share the same Item instance so you cannot store item specific information in this class. If you need to do that you have to do that with NBT or damage through the ItemStack (more on this later).
+An item is something you have in your inventory. For all blocks there is usually a corresponding item (that is created automatically) but there are also items that have no corresponding block (like a pickaxe, there is no pickaxe block). Like with blocks all items of the same type share the same Item instance, so you cannot store item specific information in this class. If you need to do that you have to do that with NBT or damage through the ItemStack (more on this later).
 
 ###  TileEntity
 
-A tile entity is one way to add extra information and even logic to a block. As opposed to a Block, there is a difference instance of a tile entity for every block of the same type. That means you can store information here. All tile entity information that you want to persist when the world is saved has to be convertable to NBT data. By default tile entities are only data. You can also have a tile entity that 'ticks' by implementing the ITickable interface. This way your tile entity can do operations and have an effect on the world in general.
+A tile entity is one way to add extra information and even logic to a block. As opposed to a Block, there is a difference instance of a tile entity for every block of the same type. That means you can store information here. All tile entity information that you want to persist when the world is saved has to be convertable to NBT data. By default, tile entities are only data. You can also have a tile entity that 'ticks' by implementing the ITickable interface. This way your tile entity can do operations and have an effect on the world in general.
 
 ###  ItemStack
 
@@ -24,7 +24,7 @@ Items (or blocks) are never stored directly in inventories or containers. They a
 
 ###  NBT Data
 
-ItemStacks keep their data in NBT format directly. Tile entities don't do that normally but you still have to be able to convert your tile entity state to NBT. NBT data is basically a map of data that can easily be persisted into storage (save file).
+ItemStacks keep their data in NBT format directly. Tile entities don't do that normally, but you still have to be able to convert your tile entity state to NBT. NBT data is basically a map of data that can easily be persisted into storage (save file).
 
 ###  Entity
 
@@ -36,8 +36,8 @@ Before 1.8 you had to use metadata for blocks directly (4 bits). Starting with 1
 
 ###  TileEntitySpecialRenderer (TESR)
 
-A TESR is a class that can be used to render tile entity information in the world. In order to use one of these block must have an associated tile entity. Note that TESR's are rendered every frame so be careful not to overuse them. TESR's are mostly useful if you have a block that changes appearance very often so it doesn't make sense to include it in the static geometry of a chunk.
+A TESR is a class that can be used to render tile entity information in the world. In order to use one of these block must have an associated tile entity. Note that TESR's are rendered every frame so be careful not to overuse them. TESR's are mostly useful if you have a block that changes appearance very often, so it doesn't make sense to include it in the static geometry of a chunk.
 
 ###  IBakedModel
 
-A baked model is a class that can be used to render a block statically. It should be used if you cannot find a way to express your static block geometry using the regular JSON system. You don't need a tile entity to have a custom baked model. They are mostly useful when you have relatively complex geometry that doesn't change often but still needs to render differently depending on (external) conditions. A good exmaple is a conduit system where you need to render every conduit based on the presence of adjacent conduit blocks.
+A baked model is a class that can be used to render a block statically. It should be used if you cannot find a way to express your static block geometry using the regular JSON system. You don't need a tile entity to have a custom baked model. They are mostly useful when you have relatively complex geometry that doesn't change often but still needs to render differently depending on (external) conditions. A good example is a conduit system where you need to render every conduit based on the presence of adjacent conduit blocks.

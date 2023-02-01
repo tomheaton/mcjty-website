@@ -11,11 +11,11 @@ Again you have to modify your `build.gradle`:
 repositories {
     maven { // The repo from which to get waila
         name "Mobius Repo"
-        url "http://tehnut.info/maven"
+        url "https://tehnut.info/maven"
     }
     maven { // TOP
         name 'tterrag maven'
-        url "http://maven.tterrag.com/"
+        url "https://maven.tterrag.com/"
     }
 }
 

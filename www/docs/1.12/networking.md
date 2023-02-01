@@ -119,7 +119,7 @@ public class PacketSendKey implements IMessage {
 }
 ```
 
-Finally, we need to setup our packet handler so that we can actually send a packet from the client to the server. First we make a new 'PacketHandler' class. In this class we will register all the packets that we need (currently just one) and specify if they should go from server to client or from client to server. In this example we only need a packet to go from client to server:
+Finally, we need to set up our packet handler so that we can actually send a packet from the client to the server. First we make a new 'PacketHandler' class. In this class we will register all the packets that we need (currently just one) and specify if they should go from server to client or from client to server. In this example we only need a packet to go from client to server:
 
 ```java
 public class PacketHandler {

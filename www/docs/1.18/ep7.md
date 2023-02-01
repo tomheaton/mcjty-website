@@ -12,7 +12,7 @@ sidebar_position: 7
 
 ## Introduction
 
-In this tutorial we explain various ways that you can store data and also communicate that data to the client. We will cover world data, player capabilities, and networking. In addition we also cover a new way to make render overlays (HUD's)
+In this tutorial we explain various ways that you can store data and also communicate that data to the client. We will cover world data, player capabilities, and networking. In addition, we also cover a new way to make render overlays (HUD's)
 
 ### Key Bindings
 
@@ -198,7 +198,7 @@ public static void init(FMLCommonSetupEvent event) {
 
 ### Saved Data (ManaManager)
 
-In this tutorial we want to keep mana in every chunk. This mana is generated randomly for every chunk so we need to store it somewhere. You could use capabilities for this but because we will already be using capabilities for attaching mana to the player we're going to use another technique for storing it in the world. Minecraft has the SavedData class that you can use for this. It's basically a way to attach arbitrary data to a level which is also going to be persisted. Here is our ManaManager class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/ManaManager.java ManaManager.java on GitHub]). See the comments in this class for some explanation:
+In this tutorial we want to keep mana in every chunk. This mana is generated randomly for every chunk, so we need to store it somewhere. You could use capabilities for this but because we will already be using capabilities for attaching mana to the player we're going to use another technique for storing it in the world. Minecraft has the SavedData class that you can use for this. It's basically a way to attach arbitrary data to a level which is also going to be persisted. Here is our ManaManager class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/ManaManager.java ManaManager.java on GitHub]). See the comments in this class for some explanation:
 
 :::danger Warning
 SavedData is local to each level (dimension).
@@ -431,7 +431,7 @@ public static void register() {
 
 Capabilities are a system added by Forge that allows arbitrary data to be attached to various Minecraft objects. We already saw how it was being used for forge energy and items (in episode 2). In that tutorial we were using standard capabilities defined by Forge. Here we will make our own capability to attach data to the player.
 
-We want to store the mana that the player has gathered. For this we will define a new capability and attach it to the player. First add the PlayerMana class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/PlayerMana.java PlayerMana.java on GitHub]). It's basically a simple class holding a single integer but it also has code to save and load this data to NBT (which will later get added to the player through the capability system):
+We want to store the mana that the player has gathered. For this we will define a new capability and attach it to the player. First add the PlayerMana class ([https://github.com/McJty/TutorialV3/blob/main/src/main/java/com/example/tutorialv3/manasystem/data/PlayerMana.java PlayerMana.java on GitHub]). It's basically a simple class holding a single integer, but it also has code to save and load this data to NBT (which will later get added to the player through the capability system):
 
 ```java
 public class PlayerMana {
@@ -554,7 +554,7 @@ Because we also need other events for our player capability we're going to add a
     }
 ```
 
-We also need to setup these events in ModSetup.
+We also need to set up these events in ModSetup.
 Because `ManaEvents::onAttachCapabilitiesPlayer()` is a generic event (it has a generic parameter) we need to use `addGenericListener()`:
 
 ```java title="ModSetup.java"

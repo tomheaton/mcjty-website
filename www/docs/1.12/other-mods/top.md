@@ -29,7 +29,7 @@ dependencies {
 }
 ```
 
-Then use gradlew or your integration with IDEA or Eclipse to setup your project again, and you should automatically get TOP when you run Minecraft from your development environment.
+Then use gradlew or your integration with IDEA or Eclipse to set up your project again, and you should automatically get TOP when you run Minecraft from your development environment.
 
 The next thing you have to do is to make sure that TOP integration is enabled in your mod but only when the TOP mod is actually loaded.
 There are many ways to do this. Here we show one of them.

@@ -23,11 +23,11 @@ This explanation is only useful for 1.18.1. See episode 8 for porting to 1.18.2
 For the 1.19.2 version of this code I recommend you look at the 1.19 GitHub as this has also changed considerably
 :::
 
-This is a more advanced tutorial explaining various worldgen related subjects. You can safely skip this tutorial if you don't want to bother with worldgen right now or don't need it for your mod. This tutorial is based on the structure tutorial by TelepathicGrunt (link above). His tutorial goes a little bit more in-depth so feel free to check that out if you want to go further with this.
+This is a more advanced tutorial explaining various worldgen related subjects. You can safely skip this tutorial if you don't want to bother with worldgen right now or don't need it for your mod. This tutorial is based on the structure tutorial by TelepathicGrunt (link above). His tutorial goes a little more in-depth so feel free to check that out if you want to go further with this.
 
 ### Ore Generation
 
-In the Ores class we setup oregen for our four different variants. Oregeneration is done using a feature. We use the standard Feature.ORE which is provided by vanilla but we still have to configure it. Objects like Feature.ORE are forge registry objects (similar to blocks, items, entities, ...) but configured features are not. They still have to be registered though but then on the vanilla registry. Some notes:
+In the Ores class we set up oregen for our four different variants. Oregeneration is done using a feature. We use the standard Feature.ORE which is provided by vanilla, but we still have to configure it. Objects like Feature.ORE are forge registry objects (similar to blocks, items, entities, ...) but configured features are not. They still have to be registered though but then on the vanilla registry. Some notes:
 
 * Registering things on the vanilla registries can happen at any time before loading the world. The most common place to do this is in FMLCommonSetupEvent.
 * Every type of feature has its own configuration object. Check the vanilla Feature class to find out what configuration object the feature needs. In our case it is OreConfiguration. We configure the blockstate of the ore there as well as the maximum size of ore veins
@@ -187,7 +187,7 @@ Since we only have one part that's also all we need.
 
 #### Main Structures class
 
-Here we define the main Structures class which will properly setup and register our structures.
+Here we define the main Structures class which will properly set up and register our structures.
 Because Minecraft itself doesn't fully have proper JSON support for structures and Forge doesn't have the proper hooks yet, we still need to do a lot of things manually.
 In this tutorial we present a way to do this relatively safe.
 
@@ -681,13 +681,13 @@ public class Registration {
 
 ### Custom Dimension
 
-In contrast with structures, dimensions are much better defined using JSON. In fact it's possible to completely define a custom dimension without a single line of Java code. You don't even need to register it. However, in this tutorial we are going to use some code in order to show you the kind of thing that is possible.
+In contrast with structures, dimensions are much better defined using JSON. In fact, it's possible to completely define a custom dimension without a single line of Java code. You don't even need to register it. However, in this tutorial we are going to use some code in order to show you the kind of thing that is possible.
 
 ![image](https://i.imgur.com/uwAE1YO.png)
 
 #### Dimension Type and Dimension
 
-Let's first define the dimension type and the actual dimension. A dimension type is the base for creating dimensions from. In many cases every dimension type will have one dimension but it is perfectly possible to have multiple dimensions sharing the same dimension type.
+Let's first define the dimension type and the actual dimension. A dimension type is the base for creating dimensions from. In many cases every dimension type will have one dimension, but it is perfectly possible to have multiple dimensions sharing the same dimension type.
 
 Here is the dimension type:
 
@@ -739,7 +739,7 @@ Some notes:
 
 In most cases, when making your own custom dimension you actually want to use the standard vanilla NoiseBasedChunkGenerator. It is very configurable and for most situations you will be able to completely change it for your custom dimension needs. However sometimes it is good to be able to do something special and that's what we will show in this tutorial. Note that if you would use NoiseBasedChunkGenerator then you actually would have been able to define this dimension without any code.
 
-Worldgen very often uses codecs. A codec is a definition that knows how to serialize data to and from either NBT or JSON. The big advantage of codecs is that you can express how your custom worldgen data needs to be persisted without having to worry about the actual medium that will be used for persistance. Using a codec, Minecraft will be able to read your custom object from JSON and then save it to the world in NBT format later. Codecs seem a bit confusing at first but they are actually not very hard to use. In our custom chunk generator we have two codecs: one is to be able to save our custom Settings object (SETTINGS_CODEC) and the other for the total chunk generator configuration.
+Worldgen very often uses codecs. A codec is a definition that knows how to serialize data to and from either NBT or JSON. The big advantage of codecs is that you can express how your custom worldgen data needs to be persisted without having to worry about the actual medium that will be used for persistence. Using a codec, Minecraft will be able to read your custom object from JSON and then save it to the world in NBT format later. Codecs seem a bit confusing at first, but they are actually not very hard to use. In our custom chunk generator we have two codecs: one is to be able to save our custom Settings object (SETTINGS_CODEC) and the other for the total chunk generator configuration.
 
 If you look at (for example) SETTINGS_CODEC you can see that it is based on a RecordCodecBuilder which has three fields: 'base', 'verticalvariance', and 'horizontalvariance'. Because the fields are defined in this order the 'apply()' method also expects a consumer that takes these three parameters. Every field itself also has an associated getter ('forGetter()'). With this consumer and the getters the codec is able to create and inspect our custom Settings object.
 
@@ -892,7 +892,7 @@ public class MysteriousChunkGenerator extends ChunkGenerator {
 
 #### Custom Biome Provider
 
-Our custom dimension will have only one biome. Strictly speaking we could have used the vanilla FixedBiomeSource but we wanted to give an example so that's why we define our own biome source:
+Our custom dimension will have only one biome. Strictly speaking we could have used the vanilla FixedBiomeSource, but we wanted to give an example so that's why we define our own biome source:
 
 ```java title="MysteriousBiomeProvider.java"
 public class MysteriousBiomeProvider extends BiomeSource {

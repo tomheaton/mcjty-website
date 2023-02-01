@@ -286,7 +286,7 @@ The AvoidEntityGoalNoCombat is a variant of the vanilla AvoidEntityGoal goal but
 
 ThiefFindChestGoal is a custom goal that knows how to navigate to a nearby chest and then start looting it. We make use of the vanilla MoveToBlockGoal because it already has support for moving to a specific target. Some notes:
 
-* We use level.blockEvent() to send an event to the chest to open and close it's lid. That way players can see that a thief is busy opening the chest and stealing from it. The event id to use for this is 1 (see ChestBlockEntity for this).
+* We use level.blockEvent() to send an event to the chest to open and close its lid. That way players can see that a thief is busy opening the chest and stealing from it. The event id to use for this is 1 (see ChestBlockEntity for this).
 * We override stop() so that we can close the chest again and also set stealing to false in the thief entity.
 * In tick() we will remove one item from the chest every second.
 
