@@ -27,7 +27,7 @@ Because both mods have a very similar structure the documentation for them is me
     * A: Occasionally modded mobs don't follow the rules completely. It may help in such situations to use `'onjoin': true` in your rule
 
 * Q: I added a rule to spawn.json to allow a mod but nothing is happening. Why is that?
-    * A: 'Allow' (is standard). With `spawn.json` you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to `spawner.json` (possibly refined with rules in `spawn.json`)
+    * A: 'Allow' is standard. With `spawn.json` you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to `spawner.json` (possibly refined with rules in `spawn.json`)
     * A: Having only 'allow' rules in `spawn.json` is (usually) pretty useless as those mobs will spawn anyway (exceptions are if you want to boost mobs). Typically, you want to have 'deny' rules
 
 * Q: I'm trying /summon and spawn eggs but my rules don't seem to work?
@@ -1027,6 +1027,8 @@ The following JSON keys are possible in the conditions block (and ONLY those, fo
 * `maxhostile`: the maximum amount of hostile mobs
 * `maxneutral`: the maximum amount of neutral mobs
 * `maxlocal`: this will cause counting in the spawn box around the player. This is somewhat more expensive so use with care
+* `validspawn`: this will add a stronger check to the possible spawn positions to make sure the block is solid as well as correct light and other mob/block specific conditions.
+* `sturdy`: this will add a stronger check to the possible spawn positions to make sure the block is sturdy (not a slab for example)
 
 ### Basic Example
 
