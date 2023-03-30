@@ -92,17 +92,17 @@ Many conditions are very simple but when testing for items things can be a bit m
 * `minecraft:stained_hardened_clay@13` (adds metadata 13)
 * With NBT (same format as for /give command): ``minecraft:stained_hardened_clay@13/{display:{Lore:[\"My Clay\"]}}``
 * A JSON descriptor which supports the following tags:
-  ** `item`: an item ID (like `minecraft:sand` or `rftools:powercell`)
-  ** `empty`: a boolean (true or false) indicating if the item is empty or not. If this is present no other tags will be considered
-  ** `damage`: an expression (see above) which will be evaluated on the damage from the item
-  ** `count`: an expression which will be evaluated on the number of items in the stack
-  ** `ore`: a string indicating an ore dictionary value (for example `ingotCopper`, `dyeBlue`, `plankWood`, ...)
-  ** `mod`: a string indicating the modid for the item
-  ** `energy`: an expression which will be evaluated to the amount of Forge Energy present in the item
-  ** `nbt`: a JSON array. Every object in this array supports the following tags:
-  *** `tag`: the name of the NBT tag to test on
-  *** `value`: the stringified value of the NBT tag to test on
-  *** `contains`: use this instead of `value` in case the tag represents a list. The value after contains should be a JSON array which in turn contains nbt matching tags like what we're describing now (see example later to make this more clear)
+  * `item`: an item ID (like `minecraft:sand` or `rftools:powercell`)
+  * `empty`: a boolean (true or false) indicating if the item is empty or not. If this is present no other tags will be considered
+  * `damage`: an expression (see above) which will be evaluated on the damage from the item
+  * `count`: an expression which will be evaluated on the number of items in the stack
+  * `ore`: a string indicating an ore dictionary value (for example `ingotCopper`, `dyeBlue`, `plankWood`, ...)
+  * `mod`: a string indicating the modid for the item
+  * `energy`: an expression which will be evaluated to the amount of Forge Energy present in the item
+  * `nbt`: a JSON array. Every object in this array supports the following tags:
+    * `tag`: the name of the NBT tag to test on
+    * `value`: the stringified value of the NBT tag to test on
+    * `contains`: use this instead of `value` in case the tag represents a list. The value after contains should be a JSON array which in turn contains nbt matching tags like what we're describing now (see example later to make this more clear)
 
 ### Item Filter Examples
 
