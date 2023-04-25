@@ -33,7 +33,7 @@ Because both mods have a very similar structure the documentation for them is me
 * Q: I'm trying /summon and spawn eggs but my rules don't seem to work?
     * A: In Control only affects natural spawns and spawns done by mob spawners. Eggs and /summon is not affected
 
-## Differences between 1.16.5 and older
+## Differences between 1.16.5, 1.18.2, 1.19 and older
 
 The 1.16.5 version of InControl and FxControl have some important differences which will require you to change rules when you move over from an older version to 1.16.5:
 
@@ -66,6 +66,7 @@ All rule files can be found in the `config/incontrol` and `config/fxcontrol` dir
 The following rule files are currently supported:
 * `phases.json (In Control)`: with this file you can define sets of globally active common conditions (called phases). These phases can then be used in all following rules as a more efficient and clean way to select rules
 * `spawn.json (In Control)`: with this file you can block spawning of certain creatures under certain conditions. In addition, when a spawn is allowed you can also alter some of the properties of the mob like maximum health and others. Note that the rules in this file only alter already existing spawns. You cannot (for example) with this file alone add blazes to spawn in the overworld. For that you need to look at `spawner.json` too
+* `special.json (In Control)`: **Only for 1.18+** this file is nearly the same as spawn.json but instead of controlling spawns this is more suitable for controlling the equipment and stats of spawned mobs
 * `summonaid.json (In Control)`: this is a file that is structured the same as spawn.json but is only used when zombies are summoned for aid
 * `spawner.json (In Control)`: this is a new spawning system (from 1.16.5 onwards) that you can use instead of the currently broken potentialspawn
 * `loot.json (In Control)`: with this file you can control the loot that mobs drop when they are killed based on various criteria
@@ -82,6 +83,9 @@ Some additional notes about spawn.json. Each rule has a result which can be `all
 In case of `deny` the spawn will simply be canceled. The difference between `allow` and `default` is that with `default`
 some simple vanilla spawn restrictions (like not spawn inside a block) are still tested.
 
+In 1.18 and later it's recommended to not use spawn.json for adding equipment
+to mobs. Use special.json for that
+
 :::danger Warning
 Rules are executed in order! For every spawn that happens every rule is evalulated from top to bottom.
 The first rule that matches ALL the conditions will be executed and the rest is ignored (unless
@@ -92,6 +96,16 @@ you use the `continue` keyword).
 Some modded mobs don't do the proper events in all cases so it is possible you have
 to do `"onjoin": true`
 :::
+
+### special.json
+
+In 1.18 and later you can use this rule file to control equipment or buffs (like speed buffs) for mobs.
+The structure of this file is almost 100% the same as spawn.json with two exceptions:
+ * The possible results are `after`, `before`, or `replace`
+ * `onjoin` is not possible
+
+Note that using this might break spawn eggs. This is due to a bug in Forge at the time of writing
+this documentation.
 
 ## Rule Structure
 
@@ -129,11 +143,11 @@ Many conditions are very simple but when testing for items things can be a bit m
   * `empty`: a boolean (true or false) indicating if the item is empty or not. If this is present no other tags will be considered
   * `damage`: an expression (see above) which will be evaluated on the damage from the item
   * `count`: an expression which will be evaluated on the number of items in the stack
-  * `ore`: a string indicating an ore dictionary value (for example `ingotCopper`, `dyeBlue`, `plankWood`, ...)
+  * `tag`: a string indicating a block tag (for example `minecraft:stone`, `forge:bookshelves`, ...)
   * `mod`: a string indicating the modid for the item
   * `energy`: an expression which will be evaluated to the amount of Forge Energy present in the item
   * `nbt`: a JSON array. Every object in this array supports the following tags:
-    * `tag`: the name of the NBT tag to test on
+    * `tag`: the name of the NBT tag to test on (don't confuse this with the 'tag' above)
     * `value`: the stringified value of the NBT tag to test on
     * `contains`: use this instead of `value` in case the tag represents a list. The value after contains should be a JSON array which in turn contains nbt matching tags like what we're describing now (see example later to make this more clear)
 
@@ -229,11 +243,11 @@ Like with items it is possible to specify a list or a single block filter.
 Here are the possibilities on an individual block filter:
 
 * `minecraft:sand`: a block matching this id. Metadata and/or properties are ignored
-* `ore:dyeBlue`: a block matching the specified ore dictionary value
+* `tag:forge:barrels/wooden`: a block matching the specified tag
 * A JSON descriptor which supports the following tags:
   * `block`: a block ID (like `minecraft:sand` or `rftools:powercell`)
   * `properties`: (only if `block` is used). This is a JSON array with properties to match against. As soon as this is present a blockstate will be constructed made out of the block and the properties specified here and the match has to be exact. So properties that are not specified here will be put to their default value
-  * `ore`: a string indicating an ore dictionary value (for example `ingotCopper`, `dyeBlue`, `plankWood`, ...)
+  * `tag`: a string indicating a tag (for example `forge:barrels/wooden`, `minecraft:planks`, ...)
   * `mod`: a string indicating the modid for the block
   * `energy`: an expression which will be evaluated to the amount of Forge Energy present in the block
   * `contains`: either a single JSON object or else an array of JSON objects representing item filters as explained in the item filter section. The contains test will succeed if it finds any matching item in the inventory (if the block to test actually represents an inventory)
@@ -253,7 +267,7 @@ A block of planks:
 
 ```json
 {
-  "block": "ore:plankWood"
+  "block": "tag:minecraft:planks"
 }
 ```
 
@@ -261,7 +275,7 @@ Or in JSON syntax:
 
 ```json
 {
-  "block": { "ore": "plankWood" }
+  "block": { "tag": "minecraft:planks" }
 }
 ```
 
@@ -271,7 +285,7 @@ An RFTools powercell containing more than 1000000 energy:
 ```json
 {
   "block": {
-    "block": "rftools:powercell",
+    "block": "rftoolspower:powercell",
     "energy": ">1000000"
   }
 }
@@ -410,9 +424,11 @@ Please scroll horizontally to see all fields.
 | isnotcolliding                                                        | `B`          |         | V     |        |      |     |         |           |            |       |        | a check that is specific to the entity implementation. This is called by Minecraft automatically if you return `default` as the result of this rule. For many mobs this check will do a test if the mob would collide with blocks after spawning                                                                                                                                                      |
 | difficulty                                                            | `S`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | one of the following values: easy, normal, hard, peaceful                                                                                                                                                                                                                                                                                                                                             |
 | weather                                                               | `S`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | rain or thunder                                                                                                                                                                                                                                                                                                                                                                                       |
-| category                                                              | `S/[S]`      |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | One of the following values: none, taiga, extreme_hills, jungle, mesa, plains, savanna, icy, the_end, beach, forest, ocean, desert, river, swamp, mushroom, nether. This represents the category of the current biome                                                                                                                                                                   |
+| category                                                              | `S/[S]`      |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | NOT for 1.19! One of the following values: none, taiga, extreme_hills, jungle, mesa, plains, savanna, icy, the_end, beach, forest, ocean, desert, river, swamp, mushroom, nether. This represents the category of the current biome                                                                                                                                                                   |
+| biometags                                                             | `S/[S]`      |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | ONLY for 1.19! This is a biome tag (or list of tags) which will be used to match with the biome. Example tags are: `minecraft:is_ocean`, `minecraft:is_hill`, `minecraft:has_structure/igloo`, `minecraft:allows_surface_slime_spawns`, `forge:is_hot`, `forge:is_cold`, `forge:is_wet`, ... and a LOT more                                                                                           |
 | hostile / passive                                                     | `B`          |         | V     | V      | V    | V   |         |           |            |       |        | matching only hostile or passive mobs                                                                                                                                                                                                                                                                                                                                                                 |
 | seesky                                                                | `B`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | true if the block can see the sky (not in a cave)                                                                                                                                                                                                                                                                                                                                                     |
+| slime                                                                 | `B`          |         | V     | V      |      |     |         |           |            |       |        | true if this is a slime chunk (only for 1.18 or higher)                                                                                                                                                                                                                                                                                                                                               |
 | structure                                                             | `S`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | the name of the structure to test for. This way you can make sure a rule only fires in a village for example. Some examples are `minecraft:mineshaft`, `minecraft:village`, and so on. Modded structures should also work                                                                                                                                                                             |
 | mob                                                                   | `S/[S]`      |         | V     | V      | V    | V   |         |           |            |       |        | an ID for a mob like `minecraft:creeper` and so on. Modded mobs should also work                                                                                                                                                                                                                                                                                                                      |
 | mod                                                                   | `S/[S]`      |         | V     | V      | V    | V   |         | V         | V          |       |        | a mod id. By using this you can block spawns of mobs that belong to some mod. Use `minecraft` for vanilla mobs                                                                                                                                                                                                                                                                                        |
@@ -505,6 +521,9 @@ Then there are a number of actions:
 * `damage`: this is a string with a damage source name followed by an amount of damage. For example `fall=1.0` which would give `1.0` fall damage. All vanilla damage sources are supported (like 'inFire', 'lightningBolt', 'lava', 'cramming', outOfWorld', 'magic', ...)
 * `setstate`: if EnigmaScript is present this can be used to set a state with a string like this `state=value`
 * `setpstate`: if EnigmaScript is present this can be used to set a player state with a string like this `state=value`
+* `command`: this is a string representing a command that will be executed. The @p will be replaced with the player name. For example `give @p minecraft:diamond_sword`
+* `addstage`: this is a string representing a game stage that will be added to the player
+* `removestage`: this is a string representing a game stage that will be removed from the player
 
 ### Break and Place
 
@@ -994,7 +1013,7 @@ The following JSON keys are possible in the root of every rule:
 * `mobsfrombiome`: this is a string that can be equal to 'monster', 'creature', 'ambient', 'water_creature', 'water_ambient', or 'misc'. Use this instead of specifying 'mob' manually. This will let the spawn take a random mob (given weight) that is valid for the current biome
 * `attempts`: the number of times In Control will attempt to find a good position to spawn the mob. By default, this is 1
 * `persecond`: a floating point number indicating the chance of this rule firing. If this is 0.5 then there is 50% chance that this rule will spawn a mob (meaning that on average it will fire every 2 seconds). The default of this value is 1 (which means the rules fire onces per second). The maximum is also 1
-* `amount`: a JSON object containing a 'minimum' and 'maximum'. This is the number of mobs that the spawnwer will attempt to spawn at once. The default is 1 for both. If 'groupdistance' is set then these mobs will spawn in groups
+* `amount`: a JSON object containing a 'minimum', 'maximum' and an optional 'groupdistance'. This is the number of mobs that the spawnwer will attempt to spawn at once. The default is 1 for both. If 'groupdistance' is set then these mobs will spawn in groups (near each other). Note that 'groupdistance' is only for 1.18 and higher
 * `conditions`: a JSON object containing a set of conditions (see below)
 
 The following JSON keys are possible in the conditions block (and ONLY those, for other conditions combine with regular spawn rules):
@@ -1020,6 +1039,7 @@ The following JSON keys are possible in the conditions block (and ONLY those, fo
 ### Basic Example
 
 Spawns random villagers near the player in water.
+Using `groupdistance` these villager groups will spawn near each other (only for 1.18 and higher):
 
 ```json
 [
@@ -1029,7 +1049,8 @@ Spawns random villagers near the player in water.
     "attempts": 20,
     "amount": {
       "minimum": 2,
-      "maximum": 5
+      "maximum": 5,
+      "groupdistance": 3
     },
     "conditions": {
       "dimension": "minecraft:overworld",
