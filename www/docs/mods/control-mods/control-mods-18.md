@@ -1,4 +1,4 @@
-# Control Mods New (1.16+)
+# Control Mods New (1.18+)
 
 ## Introduction
 
