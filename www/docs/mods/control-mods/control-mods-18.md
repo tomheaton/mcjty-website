@@ -1019,6 +1019,11 @@ The following JSON keys are possible in the root of every rule:
 
 The following JSON keys are possible in the conditions block (and ONLY those, for other conditions combine with regular spawn rules):
 
+:::danger Warning
+Warning! Don't depend on the defaults here! Best is to specify all the conditions so you're sure things are allright.
+Especially 'dimension' since that is mandatory!
+:::
+
 * `dimension`: a single dimension or list of dimensions (like 'minecraft:overworld'). This is required. If you don't specify any dimensions then nothing will happen
 * `mindaycount` and `maxdaycount`: the minimum/maximum daycount to allow this rule to work
 * `mindist` and `maxdist`: the minimum/maximum distance to the player for controlling the spawn. By default, this is equal to 24/120.
