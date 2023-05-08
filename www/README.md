@@ -1,8 +1,6 @@
 # mcjty-website - www
 
-mcjty-website - www
-
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+McJty Website
 
 ### Installation
 
@@ -26,3 +24,7 @@ yarn build
 ```
 
 This command generates static content into the `build` directory and can be served using any static contents hosting service.
+
+### Notes
+
+This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
