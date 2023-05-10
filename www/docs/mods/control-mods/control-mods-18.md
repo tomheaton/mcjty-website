@@ -45,6 +45,26 @@ The 1.16.5 version of InControl and FxControl have some important differences wh
 * In 1.15.2 or higher there is a new 'continue' boolean flag that you can use in spawn rules. If this is set to true then if the rule succeeds it will not prevent execution of further rules (which it normally does by default)
 * In 1.19 the 'category' check for biomes is gone. Instead, there is the much more flexible 'biometags' test that can check for biome tags
 
+## Changelogs
+
+Here is a list of all (recent and important) changes to InControl and Fx Control:
+
+* **10 May 2023:**
+  * New 'addscoreboardtags' keyword for spawner.json and spawn.json. With this you can add scoreboard tags on each entity spawned by this rule
+  * New 'scoreboardtags_all' and 'scoreboardtags_any' conditions for spawn, experience, loot, special, and summonaid. These will test if all or any of the given tags are present on the entity
+  * New 'nodespawn' action for spawn, special, and summonaid. This will prevent the mob from despawning
+  * New 'time', 'height', and 'light' keywords which are supported wherever the corresponding min/max versions are supported. Using these keywords you can do more precise testing on the specific values. The wiki will contain more documentation on this
+  * The 'daycount' keyword now also supports this new expression syntax. Using this you can now do things like: 'spawn zombies for two days every 10 days and spawn creepers for one day in the same cycle'
+  * Added new 'minverticaldist' and 'maxverticaldist' keywords to the spawner system. These will allow you to specify a vertical distance between the spawner and the spawn position
+  * The spawner system will now fail if no dimensions are specified (as it should, it's not optional)
+* **30 April 2023:**
+  * Added new 'building' keyword that you can use to test as a condition. This will allow testing if (for example) a spawn is in a certain list of buildings
+* **28 April 2023:**
+  * Added support for the 'tag' keyword in a block description (in favor of the old and non functional 'ore' keyword)
+* **7 Feb 2023:**
+  * Added new 'validspawn' and 'sturdy' conditions to the spawner system. This avoids spawning mobs on slabs for example
+
+
 ## Commands
 
 These mods have various commands that allow you to debug and tweak what is going on:
@@ -131,6 +151,35 @@ Here are a few examples:
 * `10`: evaluate to true if the number is equal to 10
 
 The following comparators are supported: `>`, `>=`, `<`, `<=`, `=`, and `!=`.
+
+## Numeric Expressions
+
+A few keywords support numeric expressions. These are special expressions that are used to specify integer ranges. For example the `daycount` and `time` tests can use this. The following numeric expressions are supported:
+* `greater` or `gt`: evaluate to true if the number is greater than the specified value
+* `greaterOrEqual` or `ge`: evaluate to true if the number is greater than or equal to the specified value
+* `smaller` or `lt`: evaluate to true if the number is smaller than the specified value
+* `smallerOrEqual` or `le`: evaluate to true if the number is smaller than or equal to the specified value
+* `equal` or `eq`: evaluate to true if the number is equal to the specified value
+* `notEqual` or `ne`: evaluate to true if the number is not equal to the specified value
+* `range`: evaluate to true if the number is in the specified range
+* `outsideRange`: evaluate to true if the number is outside the specified range
+* `repeat`: evaluate to true if the number is in the specified cycle
+
+To clarify this. Here are a few examples:
+
+#### Day number between day 10 and 20 inclusive (both sides)
+```json
+"daycount": "range(10,20)"
+```
+#### Time above 1000
+```json
+"time": "gt(1000)"
+```
+
+#### Evalulate to true on the 3rd and 4th day every 10 days:
+```json
+"daycount": "repeat(10,3,4)"
+```
 
 ## Item filters
 
@@ -393,6 +442,7 @@ Possible types:
 * `B`: a boolean (true/false)
 * `I`: an integer
 * `F`: floating point number
+* `E`: is a string describing a numeric expression (see above for information on those)
 * `[<type>]`: a list of type (for example, `[S]` is a list of strings)
 * `JSON`: a JSON in a specific format explained elsewhere
 
@@ -406,18 +456,22 @@ Please scroll horizontally to see all fields.
 | phase                                                                 | `S/[S]`      | V       | V     | V      |      |     |         |           |            |       |        | all phases that must be active for this rule to work. Phases are defined in `phases.json`. Putting conditions in a phase is more efficient and cleaner                                                                                                                                                                                                                                                |
 | onjoin                                                                | `B`          |         | V     |        |      |     |         |           |            |       |        | if true then this spawn rule will also be fired when entities join the world. This is a much stronger test and will allow you to disable spawns from mob spawners as well as prevent passive mob spawns that don't always go through the regular `checkspawn` event. Use this with care!                                                                                                              |
 | mindaycount / maxdaycount                                             | `I`          | V       | V     | V      |      |     |         |           |            |       |        | indicate the minimum (inclusive) or maximum day count. The day counter starts at `0` (see the `days` command)                                                                                                                                                                                                                                                                                         |
-| daycount                                                              | `I`          | V       | V     | V      |      |     |         |           |            |       |        | this is true if the day counter is a multiple of the given parameter                                                                                                                                                                                                                                                                                                                                  |
+| daycount                                                              | `I/E`        | V       | V     | V      |      |     |         |           |            |       |        | this is true if the day counter is a multiple of the given parameter. It also supports an expression in which case the expression is evaluated (see more on numeric expressions above in this wiki)                                                                                                                                                                                                   |
 | baby                                                                  | `B`          |         | V     |        | V    | V   |         |           |            |       |        | true if this is a baby                                                                                                                                                                                                                                                                                                                                                                                |
 | spawner                                                               | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by a spawner                                                                                                                                                                                                                                                                                                                                                                          |
 | incontrol                                                             | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by the new In Control spawner system (`spawner.json`)                                                                                                                                                                                                                                                                                                                                 |
 | minheight / maxheight                                                 | `I`          | V       | V     | V      | V    | V   | V       | V         | V          | V     | V      | indicates the minimum (inclusive) or maximum height at which this rule will fire                                                                                                                                                                                                                                                                                                                      |
+| height                                                                | `E`          | V       | V     | V      | V    | V   | V       | V         | V          | V     | V      | uses a numeric expression to test the height at which the mob will spawn                                                                                                                                                                                                                                                                                                                              |
 | minlight / maxlight                                                   | `I`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | value between `0` and `15` indicating the minimum and maximum light level on the given block                                                                                                                                                                                                                                                                                                          |
+| light                                                                 | `E`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | uses a numeric expression to test the light level on the given block                                                                                                                                                                                                                                                                                                                                  |
 | mincount / maxcount                                                   | `S/I/JSON`   |         | V     | V      |      |     |         |           |            |       |        | string value that is either a number in which case it will count how many mobs of the given class are already in the world or else of the form `<amount>,<mob>` to count the number of mobs of that type. That way you can have a rule file based on the number of mobs already present. Note that instead of this syntax you can also use the JSON mob counter syntax as explained above             |
 | maxthis / maxtotal / maxpeaceful / maxhostile / maxneutral / maxlocal | `I`          | V       |       |        |      |     |         |           |            |       |        | the maximum amount of mobs of this type, in total, passive, hostile, neutral or local (spawn box around the player, as this is more expensive use this with care)                                                                                                                                                                                                                                     |
 | minspawndist / maxspawndist                                           | `F`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | the minimum or maximum distance (in minecraft units) to the spawn point in the world                                                                                                                                                                                                                                                                                                                  |
 | mintime / maxtime                                                     | `I`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | the time of the day (a number between `0` and `23999`)                                                                                                                                                                                                                                                                                                                                                |
+| time                                                                  | `E`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | uses a numeric expression to test the time of the day (see the numeric expression section higher up in this wiki)                                                                                                                                                                                                                                                                                     |
 | mindifficulty / maxdifficulty                                         | `F`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | the local difficulty of the place where the mob will spawn. This is a number between `0` and `4`                                                                                                                                                                                                                                                                                                      |
 | mindist / maxdist                                                     | `I`          | V       |       |        |      |     |         |           |            |       | V?     | the minimum/maximum distance to the player for controlling the spawn. By default this is equal to `24/120`                                                                                                                                                                                                                                                                                            |
+| minverticaldist / maxverticaldist                                     | `I`          | V       |       |        |      |     |         |           |            |       |        | if specified you can use this to test for the vertical distance between the player and the position where the mob will spawn                                                                                                                                                                                                                                                                          |
 | canspawnhere                                                          | `B`          |         | V     |        |      |     |         |           |            |       |        | a check that is specific to the entity implementation. This is called by Minecraft automatically if you return `default` as the result of this rule. For many mobs this check will do the standard light level check                                                                                                                                                                                  |
 | norestrictions                                                        | `B`          | V       |       |        |      |     |         |           |            |       |        | remove the mob specific (usually light related) restrictions on spawning                                                                                                                                                                                                                                                                                                                              |
 | inliquid / inwater / inlava / inair                                   | `B`          | V       |       |        |      |     |         |           |            |       |        | allow spawning in any liquid, water, lava, or in air. This will ignore the mob specific restrictions it might have on spawning                                                                                                                                                                                                                                                                        |
@@ -446,6 +500,9 @@ Please scroll horizontally to see all fields.
 | lackhelditem / lackoffhanditem                                        | `S/[S]/JSON` |         |       |        |      |     | V       | V         | V          | V     | V      | a representation of the item(s) that the player is not holding in their main hand (or offhand). Use a correct item filter (or list of item filters)                                                                                                                                                                                                                                                   |
 | helmet / chestplate / leggings / boots                                | `S/[S]/JSON` |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | a representation of the item(s) that the player is having as armor. Use a correct item filter (or list of item filters)                                                                                                                                                                                                                                                                               |
 | lackhelmet / lackchestplate / lackleggings / lackboots                | `S/[S]/JSON` |         |       |        |      |     | V       | V         | V          | V     | V      | a representation of the item(s) that the player is not having as armor. Use a correct item filter (or list of item filters)                                                                                                                                                                                                                                                                           |
+| addscoreboardtags                                                     | `S/[S]`      | V       | V     |        |      |     |         |           |            |       |        | add scoreboard tags to the spawned entity                                                                                                                                                                                                                                                                                                                                                             |
+| scoreboardtags_all / scoreboardtags_any                               | `S/[S]`      |         | V     | V      | V    | V   |         |           |            |       |        | test for scoreboard tags on the entity (all must be there or any must be there)                                                                                                                                                                                                                                                                                                                       |
+| nodespawn                                                             | `B`          |         | V     | V      |      |     |         |           |            |       |        | if this is given the mob will not despawn. Be careful with this!                                                                                                                                                                                                                                                                                                                                      |
 | incity / instreet / inbuilding / insphere **(Lost Cities)**           | `B`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | check if the current position is in a city, street, building or city sphere                                                                                                                                                                                                                                                                                                                           |
 | building **(Lost Cities)**                                            | `S/[S]`      |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | check if the current position is in a specific building                                                                                                                                                                                                                                                                                                                                               |
 | gamestage **(Gamestages)**                                            | `S`          |         | V     |        | V    | V   | V       | V         | V          | V     | V      | the current game stage. When a player is not really present (like with spawn.json) the closest player is used                                                                                                                                                                                                                                                                                         |
@@ -545,7 +602,7 @@ In Control rules can then use these phases so that they are only active if one o
 This is much more efficient as the global conditions are evaluated once every 10 ticks as opposed to every time a mob tries to spawn.
 In addition, it is much cleaner. Phases only work with a limited set of conditions (only conditions that are globally true):
 
-* `mintime` and `maxtime`
+* `time`, `mintime` and `maxtime`
 * `daycount`, `mindaycount` and `maxdaycount`
 * `weather`
 * `winter`, `summer`, `spring`, and `autumn`
@@ -567,6 +624,31 @@ You can then use this phase in all In Control rules:
     "name": "after_day10",
     "conditions": {
         "mindaycount": 10
+    }
+  }
+]
+```
+
+Define phases depending on a 10 day cycle and where in the cycle we are. These phases can then be used by spawner.json (for example) to spawn the correct creatures:
+
+```json
+[
+  {
+    "name": "zombietime",
+    "conditions": {
+      "daycount": "repeat(10,0,1)"
+    }
+  },
+  {
+    "name": "creepertime",
+    "conditions": {
+      "daycount": "repeat(10,2,3)"
+    }
+  },
+  {
+    "name": "skeletontime",
+    "conditions": {
+      "daycount": "repeat(10,4,5)"
     }
   }
 ]
@@ -1012,6 +1094,7 @@ The following JSON keys are possible in the root of every rule:
 * `mob`: a single mob or list of mobs (like 'minecraft:zombie'). The entire rule will be evalulated for every mob specified in this list. This is a required setting
 * `weights`: an optional list of weights which will be used in combination with the mobs specified by 'mob'. By using weights you can give some spawns more importance
 * `mobsfrombiome`: this is a string that can be equal to 'monster', 'creature', 'ambient', 'water_creature', 'water_ambient', or 'misc'. Use this instead of specifying 'mob' manually. This will let the spawn take a random mob (given weight) that is valid for the current biome
+* `addscoreboardtags`: this is string or list of strings that can be used to add scoreboard tags to the spawned entity.
 * `attempts`: the number of times In Control will attempt to find a good position to spawn the mob. By default, this is 1
 * `persecond`: a floating point number indicating the chance of this rule firing. If this is 0.5 then there is 50% chance that this rule will spawn a mob (meaning that on average it will fire every 2 seconds). The default of this value is 1 (which means the rules fire onces per second). The maximum is also 1
 * `amount`: a JSON object containing a 'minimum', 'maximum' and an optional 'groupdistance'. This is the number of mobs that the spawnwer will attempt to spawn at once. The default is 1 for both. If 'groupdistance' is set then these mobs will spawn in groups (near each other). Note that 'groupdistance' is only for 1.18 and higher
@@ -1027,6 +1110,7 @@ Especially 'dimension' since that is mandatory!
 * `dimension`: a single dimension or list of dimensions (like 'minecraft:overworld'). This is required. If you don't specify any dimensions then nothing will happen
 * `mindaycount` and `maxdaycount`: the minimum/maximum daycount to allow this rule to work
 * `mindist` and `maxdist`: the minimum/maximum distance to the player for controlling the spawn. By default, this is equal to 24/120.
+* `minverticaldist` and `maxverticaldist`: the minimum/maximum vertical distance to the player for controlling the spawn.
 * `minheight` and `maxheight`: the minimum/maximum height of the spawn. By default, this is 1/256
 * `norestrictions`: remove the mob specific (usually light related) restrictions on spawning
 * `inliquid`: if true then allow spawning in any liquid (this will ignore the mob specific restrictions it might have on spawning in liquids)
