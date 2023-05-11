@@ -22,6 +22,26 @@ Both mods have support for:
 
 Because both mods have a very similar structure the documentation for them is merged.
 
+## Common Questions (FAQ)
+
+* Q: How can I add spawns using spawn.json?
+  * A: You can't. `spawn.json` can only RESTRICT spawns. To add spawns you use the new `potentialspawn.json`
+  * A: `potentialspawn.json` is used to ADD spawns. `spawn.json` is used to RESTRICT spawns
+
+* Q: Why can't I seem to control mobs from mod 'X' using `spawn.json`?
+  * A: Occasionally modded mobs don't follow the rules completely. It may help in such situations to use `'onjoin': true` in your rule
+
+* Q: I added a rule to spawn.json to allow a mod but nothing is happening. Why is that?
+  * A: 'Allow' is standard. With `spawn.json` you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to `potentialspawn.json` (possibly refined with rules in `spawn.json`)
+  * A: Having only 'allow' rules in `spawn.json` is (usually) pretty useless as those mobs will spawn anyway (exceptions are if you want to boost mobs). Typically, you want to have 'deny' rules
+
+* Q: I'm trying /summon and spawn eggs but my rules don't seem to work?
+  * A: In Control only affects natural spawns and spawns done by mob spawners. Eggs and /summon is not affected
+
+* Q: How can I get zombies to spawn more often?
+  * A: This question is asked so much that it really is considered a FAQ. As I already told you above you can't add spawns using spawn.json alone. You need to add a rule to `potentialspawn.json` and possibly set conditions in `spawn.json`
+
+
 ## Differences between 1.16.3 and older
 
 The 1.16.3 version of InControl and FxControl have some important differences which will require you to change rules when you move over from an older version to 1.16.3:

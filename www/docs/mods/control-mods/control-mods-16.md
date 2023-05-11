@@ -33,6 +33,9 @@ Because both mods have a very similar structure the documentation for them is me
 * Q: I'm trying /summon and spawn eggs but my rules don't seem to work?
     * A: In Control only affects natural spawns and spawns done by mob spawners. Eggs and /summon is not affected
 
+* Q: How can I get zombies to spawn more often?
+  * A: This question is asked so much that it really is considered a FAQ. As I already told you above you can't add spawns using spawn.json alone. You need to add a rule to `spawner.json` and possibly set conditions in `spawn.json`. See the examples at the bottom of this wiki.
+
 ## Differences between 1.16.5 and older
 
 The 1.16.5 version of InControl and FxControl have some important differences which will require you to change rules when you move over from an older version to 1.16.5:

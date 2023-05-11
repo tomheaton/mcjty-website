@@ -33,6 +33,9 @@ Because both mods have a very similar structure the documentation for them is me
 * Q: I'm trying /summon and spawn eggs but my rules don't seem to work?
     * A: In Control only affects natural spawns and spawns done by mob spawners. Eggs and /summon is not affected
 
+* Q: How can I get zombies to spawn more often?
+    * A: This question is asked so much that it really is considered a FAQ. As I already told you above you can't add spawns using spawn.json alone. You need to add a rule to `spawner.json` and possibly set conditions in `spawn.json`. See the examples at the bottom of this wiki. 
+
 ## Differences between 1.16.5, 1.18.2, 1.19 and older
 
 The 1.16.5 version of InControl and FxControl have some important differences which will require you to change rules when you move over from an older version to 1.16.5:
@@ -1266,3 +1269,56 @@ So let's modify the rules in `spawn.json`:
 
 Basically by adding `"incontrol": true` to the second rule we will only deny spawns outside deserts if they were spawned by In Control.
 All normal mob spawns will stay normal.
+
+### Getting Zombies to spawn more
+
+This is commonly requested so I decided to add an example here. First you need to add a rule to `spawner.json`
+to make them spawn more. This can be done with the following rule. This will make zombies spawn up to a maximum of 200.
+Using 'norestrictions' should also make them spawn during daylight:
+
+```json
+[
+  {
+    "mob": "minecraft:zombie",
+    "persecond": 0.5,
+    "attempts": 20,
+    "amount": {
+      "minimum": 2,
+      "maximum": 5
+    },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "norestrictions": true,
+      "mindist": 25,
+      "maxdist": 100,
+      "minheight": 15,
+      "maxheight": 200,
+      "maxthis": 200
+    }
+  }
+]
+```
+
+If needed you can then use rules in `spawn.json` to control when and how they spawn. For example,
+let's make them spawn more on the surface and less in caves (but they can still spawn there). Let's
+also say that we don't want to spawn any zombies in the first 5 days after starting the world:
+
+```json
+[
+  {
+    "mob": "minecraft:zombie",
+    "daycount": "lt(5)",
+    "result": "deny"
+  },
+  {
+    "mob": "minecraft:zombie",
+    "seesky": true,
+    "result": "default"
+  },
+  {
+    "mob": "minecraft:zombie",
+    "random": 0.8,
+    "result": "deny"
+  }
+]
+```
