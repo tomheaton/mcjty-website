@@ -83,6 +83,9 @@ For example if you do `up(area,1)` you get a new area that is one higher.
 * `posat(dist)`: See where the current player is looking at and return the position exactly 'dist' units away from the player.
 * `yaw([<position>])`: With no parameter this returns the current 'yaw' rotation angle for the player. With a given position this will return that value as if the player was looking at the given position. This function is very useful for the 'fxanim rotate' animation command.
 * `pitch([<position>])`: With no parameter this returns the current 'pitch' rotation angle for the player. With a given position this will return that value as if the player was looking at the given position. This function is very useful for the 'fxanim rotate' animation command.
+* `inv_get(position,slot)`: Get the itemstack in the given slot of the inventory at the given position. This can be used to get the itemstack in a chest for example.
+* `inv_getcount(position,slot)`: Get the count of the itemstack in the given slot of the inventory at the given position.
+* `inv_count(position[,<item>])`: Get the number of items in the inventory at the given position. If the optional item parameter is given then this will only count the number of items that match the given item.
 
 
 ## Lost City Functions
