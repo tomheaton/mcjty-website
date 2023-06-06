@@ -49,6 +49,7 @@ All these functions return a string and can be used inside other strings to cont
 
 * `isblock(position,block)`: Return true if the block at the given position is equal to the specific named blockstate (see the 'blockstate' command).
 * `blockname(position)`: Return the name of the block at the given position if it is a defined blockname. If not then this returns the empty string.
+* `blockid(position)`: Return the id of the block at the given position.
 * `hasitem(item)`: Return true if the current player has the given named item in their inventory (see the 'itemstack' command).
 * `hasitemmain(item)`: Return true if the current player has the given named item in their main hand (see the 'itemstack' command).
 * `hasitemoff(item)`: Return true if the current player has the given named item in their offhand (see the 'itemstack' command).
