@@ -68,6 +68,7 @@ For example if you do `up(area,1)` you get a new area that is one higher.
 * `property(pos,name)`: Get the value of the given property at the given position. This can be used to get the value of a blockstate property.
 * `playerpos()`: Return the position of the current player.
 * `playername()`: Return the name of the current player.
+* `hp()`: Return the health of the current player.
 * `getx(pos)`: Get the x component of the given position.
 * `gety(pos)`: Get the y component of the given position.
 * `getz(pos)`: Get the z component of the given position.

@@ -12,7 +12,6 @@ There are only four commands that are allowed in a scope:
 * `pscope <id> <expression>`: This command starts a new player scope for every active player and with the given unique ID.
 * `on <event> [<parameters>]`: Define a bit of code that will be executed when a certain event happens provided the parent scope is active.
 * `block <name>`: Use this to define a block of code that you can call (using the 'call' command) from different places. A block of code has to be defined in the current scope or one of the parent scopes. It will start looking in the current scope first and then go through all parents until it comes to the root. Blocks that are defined in the root scope are available everywhere.
-* `for <variable> <start> <end> <name>`: This command will repeat the given block of code for the given local variable. The variable will start at the given start value and will increase by one every time the block is executed until it reaches the end value (exclusive). 
 
 ## Supported Events
 
@@ -68,6 +67,8 @@ Control commands:
 * `else`: Use this in combination with 'if'.
 * `delay <ticks>`: Execute the action block following this statement after the specified amount of ticks. Note that (if possible) this action block is called from within the current scope. That means that if the scope deactivates before the delay then this will not execute.
 * `call <name>`: Call a previously defined block of code (using 'block') in the current scope or any of the parent scopes. When that code has finished executing resume execution here.
+* `for <variable> <start> <end>`: This command will repeat the next block of code for the given local variable. The variable will start at the given start value and will increase by one every time the block is executed until it reaches the end value (exclusive).
+* `while <expression>`: This command will repeat the next block of code as long as the expression is true.
 
 ----
 
