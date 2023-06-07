@@ -50,7 +50,7 @@ Here are a few example expressions to clarify what it can do:
 * Using global and local variables: `100 + $var`. Note that when evaluating a variable local variables will be checked first, then player variables and finally global variables. Keep that in mind when choosing variable names.
 * Using functions: `sqrt(16) + max(1,10)`
 * String expressions: `"testing" + fmt_green() + " (hello)"`
-* Supported operators: `<`, `>`, `<=`, `>=`, `==`, `!=`, `+`, `-`, `*`, `/`, `%`, `^`
+* Supported operators: `<`, `>`, `<=`, `>=`, `==`, `!=`, `+`, `-`, `*`, `/`, `%`, `^`, '!'
 
 ### Scopes
 

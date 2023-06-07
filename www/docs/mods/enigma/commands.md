@@ -12,6 +12,7 @@ There are only four commands that are allowed in a scope:
 * `pscope <id> <expression>`: This command starts a new player scope for every active player and with the given unique ID.
 * `on <event> [<parameters>]`: Define a bit of code that will be executed when a certain event happens provided the parent scope is active.
 * `block <name>`: Use this to define a block of code that you can call (using the 'call' command) from different places. A block of code has to be defined in the current scope or one of the parent scopes. It will start looking in the current scope first and then go through all parents until it comes to the root. Blocks that are defined in the root scope are available everywhere.
+* `for <variable> <start> <end> <name>`: This command will repeat the given block of code for the given local variable. The variable will start at the given start value and will increase by one every time the block is executed until it reaches the end value (exclusive). 
 
 ## Supported Events
 
@@ -25,8 +26,8 @@ The following events are supported (used for the 'on' command):
 * `death`: Fired when a player dies. You can cancel this event and the player will not die, but it is probably best to restore some live ('hp') first.
 * `rightclickblock <blockname>`: Fired when the player rightclicks the given named block. The local var `$event_pos` will be set to the position of the clicked block.
 * `leftclickblock <blockname>`: Fired when the player leftclicks the given named block. The local var `$event_pos` will be set to the position of the clicked block.
-* `rightclickposition <position>`: Fired when the player rightclicks the given position. This position can be given directly using the `pos()` function or else using a named position (see the 'position' command).
-* `leftclickposition <position>`: Fired when the player leftclicks the given position. This position can be given directly using the `pos()` function or else using a named position (see the 'position' command).
+* `rightclickposition <position>`: Fired when the player rightclicks the given named position. This position must be a named position (see the 'position' command).
+* `leftclickposition <position>`: Fired when the player leftclicks the given named position. This position must be a named position (see the 'position' command).
 * `rightclickitem <item>`: Fired when the player rightclicks with an item in their hand. The item is given using a named item (see the 'itemstack' command).
 * `delay <ticks>`: Fired after `<ticks>` ticks after a scope activates. Note that when the scope deactivates before that time has passed then this will not be fired.
 * `repeat <ticks>`: Like delay but fires every `<ticks>` ticks after a scope activates for as long as the scope remains active.
