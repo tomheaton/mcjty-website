@@ -91,8 +91,9 @@ Item, block, particle and sound commands:
 * `particle <position> <name>`: Create the named particle system at the position.
 * `sound <position> <sound>`: Create a sound at the given position. The sound name should be a sound name as defined in minecraft or in your assets. For example 'minecraft:entity.endermen.teleport'
 * `spawn <position> <mob>`: Spawn a named mob at the given position (see 'mob' on how to define mobs)
-* `invadditem <position> <item>` Add an item to the inventory at the given position. The position can be a named position or a direct position (from the pos() function or related).
-* `invsetitem <position> <slot> <item>` Set an item in the inventory at the given position and slot. The position can be a named position or a direct position (from the pos() function or related).
+* `invadditem <position> <item>`: Add an item to the inventory at the given position. The position can be a named position or a direct position (from the pos() function or related).
+* `invsetitem <position> <slot> <item>`: Set an item in the inventory at the given position and slot. The position can be a named position or a direct position (from the pos() function or related).
+* `invclear <position>`: Clear the inventory at the given position. The position can be a named position or a direct position (from the pos() function or related).
 
 ----
 
