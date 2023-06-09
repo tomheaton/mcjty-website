@@ -30,6 +30,8 @@ The following events are supported (used for the 'on' command):
 * `rightclickitem <item>`: Fired when the player rightclicks with an item in their hand. The item is given using a named item (see the 'itemstack' command).
 * `delay <ticks>`: Fired after `<ticks>` ticks after a scope activates. Note that when the scope deactivates before that time has passed then this will not be fired.
 * `repeat <ticks>`: Like delay but fires every `<ticks>` ticks after a scope activates for as long as the scope remains active.
+* `enterarea <sensor>`: Fired when a player enters the given sensor. The area is given using a named sensor (see the 'sensor' command).
+* `leavearea <sensor>`: Fired when a player leaves the given sensor. The area is given using a named sensor (see the 'sensor' command).
 
 ## Action Commands
 
@@ -39,8 +41,8 @@ General commands:
 
 * `state <name> <value>`: Set the given state to the given value.
 * `pstate <name> <value>`: Set the given player state to the given value. This needs an active player.
-* `var <name> <value>`: Set the variable to a certain value (integer, double, boolean, string, position, area). This is a persisted value and rembered in the world save.
-* `pvar <name> <value>`: Set the player variable to a certain value (integer, double, boolean, string, position, area). This is a persisted value and rembered in the world save for the current player.
+* `var <name> <value>`: Set the variable to a certain value (integer, double, boolean, string, position, area, sphere). This is a persisted value and rembered in the world save.
+* `pvar <name> <value>`: Set the player variable to a certain value (integer, double, boolean, string, position, area, sphere). This is a persisted value and rembered in the world save for the current player.
 * `local <name> <value>`: Set a local variable to a certain value. this is only present in the current code block.
 * `restore <snapshot>`: Restore a previously saved snapshot (with the 'e_snapshot' console command). This can be used to initialize the game with a given known setup.
 * `command <command`: Execute a console command. The given command must be a single string containing the command and its parameters. This can be used (for example) to force survival gamemode for a player or control the time of the day and the weather.
@@ -83,9 +85,9 @@ Item, block, particle and sound commands:
 * `drop <item> <position>`: Drop the defined itemstack at the specific position.
 * `take <item>`: Take one defined itemstack from the player.
 * `takeall <item>`: Take all items of the given itemstack type from the player.
-* `setblock <position/area> <block>`: Set a specific defined block (with blockstate) at the given position. The position can also be an area in which case the entire area will be filled.
-* `setmimic <position/area> <block>`: Set a 'mimic' block at the given position that mimics the defined block. A mimic block is a special block that (by default) just looks the same as the block it mimics but you can do some special things with it (like moving it at any position (i.e. between block positions) using the fxanim moveblock command). The position can also be an area in which case the entire area will be set to the mimic.
-* `mimicarea <position/area> <destination>`: Mimic an area at another position. This will create mimic blocks at the destination. These blocks can be cleared by replacing them with air for example.
+* `setblock <position/area/sphere> <block>`: Set a specific defined block (with blockstate) at the given position. The position can also be an area or sphere in which case the entire area will be filled.
+* `setmimic <position/area/sphere> <block>`: Set a 'mimic' block at the given position that mimics the defined block. A mimic block is a special block that (by default) just looks the same as the block it mimics but you can do some special things with it (like moving it at any position (i.e. between block positions) using the fxanim moveblock command). The position can also be an area in which case the entire area will be set to the mimic.
+* `mimicarea <position/area/sphere> <destination>`: Mimic an area at another position. This will create mimic blocks at the destination. These blocks can be cleared by replacing them with air for example.
 * `copyblocks <area> <destination>`: Copy all blocks from the area to the destination. The bottom-left corner of the input area will be positioned exactly at the destination.
 * `moveblocks <area> <destination>`: Move all blocks from the area to the destination. The bottom-left corner of the input area will be positioned exactly at the destination. The blocks will be removed from the source.
 * `particle <position> <name>`: Create the named particle system at the position.
@@ -101,6 +103,8 @@ Position based commands:
 * `position <name> <x> <y> <z> <dim>`: Define a named position.
 * `area <name> <x1> <y1> <z1> <x2> <y2> <z2> <dim>`: Define a named area. This is a rectangular area given with a bottom-left corner and a top-right corner.
 * `area <name> <position1> <position2>`: Define a named area based on two named positions.
+* `sphere <name> <x> <y> <z> <dim> <radius>`: Define a named sphere.
+* `sensor <name> <position/area/sphere>`: Define a named sensor. A sensor is a position, area or sphere that can be used to detect if a player is in it. This can be used to trigger events for example.
 * `lookat <position>`: Let the current player look at a position. The position can be a named position or a direct position (from the pos() function or related).
 * `teleport <position>`: Teleport the current player to the given position.
 
