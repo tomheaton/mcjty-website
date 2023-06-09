@@ -15,7 +15,7 @@ There are only four commands that are allowed in a scope:
 
 ## Supported Events
 
-The following events are supported (used for the 'on' command):
+The following events are supported (only used for the 'on' command):
 
 * `setup`: Fired the very first time a scope is activated. If it is a player scope then this will be fired for every player for that scope. But only once (even accross sessions).
 * `init`: Fired the very first time a scope is activated for a session. If it is a player scope then this will be fired for every player for that scope.
