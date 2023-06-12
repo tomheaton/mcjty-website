@@ -6,7 +6,7 @@ sidebar_position: 1
 
 ## Links
 
-* Video: n.a.
+* [Video](https://youtu.be/BpUbD0NXfp8)
 * [Back to 1.20 Tutorial Index](./1.20.md)
 * [Tutorial GitHub](https://github.com/McJty/Tut4_1Basics)
 
