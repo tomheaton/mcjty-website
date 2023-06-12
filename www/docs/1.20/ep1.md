@@ -228,6 +228,12 @@ But there are many more events. You can find them in your IDE by looking at the 
 Events that implement `IModEventBus` are fired on the `Mod` event bus.
 :::
 
+A popular image that is often posted on the Forge Discord is this one. Very often people have trouble
+with their events. Often the problem is that their method is static or not static when it should be the other way around.
+
+![Events](../assets/tutorials/eventhandler.png)
+
+
 ### Registration and Timing
 
 **Forge documentation**: https://docs.minecraftforge.net/en/1.20.x/concepts/registries/
