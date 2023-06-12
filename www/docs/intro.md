@@ -20,6 +20,7 @@ This wiki was started by McJty ([Twitter](https://twitter.com/McJty))
 
 | Version              | Link                                                                |
 |----------------------|---------------------------------------------------------------------|
+| 1.20                 | [YouTube 1.20 tutorial step-by-step](./1.20/1.20.md)                |
 | 1.19.3               | [YouTube 1.19.3 tutorial step-by-step](./1.19.3/1.19.3.md)          |
 | 1.19                 | [YouTube 1.19 tutorial step-by-step](./1.19/1.19.md)                |
 | 1.18                 | [YouTube 1.18 tutorial step-by-step](./1.18/1.18.md)                |
