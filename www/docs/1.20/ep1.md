@@ -15,7 +15,7 @@ sidebar_position: 1
 This tutorial covers the basic project setup, the mod class as well as the first block.
 If some code in here is not clear or not complete you can always refer to the GitHub as well.
 
-### Basic Project Setup
+## Basic Project Setup
 
 To start your own mod the easiest way is to download the latest Forge MDK from [the Forge download site](https://files.minecraftforge.net/net/minecraftforge/forge/) and extract it to some temporary folder.
 Then make a new directory for your own mod and copy over the following files from the MDK:
@@ -35,13 +35,13 @@ These are the places where you have to change the modid:
 * `gradle.properties`
 * The main mod file. In the MDK that's called 'ExampleMod' but you can rename it to a better name. Also, probably rename the package
 
-### gradle.properties
+## gradle.properties
 
 Starting with the Forge MDK for 1.20 all things that can be configured for a project are set
 in the `gradle.properties` file. `build.gradle` has special tasks to make sure that the values
 set here are properly propagated to `mods.toml` and other places.
 
-### Mappings
+## Mappings
 
 Minecraft is distributed in an obfuscated manner. That means that all names of methods, fields, and variables are
 renamed to meaningless names. ForgeGradle can deobfuscate this for you. However, it needs to know which mappings to use.
@@ -94,7 +94,7 @@ dependencies {
 
 After making all these changes you need to refresh gradle ('gradle' tab on the top right)
 
-### Generating the runs
+## Generating the runs
 
 To be able to run Minecraft from within IntelliJ you can also need to run the 'genIntellijRuns' task (also in the gradle tab).
 This will generate 'runClient', 'runServer', and 'runData' targets. For now, we'll use 'runClient' mostly.
@@ -106,7 +106,7 @@ Make sure that you're using Java 17!
 
 ![image](https://i.imgur.com/ktUCq7P.png)
 
-### The Basic Mod Class
+## The Basic Mod Class
 
 There are many ways to structure your mod.
 In this base tutorial we follow the structure from the MDK. In future tutorials we will restructure this a bit.
@@ -180,7 +180,7 @@ public class Tutorial1Basics {
 }
 ```
 
-### Minecraft Concepts
+## Minecraft Concepts
 
 In the following image there are three columns:
 
@@ -190,7 +190,7 @@ In the following image there are three columns:
 
 ![image](https://i.imgur.com/S1EQwrm.png)
 
-### Sides
+## Sides
 
 **Forge documentation**: https://docs.minecraftforge.net/en/1.20.x/concepts/sides/
 
@@ -200,7 +200,7 @@ even in single player there is a server. This we call the integrated server.
 Read the forge documentation linked above for more detailed information. Note that this is
 a very important thing to understand well.
 
-### Events
+## Events
 
 **Forge documentation**: https://docs.minecraftforge.net/en/1.20.x/concepts/events/
 
@@ -234,7 +234,7 @@ with their events. Often the problem is that their method is static or not stati
 ![Events](../assets/tutorials/eventhandler.png)
 
 
-### Registration and Timing
+## Registration and Timing
 
 **Forge documentation**: https://docs.minecraftforge.net/en/1.20.x/concepts/registries/
 
@@ -262,7 +262,7 @@ That's because we need to be able to hold these blocks in our inventory (in case
 In this specific example we use the standard vanilla Block and Item classes.
 Later we will show you how you can make your own custom blocks and items using subclasses.
 
-### Data Generation
+## Data Generation
 
 **Forge documentation**: https://docs.minecraftforge.net/en/1.20.x/concepts/lifecycle/#data-generation
 
