@@ -570,6 +570,21 @@ on an event called `GatherDataEvent`. Here you see how it is used.
 
 From the main mod class we add this to the mod event bus using `addListener`.
 
+All generated jsons are put in a folder called `generated/resources`. This folder is automatically
+added to the classpath when running the game in the development environment. This means that
+Minecraft will be able to find the jsons and use them. When building the mod the jsons are
+automatically copied to the `resources` folder in the jar file. You can still put hand
+written jsons in the `resources` folder and they will be used instead of the generated ones
+(or in addition to them).
+
+To actually do the generation you have to run the `runData` gradle task.
+
+:::danger Warning!
+Do not edit generated jsons! They will be overwritten the next time you do the runData
+task again.
+:::
+
+
 ```java
 public class DataGeneration {
 
