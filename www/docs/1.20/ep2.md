@@ -20,6 +20,7 @@ We will learn the following things in this tutorial:
 * Simple usage of a particle system
 * Capability for storing items
 * Datagen for all the jsons
+* Tags for blocks and items
 
 We will also clean up the gradle and mod setup stuff a bit.
 
@@ -423,4 +424,381 @@ Note that `tickServer` is called from our block (ticker) class.
         BlockPos pos = worldPosition.relative(Direction.UP);
         Block.popResource(level, pos, items.extractItem(SLOT, 1, false));
     }
+```
+
+### Rendering
+
+Besides the visuals of the block itself (which we will cover later in the datagen chapter) we
+also want an additional visual for the block entity. In this case we want to render the item
+in the inventory on top of the block.
+
+When implementing a visual of a block there are basically two major types of rendering:
+
+* A static model. This is the default and preferred way to render a block. You create a json model (using datagen or otherwise). It's also possible to do more complex and dynamic static models using baked models
+* A dynamic model. This is used when you want to render something that is not possible with a static model. Usually this is when you want to do animation or other effects
+
+In general you should always try to use a static model if possible. It's much more efficient and
+easier to implement. In this example we need to use a dynamic `BlockEntityRenderer` because we
+want to animate the rendering of the item in the inventory.
+
+The `LIGHT` resource location represents the location of the texture we want to use as a special
+glow effect. Note that because this texture is located in the `textures/block` folder we don't
+need to stitch it to the atlas because this is done automatically for all textures in this folder.
+More on stitching textures in a future tutorial.
+
+The `ComplexBlockRenderer` class implements the `BlockEntityRenderer` interface. This interface
+has one method `render` that is called every frame. In this method we fetch the `ITEM_HANDLER`
+capability from the block entity. This is done as an example of how to fetch capabilities from
+a block entity. In this particular case we could also have added an api to our block entity
+to access the item handler directly.
+
+The `getCapability` method returns a Lazy Optional. It's recommend to use `map` or `ifPresent`
+to access the actual capability. When this capability is present the lambda inside `ifPresent`
+is called. Otherwise nothing happens.
+
+You are not supposed to use OpenGL directly in your rendering code. Instead you should use the
+`MultiBufferSource` to get a `BufferBuilder` that you can use to render your model. The
+`PoseStack` is used to transform the model. In this case we scale the model down to 50% and
+move it to the center of the block. When `render` is called the `PoseStack` is already
+translated to the correct position of the block entity. We use the current time to calculate
+the angle of rotation of the item. `mulPose` is used to rotate the model around the y-axis.
+Finally we render the model using the `ItemRenderer` and the `BufferBuilder` we got from the
+`MultiBufferSource`.
+
+:::info Note!
+It is important to ALWAYS push and pop the `PoseStack` when you modify it. Otherwise you will
+possibly corrupt the `PoseStack` of the caller of your `render` method and this can cause
+weird rendering issues. The `PoseStack` is a stack of matrices. When you push a matrix you
+create a copy of the current matrix and push it on the stack. When you pop a matrix you
+restore the matrix from the top of the stack.
+:::
+
+In addition to the rendering of the item we also want to render a special glow effect. This
+effect is rendered by rendering a billboard (a quad that always faces the player) with a
+special texture. The texture is a series of 16x16 textures with a white circle in the middle and a
+transparent background. This texture has an associated mcmeta file that tells Minecraft to
+animate the texture by selecting a different texture every few frames.
+
+The `renderBillboardQuadBright` method is responsible for rendering a quad that always faces
+the player. It does this by manipulating the `PoseStack` so that it faces the player. It then
+renders a quad with the given texture.
+
+This method uses the translucent render type. This is a special render type that is used for
+translucent textures. It is important to use this render type for translucent textures because
+otherwise the textures will not render correctly.
+
+```java
+public class ComplexBlockRenderer implements BlockEntityRenderer<ComplexBlockEntity> {
+
+    public static final ResourceLocation LIGHT = new ResourceLocation(Tutorial2Block.MODID, "block/light");
+
+    public ComplexBlockRenderer(BlockEntityRendererProvider.Context context) {
+    }
+
+    @Override
+    public void render(ComplexBlockEntity be, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+        be.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+            poseStack.pushPose();
+
+            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+
+            long millis = System.currentTimeMillis();
+            ItemStack stack = h.getStackInSlot(ComplexBlockEntity.SLOT);
+            if (!stack.isEmpty()) {
+                poseStack.pushPose();
+                poseStack.scale(.5f, .5f, .5f);
+                poseStack.translate(1f, 2.8f, 1f);
+                float angle = ((millis / 45) % 360);
+                poseStack.mulPose(Axis.YP.rotationDegrees(angle));
+                itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, LightTexture.FULL_BRIGHT, combinedOverlay, poseStack, bufferSource, Minecraft.getInstance().level, 0);
+                poseStack.popPose();
+
+                poseStack.translate(0, 0.5f, 0);
+                renderBillboardQuadBright(poseStack, bufferSource.getBuffer(RenderType.translucent()), 0.5f, LIGHT);
+            }
+
+            poseStack.popPose();
+        });
+    }
+
+    private static void renderBillboardQuadBright(PoseStack matrixStack, VertexConsumer builder, float scale, ResourceLocation texture) {
+        int b1 = LightTexture.FULL_BRIGHT >> 16 & 65535;
+        int b2 = LightTexture.FULL_BRIGHT & 65535;
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+        matrixStack.pushPose();
+        matrixStack.translate(0.5, 0.95, 0.5);
+        Quaternionf rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
+        matrixStack.mulPose(rotation);
+        Matrix4f matrix = matrixStack.last().pose();
+        builder.vertex(matrix, -scale, -scale, 0.0f).color(255, 255, 255, 255).uv(sprite.getU0(), sprite.getV0()).uv2(b1, b2).normal(1, 0, 0).endVertex();
+        builder.vertex(matrix, -scale, scale, 0.0f).color(255, 255, 255, 255).uv(sprite.getU0(), sprite.getV1()).uv2(b1, b2).normal(1, 0, 0).endVertex();
+        builder.vertex(matrix, scale, scale, 0.0f).color(255, 255, 255, 255).uv(sprite.getU1(), sprite.getV1()).uv2(b1, b2).normal(1, 0, 0).endVertex();
+        builder.vertex(matrix, scale, -scale, 0.0f).color(255, 255, 255, 255).uv(sprite.getU1(), sprite.getV0()).uv2(b1, b2).normal(1, 0, 0).endVertex();
+        matrixStack.popPose();
+    }
+}
+```
+
+We also need to register the renderer. To do this we make a new `ClientSetup` class.
+This class is annotated with `@Mod.EventBusSubscriber` to tell Forge that it should
+register this class to the event bus. The `bus` parameter tells Forge which event bus
+to use (the mod bus in this case). The `value` parameter tells Forge that this class should only be registered
+on the client side. This is important because the `EntityRenderersEvent.RegisterRenderers` is
+only fired on the client side.
+
+By doing this registration we tell Minecraft that whenever a block entity of type
+`ComplexBlockEntity` is rendered it should use the `ComplexBlockRenderer` to render it (in addition
+to rendering the block itself).
+
+```java
+@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+public class ClientSetup {
+
+    @SubscribeEvent
+    public static void initClient(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(Registration.COMPLEX_BLOCK_ENTITY.get(), ComplexBlockRenderer::new);
+    }
+}
+```
+
+### Data generation
+
+In Minecraft al lot of things are represented in json files. This includes block models,
+blockstates, item models, recipes, loot tables, advancements, etc. It's possible to create these
+files by hand but when you have a larger mod this quickly becomes tedious. Datagen is also based
+on an event called `GatherDataEvent`. Here you see how it is used.
+
+From the main mod class we add this to the mod event bus using `addListener`.
+
+```java
+public class DataGeneration {
+
+    public static void generate(GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+
+        generator.addProvider(event.includeClient(), new TutBlockStates(packOutput, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new TutItemModels(packOutput, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new TutLanguageProvider(packOutput, "en_us"));
+
+        TutBlockTags blockTags = new TutBlockTags(packOutput, lookupProvider, event.getExistingFileHelper());
+        generator.addProvider(event.includeServer(), blockTags);
+        generator.addProvider(event.includeServer(), new TutItemTags(packOutput, lookupProvider, blockTags, event.getExistingFileHelper()));
+        generator.addProvider(event.includeServer(), new TutRecipes(packOutput));
+        generator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
+                List.of(new LootTableProvider.SubProviderEntry(TutLootTables::new, LootContextParamSets.BLOCK))));
+    }
+}
+```
+
+#### Block states
+
+The datagen block state provider is used to generate model and blockstate json files. The
+`TutBlockStates` class is a subclass of `BlockStateProvider`. The constructor takes a `PackOutput`
+and an `ExistingFileHelper`. The `PackOutput` is used to write the generated files to the correct
+location. The `ExistingFileHelper` is used to check if a file already exists. This is useful
+when you want your generated jsons to use existing (vanilla) files.
+
+The `registerStatesAndModels` method is used to register the blockstates and models. In this
+example we use the `simpleBlock` method to generate a model and blockstate for both our blocks.
+
+```java
+public class TutBlockStates extends BlockStateProvider {
+
+    public TutBlockStates(PackOutput output, ExistingFileHelper exFileHelper) {
+        super(output, Tutorial2Block.MODID, exFileHelper);
+    }
+
+    @Override
+    protected void registerStatesAndModels() {
+        simpleBlock(Registration.SIMPLE_BLOCK.get());
+        simpleBlock(Registration.COMPLEX_BLOCK.get());
+    }
+}
+```
+
+#### Item models
+
+Items also need models. In this tutorial these models are going to be very simple as they
+only have to refer to the block models.
+
+The `modLoc` function creates a `ResourceLocation` for this mod and the given path. This is how
+we refer to the block models.
+
+```java
+public class TutItemModels extends ItemModelProvider {
+
+    public TutItemModels(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, Tutorial2Block.MODID, existingFileHelper);
+    }
+
+    @Override
+    protected void registerModels() {
+        withExistingParent(Registration.SIMPLE_BLOCK.getId().getPath(), modLoc("block/simple_block"));
+        withExistingParent(Registration.COMPLEX_BLOCK.getId().getPath(), modLoc("block/complex_block"));
+    }
+}
+```
+
+#### Language provider
+
+In code you typically only use language strings. These strings are then translated to the
+correct language by the game. These translations are also handled in json files and here
+is how you can generate them:
+
+```java
+public class TutLanguageProvider extends LanguageProvider {
+
+    public TutLanguageProvider(PackOutput output, String locale) {
+        super(output, Tutorial2Block.MODID, locale);
+    }
+
+    @Override
+    protected void addTranslations() {
+        add(Registration.SIMPLE_BLOCK.get(), "Simple Block");
+        add(Registration.COMPLEX_BLOCK.get(), "Complex Block");
+    }
+}
+```
+
+#### Block tags
+
+Minecraft uses tags to group blocks, items, biomes, and other things. These tags are also
+stored in json files. The `TutBlockTags` class is a subclass of `BlockTagsProvider`. The
+constructor takes a `PackOutput`, a `HolderLookup.Provider`, and an `ExistingFileHelper`.
+
+In this tutorial we associate our two blocks with two vanilla tags:
+
+* `minecraft:mineable/pickaxe` - This tag is used to determine if a block can be mined with a pickaxe.
+* `minecraft:needs_iron_tool` - This tag is used to specify that a block needs at least an iron tool to be mined.
+
+```java
+public class TutBlockTags extends BlockTagsProvider {
+
+    public TutBlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, Tutorial2Block.MODID, existingFileHelper);
+    }
+
+    @Override
+    protected void addTags(HolderLookup.Provider provider) {
+        tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .add(Registration.COMPLEX_BLOCK.get(), Registration.SIMPLE_BLOCK.get());
+        tag(BlockTags.NEEDS_IRON_TOOL)
+                .add(Registration.COMPLEX_BLOCK.get(), Registration.SIMPLE_BLOCK.get());
+     }
+}
+```
+
+#### Item tags
+
+Item tags are also stored in json files. The `TutItemTags` class is a subclass of `ItemTagsProvider`.
+The item tags provider needs an instance of the previously created block tags provider.
+
+Since we don't currently associate any tags with our items this class is empty.
+
+```java
+public class TutItemTags extends ItemTagsProvider {
+
+    public TutItemTags(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, BlockTagsProvider blockTags, ExistingFileHelper helper) {
+        super(packOutput, lookupProvider, blockTags.contentsGetter(), Tutorial2Block.MODID, helper);
+    }
+
+    @Override
+    protected void addTags(HolderLookup.Provider provider) {
+    }
+}
+```
+
+#### Recipes
+
+Recipes are also stored in json files. The `TutRecipes` class is a subclass of `RecipeProvider`.
+The constructor takes a `PackOutput`.
+
+Recipe datagen can be used for all types of recipes. In this tutorial we generate both a shapeless
+recipe for the simple block and a shaped recipe for the complex block.
+
+For every recipe we need to specify a category. This is a custom string that is used to group
+recipes in the recipe book. In this tutorial we use `RecipeCategory.MISC` for both recipes.
+
+We also need to specify if the recipe is gated behind a specific advancement. In this tutorial
+we use the `InventoryChangeTrigger` to check if the player has a diamond in their inventory.
+
+Note that recipes can be based on items but also on tags. Tags are usually better because
+it makes the recipe more flexible. For example, if you use a tag for the recipe input you
+can use any item that is in that tag.
+
+```java
+public class TutRecipes extends RecipeProvider {
+
+    public TutRecipes(PackOutput packOutput) {
+        super(packOutput);
+    }
+
+    @Override
+    protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Registration.SIMPLE_BLOCK.get())
+                .requires(ItemTags.DIRT)
+                .requires(Tags.Items.GEMS_DIAMOND)
+                .unlockedBy("has_diamond", InventoryChangeTrigger.TriggerInstance.hasItems(
+                        ItemPredicate.Builder.item().of(Tags.Items.GEMS_DIAMOND).build()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.COMPLEX_BLOCK.get())
+                .pattern("dsd")
+                .pattern("dxd")
+                .pattern("ddd")
+                .define('d', ItemTags.DIRT)
+                .define('x', Tags.Items.GEMS_DIAMOND)
+                .define('s', Items.STICK)
+                .group("tutorial")
+                .unlockedBy("has_diamond", InventoryChangeTrigger.TriggerInstance.hasItems(
+                        ItemPredicate.Builder.item().of(Tags.Items.GEMS_DIAMOND).build()))
+                .save(consumer);
+
+    }
+}
+```
+
+#### Loot tables
+
+Loot tables are used to specify what items a block or entity drops when it is broken or killed.
+The `TutLootTables` class is a subclass of `VanillaBlockLoot`. The reason we extend this class
+is that we then get access to a lot of helper methods that makes it easier to generate loot tables.
+
+For the simple block we use the `dropSelf` method. This method will make the block drop itself
+when it is broken. For the complex block we use the `createStandardTable` method. This method
+will generate a loot table that drops the block itself and the items that are in the block entity.
+This is similar to how the shulker box works.
+
+```java
+public class TutLootTables extends VanillaBlockLoot {
+
+    @Override
+    protected void generate() {
+        dropSelf(Registration.SIMPLE_BLOCK.get());
+        createStandardTable(Registration.COMPLEX_BLOCK.get(), Registration.COMPLEX_BLOCK_ENTITY.get());
+    }
+
+    @Override
+    protected Iterable<Block> getKnownBlocks() {
+        return ForgeRegistries.BLOCKS.getEntries().stream()
+                .filter(e -> e.getKey().location().getNamespace().equals(Tutorial2Block.MODID))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+    }
+
+    private void createStandardTable(Block block, BlockEntityType<?> type) {
+        LootPool.Builder builder = LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(block)
+                        .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
+                        .apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
+                                .copy(ComplexBlockEntity.ITEMS_TAG, "BlockEntityTag." + ComplexBlockEntity.ITEMS_TAG, CopyNbtFunction.MergeStrategy.REPLACE))
+                        .apply(SetContainerContents.setContents(type)
+                                .withEntry(DynamicLoot.dynamicEntry(new ResourceLocation("minecraft", "contents"))))
+                );
+        add(block, LootTable.lootTable().withPool(builder));
+    }
+}
 ```
