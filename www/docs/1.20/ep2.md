@@ -100,8 +100,10 @@ does have some special features. Let's look at the code first. In the constructo
 we define a block with a strength of 3.5 (that influences how long it takes for a pickaxe
 to actually break the block), we require the correct tool for drops and we enable random ticks.
 
-Note: the tool that is required to harvest this is defined with tags. More on that later in this
+:::info Note
+The tool that is required to harvest this is defined with tags. More on that later in this
 tutorial.
+:::
 
 Because we specified random ticks we need to override the `randomTick` method. This method is
 called every random tick. In this case we send some smoke particles at the top of the block.
@@ -146,6 +148,14 @@ the model, the loot table, a recipe and the tags for this block.
 
 The complex block is a block that has a block entity. The block entity is used to store one item
 and also to render a fancy effect. Let's first look at the block class.
+
+Remember our previous tutorial. There we talked about definitions and how there is only one of
+each type of Block in the game. That's why you cannot store any data in the block class because
+it is shared between all instances of the block. That's why we need a block entity. The block
+entity is created for each instance of the block in the world. This means that we can store
+data in the block entity and it will be unique for each instance. In addition block entities
+also allow us to perform certain actions every tick. With a block you can only do scheduled
+or random ticks.
 
 ### The block class
 
@@ -218,6 +228,9 @@ until it is actually needed. This is useful because the capability might not be 
 In this tutorial we are guaranteed to always need the items so that's why we do a direct
 declaration of the item stack handler (`items` variable). This variable allows us to access
 the items in a more optimal and convenient way.
+
+Note that forge also provides energy and fluid capabilities. In addition, mods can also define
+their own capabilities if needed.
 
 It's important to note that we need to invalidate the capability when the block entity is
 destroyed. This is done in the `invalidateCaps` method. In this method we invalidate the capability so
