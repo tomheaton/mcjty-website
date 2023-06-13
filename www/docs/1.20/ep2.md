@@ -21,7 +21,9 @@ We will also clean up the gradle and mod setup stuff a bit.
 ## The main mod class
 
 In this tutorial we greatly simplified the main mod class. Most of the things we did here are now
-done in other classes.
+done in other classes. We removed the client specific setup. This is now in a different file.
+We moved all registration stuff to the Registration class. Finally we removed all things we don't
+need right now.
 
 ```java
 @Mod(Tutorial2Block.MODID)
