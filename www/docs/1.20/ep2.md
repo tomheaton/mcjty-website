@@ -122,7 +122,8 @@ public class SimpleBlock extends Block {
         super(Properties.of()
                 .strength(3.5F)
                 .requiresCorrectToolForDrops()
-                .sound(SoundType.METAL).randomTicks());
+                .sound(SoundType.METAL)
+                .randomTicks());
     }
 
     @Override
@@ -157,6 +158,8 @@ data in the block entity and it will be unique for each instance. In addition bl
 also allow us to perform certain actions every tick. With a block you can only do scheduled
 or random ticks.
 
+![Events](../assets/tutorials/complexblock.png)
+
 ### The block class
 
 The constructor is similar to the simple block.
@@ -169,6 +172,10 @@ entity is created. It is used to create a `BlockEntityTicker` that can be used t
 certain actions every tick. In this case we return `null` for the client side because we don't
 need a ticker there. On the server side we return a ticker that will delegate to the block
 entity. By doing it like this we know that our block will only tick on the server side.
+
+:::info Note
+Ticks occur 20 times per second (under normal load) and they happen both client and server side.
+:::
 
 ```java
 public class ComplexBlock extends Block implements EntityBlock {
