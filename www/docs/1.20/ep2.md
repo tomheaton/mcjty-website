@@ -455,7 +455,7 @@ in the inventory on top of the block.
 When implementing a visual of a block there are basically two major types of rendering:
 
 * A static model. This is the default and preferred way to render a block. You create a json model (using datagen or otherwise). It's also possible to do more complex and dynamic static models using baked models
-* A dynamic model. This is used when you want to render something that is not possible with a static model. Usually this is when you want to do animation or other effects
+* Dynamic rendering. This is used when you want to render something that is not possible with a static model. Usually this is when you want to do animation or other effects
 
 In general you should always try to use a static model if possible. It's much more efficient and
 easier to implement. In this example we need to use a dynamic `BlockEntityRenderer` because we
