@@ -6,7 +6,7 @@ sidebar_position: 2
 
 ## Links
 
-* Video: n.a.
+* [Video](https://youtu.be/4IQLCHSoUN8)
 * [Back to 1.20 Tutorial Index](./1.20.md)
 * [Tutorial GitHub](https://github.com/McJty/Tut4_2Block)
 

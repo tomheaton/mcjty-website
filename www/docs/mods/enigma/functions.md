@@ -44,6 +44,8 @@ All these functions return a string and can be used inside other strings to cont
 * `state(v)`: Return the value of the given state.
 * `pstate(v)`: Return the value of the given player state.
 * `substring(s,idx1[,idx2])`: Return a substring of the given string starting at idx1 and ending at the optional idx2 (exclusive).
+* `replacestring(s,old,new)`: Return a new string where all occurrences of 'old' are replaced with 'new'.
+* `replaceregex(s,regex,new)`: Return a new string where all occurrences of 'regex' are replaced with 'new'. The regex is a regular expression. For example `replaceregex("hello world","[aeiou]","*")` will return `h*ll* w*rld`.
 
 ## Block and item functions
 
