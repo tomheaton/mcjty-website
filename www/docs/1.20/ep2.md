@@ -9,6 +9,7 @@ sidebar_position: 2
 * [Video](https://youtu.be/4IQLCHSoUN8)
 * [Back to 1.20 Tutorial Index](./1.20.md)
 * [Tutorial GitHub](https://github.com/McJty/Tut4_2Block)
+* [Tag for this episode](https://github.com/McJty/Tut4_2Block/releases/tag/episode2)
 
 ## Introduction
 
