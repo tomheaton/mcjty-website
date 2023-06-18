@@ -924,11 +924,10 @@ This also has to be registered. Add this code to `commonSetup` in our mod class:
 Now we need to create the packet itself. The data that we send to the server is the position
 of our processor block and the quadrant that was hit. We can use the `FriendlyByteBuf` class
 to write this data to a byte buffer. We also need to create a constructor that can read this
-data from the buffer. The `handle` method is called when the packet is received. `handle` is
-called on the networking thread, so we can't do any processing here. Instead, we need to enqueue
-a task to the main thread. We can do this by calling `enqueueWork`. This will call the lambda
-on the main thread. In this lambda we can do the actual processing. In this case we get the
-player that sent the packet and call the `hit` method on the processor block entity.
+data from the buffer. Normally network packets are handled on the networking thread. But because
+we used `consumerMainThread` our `handle` method will be called on the main thread when the
+oacket is received. In this handler we get the player that sent the packet and call the `hit`
+method on the processor block entity.
 
 ```java
 public class PacketHitToServer {
@@ -953,13 +952,11 @@ public class PacketHitToServer {
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            // Here we are server side
-            ServerPlayer player = ctx.getSender();
-            if (player.level().getBlockEntity(pos) instanceof ProcessorBlockEntity processor) {
-                processor.hit(player, button);
-            }
-        });
+        // Here we are server side
+        ServerPlayer player = ctx.getSender();
+        if (player.level().getBlockEntity(pos) instanceof ProcessorBlockEntity processor) {
+            processor.hit(player, button);
+        }
         return true;
     }
 }
