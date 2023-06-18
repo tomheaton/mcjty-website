@@ -131,7 +131,7 @@ So basically it's a block with four buttons. The buttons can be pressed or not.
 
 Let's first concentrate on the rendering of this block. We will use a static json model for this and
 we want to use datagen. So let's look at `TutBlockStates`. Basically we add a new `registerProcessor`
-method. That method will first make the base model and then it will make a multi-part model for
+method. That method will first make the base model, and then it will make a multi-part model for
 all the buttons in all their possible states. The base model is a simple cube with a texture on all
 sides. Using the vanilla multipart system it is possible to make our model conditional. That means
 that all the button models are only added if the corresponding button is pressed. This is done
@@ -800,7 +800,7 @@ opening the GUI, we will use left click. However, there are a few problems with 
 1. Left click is used for breaking blocks. We don't want to break our block when left-clicking it. Especially in Creative this can be a problem.
 2. The `attack` method in Block that would be ideal for us to use doesn't give us the location where the player hit the block so we can't use this for finding out which quadrant is hit.
 
-Fortunatelly Forge provides us with an event that can solve both problems for us. This event is
+Fortunately Forge provides us with an event that can solve both problems for us. This event is
 called `PlayerInteractEvent.LeftClickBlock`. We can use this event to cancel the block breaking
 and instead handle the interaction ourselves. We can also use the `hitVec` parameter to figure
 out which quadrant is hit.
@@ -925,7 +925,7 @@ Now we need to create the packet itself. The data that we send to the server is 
 of our processor block and the quadrant that was hit. We can use the `FriendlyByteBuf` class
 to write this data to a byte buffer. We also need to create a constructor that can read this
 data from the buffer. The `handle` method is called when the packet is received. `handle` is
-called on the networking thread so we can't do any processing here. Instead we need to enqueue
+called on the networking thread, so we can't do any processing here. Instead, we need to enqueue
 a task to the main thread. We can do this by calling `enqueueWork`. This will call the lambda
 on the main thread. In this lambda we can do the actual processing. In this case we get the
 player that sent the packet and call the `hit` method on the processor block entity.
