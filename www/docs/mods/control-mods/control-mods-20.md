@@ -1,10 +1,6 @@
-# Control Mods New (1.18+)
+# Control Mods New (1.20+)
 
 ## Introduction
-
-:::danger Warning
-This wiki page is only for 1.18 and 1.19! It is not valid for Minecraft 1.20!
-:::
 
 :::info Note
 FxControl no longer exists on 1.20. It's functionality has been merged into InControl

@@ -2,6 +2,10 @@
 
 ## Introduction
 
+:::danger Warning
+This wiki page is only for 1.18 and 1.19! It is not valid for Minecraft 1.20!
+:::
+
 [In Control](https://minecraft.curseforge.com/projects/in-control) is a mod that supports a rule based system that allows you to control various aspects about mobs.
 There are rule files to control spawning, loot, experience and so on.
 
