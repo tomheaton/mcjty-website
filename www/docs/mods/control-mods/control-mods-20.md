@@ -9,9 +9,6 @@ FxControl no longer exists on 1.20. It's functionality has been merged into InCo
 [In Control](https://minecraft.curseforge.com/projects/in-control) is a mod that supports a rule based system that allows you to control various aspects about mobs.
 There are rule files to control spawning, loot, experience and so on.
 
-[Fx Control](https://minecraft.curseforge.com/projects/fx-control) is a mod that supports a rule based system that allows you to control things that happen around the player.
-There are rule files to give the player potion effects, set them on fire, prevent them from interacting with objects and other things related to that.
-
 Both mods have support for:
 - [Game Stages](https://minecraft.curseforge.com/projects/game-stages)
 - [Serene Seasons](https://minecraft.curseforge.com/projects/serene-seasons)
