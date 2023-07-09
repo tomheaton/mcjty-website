@@ -12,6 +12,7 @@ The syntax for `spawner.json` is TOTALLY different from the syntax for `potentia
 Check the wiki!
 :::
 
+* For Minecraft 1.20 go to [this page](./control-mods-20.md)
 * For Minecraft 1.18 and 1.19 go to [this page](./control-mods-18.md)
 * For Minecraft 1.16 go to [this page](./control-mods-16.md)
 * For Minecraft 1.12 go to [this page](./control-mods-legacy.md)
