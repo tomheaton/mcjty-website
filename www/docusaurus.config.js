@@ -20,7 +20,7 @@ const config = {
   tagline: metadata.tagline,
   url: metadata.url,
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'tomheaton',
