@@ -7,10 +7,10 @@ sidebar_position: 4
 ## Links
 
 <!-- * [Video](todo) -->
-* Video
+* Video (todo)
 * [Back to 1.20 Tutorial Index](./1.20.md)
 * [Tutorial GitHub](https://github.com/McJty/Tut4_3Power)
-* Tag for this episode
+* Tag for this episode (todo)
 <!-- * [Tag for this episode](todo) -->
 
 ## Introduction
