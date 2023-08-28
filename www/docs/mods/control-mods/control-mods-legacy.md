@@ -328,9 +328,18 @@ The following tags are supported:
 * `passive`: if this is set all passive mobs are counted
 * `mob`: this is a single mob or a list of mobs. If this is present only those mobs are counted
 
+It's important to note that what is being counted depends on what you specify
+in the `mincount` or `maxcount` json. If you don't specify`mod`, `hostile`, `passive`,
+`all`, or `mob` then it will count the number of mobs of the same type as the mob
+that is being spawned.
+
+However, as soon as you specify any of those keywords it will count what you
+specify. For example if you specify a skeleton mob inside the `mincount` block then
+it will count skeletons even if the counter is being used in a rule that spawns zombies.
+
 ### Mob Counter Examples
 
-In `spawn.json`: deny skeletons if there are already more then 50 hostile vanilla mobs present per player:
+In `spawn.json`: deny skeletons if there are already more then 50 hostile mobs present per player:
 
 ```json
   {
