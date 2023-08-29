@@ -1,0 +1,10 @@
+# IDE
+.vscode
+.idea
+
+# DEPENDENCIES
+node_modules
+yarn.lock
+
+# BUILD
+dist

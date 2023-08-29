@@ -13,5 +13,11 @@
   "engines": {
     "npm": "please use yarn!",
     "yarn": ">= 1.22.10"
+  },
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.0.3"
   }
 }
