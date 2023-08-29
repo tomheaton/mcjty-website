@@ -3,7 +3,7 @@ import clsx from "clsx";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import ModWidgets from "@site/src/components/ModWidgets";
 import Layout from "@theme/Layout";
-import styles from "./index.module.css";
+import styles from "./styles.module.css";
 import Link from "@docusaurus/Link";
 
 const HomepageHeader: React.FC = () => {
@@ -33,7 +33,7 @@ const Home: React.FC = () => {
         <div className={styles.mcjtyInfo}>
           <img
             src={require("@site/static/img/mcjty.png").default}
-            alt={"McJty Logo"}
+            alt="McJty Logo"
           />
           <p className={styles.text}>
             Hello, I'm McJty. I'm a Minecraft mod{" "}
@@ -52,8 +52,11 @@ const Home: React.FC = () => {
           <p className={styles.text} style={{ textAlign: "center" }}>
             Want to support what I do?
           </p>
-          <Link href={"https://www.patreon.com/McJty"}>
-            <img src={"img/patreon.png"} alt={"McJty Patreon badge"} />
+          <Link href="https://www.patreon.com/McJty">
+            <img
+              src={require("@site/static/img/patreon.png").default}
+              alt="McJty Patreon badge"
+            />
           </Link>
         </div>
         <div className={styles.infoBox}>
@@ -61,7 +64,7 @@ const Home: React.FC = () => {
             Did you know McJty&apos;s son makes mods too?
           </p>
           <Link
-            className={"button button--primary button--lg"}
+            className="button button--primary button--lg"
             href={"https://www.curseforge.com/members/romelo333/projects"}
           >
             Romelo's Mods
