@@ -8,3 +8,7 @@ yarn.lock
 
 # BUILD
 dist
+
+# MISC
+.next
+.docusaurus

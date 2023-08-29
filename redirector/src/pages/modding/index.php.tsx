@@ -1,9 +1,9 @@
-import type {NextPage} from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../../styles/Index.module.css";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import Link from "next/link";
-import {useEffect} from "react";
+import { useEffect } from "react";
 
 const Modding: NextPage = () => {
   // TODO: use middleware instead
@@ -21,7 +21,9 @@ const Modding: NextPage = () => {
         case "YouTube-Tutorials-15":
           router.push("https://mcjty.eu/docs/1.15/");
           break;
-        case "YouTube-Tutorials": case "YouTube-Tutorials-14": case "YouTube-Tutorials-16":
+        case "YouTube-Tutorials":
+        case "YouTube-Tutorials-14":
+        case "YouTube-Tutorials-16":
           router.push("https://mcjty.eu/docs/1.14-1.15-1.16/");
           break;
         case "YouTube-Tutorials-17":
@@ -51,19 +53,13 @@ const Modding: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Modding - McJty Redirector
-        </h1>
+        <h1 className={styles.title}>Modding - McJty Redirector</h1>
 
         <Link href={"https://www.mcjty.eu/"}>
-          <p className={styles.description}>
-            Redirect to the new site!
-          </p>
+          <p className={styles.description}>Redirect to the new site!</p>
         </Link>
 
-        <p>
-          {JSON.stringify(query, null, 2)}
-        </p>
+        <p>{JSON.stringify(query, null, 2)}</p>
       </main>
     </div>
   );

@@ -19,8 +19,8 @@ const nextConfig = {
         destination: 'https://www.mcjty.eu/docs/mods/',
         permanent: true,
       },*/
-    ]
+    ];
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

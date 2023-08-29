@@ -1,9 +1,9 @@
-import type {NextPage} from 'next';
-import Head from 'next/head';
-import styles from '../../styles/Index.module.css';
-import {useRouter} from "next/router";
+import type { NextPage } from "next";
+import Head from "next/head";
+import styles from "../../styles/Index.module.css";
+import { useRouter } from "next/router";
 import Link from "next/link";
-import {useEffect} from "react";
+import { useEffect } from "react";
 
 const Mods: NextPage = () => {
   // TODO: use middleware instead
@@ -18,7 +18,10 @@ const Mods: NextPage = () => {
         case "Ariente":
           router.push("https://mcjty.eu/docs/mods/ariente/");
           break;
-        case "ControlMods": case "ControlMods16": case "FxControl": case "InControl":
+        case "ControlMods":
+        case "ControlMods16":
+        case "FxControl":
+        case "InControl":
           router.push("https://mcjty.eu/docs/mods/control-mods/");
           break;
         case "Deep_Resonance":
@@ -67,33 +70,27 @@ const Mods: NextPage = () => {
     } else {
       router.push("https://mcjty.eu/docs/mods/");
     }
-  }, [query])
+  }, [query]);
 
   return (
     <div className={styles.container}>
       <Head>
         <title>McJty Redirector</title>
-        <meta name="description" content="McJty Redirector"/>
-        <link rel="icon" href="/favicon.ico"/>
+        <meta name="description" content="McJty Redirector" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Mods - McJty Redirector
-        </h1>
+        <h1 className={styles.title}>Mods - McJty Redirector</h1>
 
         <Link href={"https://www.mcjty.eu/"}>
-          <p className={styles.description}>
-            Redirect to the new site!
-          </p>
+          <p className={styles.description}>Redirect to the new site!</p>
         </Link>
 
-        <p>
-          {JSON.stringify(query, null, 2)}
-        </p>
+        <p>{JSON.stringify(query, null, 2)}</p>
       </main>
     </div>
   );
-}
+};
 
 export default Mods;
