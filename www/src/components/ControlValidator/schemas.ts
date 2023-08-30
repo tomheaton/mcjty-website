@@ -255,7 +255,7 @@ export const spawnerSchema = z.array(z.object({
     maxneutral: z.optional(z.number().int()),
     maxlocal: z.optional(z.number().int()),
   }).strict()
-})).strict();
+}).strict());
 
 export const phasesSchema = z.array(z.object({
   name: z.string(),
@@ -280,4 +280,4 @@ export const phasesSchema = z.array(z.object({
 }).strict()).refine((v) => {
     const names = v.map((phase) => phase.name);
     return new Set(names).size === names.length;
-}, "Phase names must be unique").strict();
+}, "Phase names must be unique");
