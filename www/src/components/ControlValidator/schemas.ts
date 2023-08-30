@@ -217,7 +217,7 @@ export const spawnerSchema = z.array(z.object({
     minimum: z.number().int(),
     maximum: z.number().int(),
     groupdistance: z.optional(z.number().int()),
-  }),
+  }).strict(),
   conditions: z.object({
     dimension: mcid.or(z.array(mcid)),
     norestrictions: z.optional(z.boolean()),
@@ -240,7 +240,7 @@ export const spawnerSchema = z.array(z.object({
     maxhostile: z.optional(z.number().int()),
     maxneutral: z.optional(z.number().int()),
     maxlocal: z.optional(z.number().int()),
-  })
+  }).strict()
 })).strict();
 
 export const phasesSchema = z.array(z.object({
@@ -262,8 +262,8 @@ export const phasesSchema = z.array(z.object({
     autumn: z.optional(z.boolean()),
 
     state: z.optional(z.string()),
-  }),
-})).refine((v) => {
+  }).strict(),
+}).strict()).refine((v) => {
     const names = v.map((phase) => phase.name);
     return new Set(names).size === names.length;
 }, "Phase names must be unique").strict();
