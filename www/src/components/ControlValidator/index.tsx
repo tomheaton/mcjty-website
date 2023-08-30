@@ -1,80 +1,54 @@
-import React, {type FormEvent, useState} from "react";
-import styles from "./styles.module.css";
-import {spawnSchema} from "./schemas"; // TODO: add syntax highlighting
+import React, { useState } from "react";
+import z from "zod";
+import Validator from "./Validator";
+import {
+  DATA,
+  type MinecraftVersion,
+  ValidatorType,
+} from "@site/src/components/ControlValidator/data";
+
+type Props = {
+  schema?: z.ZodSchema<any>;
+};
 
 // TODO: add syntax highlighting
-const ControlValidator: React.FC = () => {
-  const [text, setText] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [validating, setValidating] = useState<boolean>(false);
-
-  const handleValidation = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("validating...");
-
-    setValidating(true);
-    setError(null);
-    setSuccess(null)
-
-    try {
-      const json = JSON.parse(text);
-      console.log(json);
-      setText(JSON.stringify(json, null, 2));
-
-      // TODO: figure out how to check which schema is being used
-      //  maybe a union of each schema?
-      const result = spawnSchema.safeParse(json);
-      if (result.success) {
-        console.log("valid!");
-        // @ts-ignore
-        console.log(result.data);
-
-        setSuccess("Valid!");
-      } else {
-        console.log("invalid!");
-        // @ts-ignore
-        console.log(result.error);
-        // @ts-ignore
-        setError(result.error.message);
-      }
-    } catch (e) {
-      setError(e.message);
-    }
-
-    setValidating(false);
-  };
+const ControlValidator: React.FC<Props> = ({}) => {
+  const [version, setVersion] = useState<MinecraftVersion>("1.20");
 
   return (
-    <form onSubmit={handleValidation} className={styles.form}>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Enter control schema"
-        required
-        style={{ fontFamily: "monospace", width: "100%", height: "400px" }}
-      />
-      <br />
-      <button
-        type="submit"
-        className="button button--primary button--lg"
-        disabled={validating}
+    <div style={{ width: "100%" }}>
+      <select
+        value={version}
+        onChange={(e) => setVersion(e.target.value as MinecraftVersion)}
       >
-        {validating ? "Validating..." : "Validate"}
-      </button>
-      {error && (
-        <>
-          <br />
-          <p>{error}</p>
-        </>
-      )}
-      {success && (
-          <>
-            <br />
-            <p>{success}</p>
-          </>
-      )}
-    </form>
+        {Object.keys(DATA).map((version) => (
+          <option key={version} value={version}>
+            {version}
+          </option>
+        ))}
+      </select>
+      <br />
+      <br />
+      <div
+        style={{
+          width: "100%",
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {Object.keys(DATA[version]).map((validator) => (
+          <Validator
+            key={validator}
+            type={validator as ValidatorType}
+            version={version}
+          />
+        ))}
+        {Object.keys(DATA[version]).length === 0 && (
+          <p>No validators for this version!</p>
+        )}
+      </div>
+    </div>
   );
 };
 

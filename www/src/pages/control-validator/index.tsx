@@ -15,12 +15,19 @@ const ControlValidatorPage: React.FC = () => {
             <h1>Control Validator</h1>
             <p>
               This tool allows you to validate your control file. It will check
-              for common mistakes and
+              for common mistakes and errors.
             </p>
           </div>
-          <div style={{ width: "100%" }}>
-            <ControlValidator />
-          </div>
+        </div>
+        <div
+          style={{
+            width: "100%",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <ControlValidator />
         </div>
       </main>
     </Layout>
