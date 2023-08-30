@@ -135,8 +135,8 @@ export const generalSpawnKeywords = z.object({
   biometags: z.optional(mcid.or(z.array(mcid))),
   biometype: z.optional(z.enum(["desert", "desert_legacy", "warm", "cool", "icy"])),
 
-  mincount: z.optional(z.number().int()).or(counter),
-  maxcount: z.optional(z.number().int()).or(counter),
+  mincount: z.optional(z.number().int().or(counter)),
+  maxcount: z.optional(z.number().int().or(counter)),
 
   minspawndist: z.optional(z.number()),
   maxspawndist: z.optional(z.number()),
