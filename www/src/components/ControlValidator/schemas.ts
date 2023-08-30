@@ -3,6 +3,17 @@ import z from "zod";
 const mcid = z.string().regex(/^[a-z0-9_]+:[a-z0-9_]+/);
 const modid = z.string().regex(/^[a-z0-9_]+/);
 
+const counter = z.object({
+  mob: z.optional(mcid.or(z.array(mcid))),
+  amount: z.number().int(),
+  perplayer: z.optional(z.boolean()),
+  perchunk: z.optional(z.boolean()),
+  mod: z.optional(modid),
+  hostile: z.optional(z.boolean()),
+  passive: z.optional(z.boolean()),
+  all: z.optional(z.boolean()),
+}).strict();
+
 const expression = z.string().refine((v) => {
   const val = v.toLowerCase();
   if (!val.endsWith(")")) return false;
@@ -123,6 +134,9 @@ export const generalSpawnKeywords = z.object({
   biome: z.optional(mcid.or(z.array(mcid))),
   biometags: z.optional(mcid.or(z.array(mcid))),
   biometype: z.optional(z.enum(["desert", "desert_legacy", "warm", "cool", "icy"])),
+
+  mincount: z.optional(z.number().int()).or(counter),
+  maxcount: z.optional(z.number().int()).or(counter),
 
   minspawndist: z.optional(z.number()),
   maxspawndist: z.optional(z.number()),
