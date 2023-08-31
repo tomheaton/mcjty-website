@@ -155,6 +155,11 @@ const config = {
             position: "left",
             label: "Mod Docs",
           },
+          {
+             to: '/control-validator',
+             label: 'Control Validator',
+             position: 'left'
+           },
           /*{
             to: '/blog',
             label: 'Blog',
