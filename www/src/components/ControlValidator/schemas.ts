@@ -1,63 +1,84 @@
 import z from "zod";
 
-const mcid = z.string().regex(/^[a-z0-9_]+:[a-z0-9_]+/, "Invalid minecraft id. Format is <modid>:<id>");
-const modid = z.string().regex(/^[a-z0-9_]+/, "Invalid mod id. It should be a string with only lowercase letters, numbers and underscores");
+const mcid = z
+  .string()
+  .regex(
+    /^[a-z0-9_]+:[a-z0-9_]+/,
+    "Invalid minecraft id. Format is <modid>:<id>",
+  );
+const modid = z
+  .string()
+  .regex(
+    /^[a-z0-9_]+/,
+    "Invalid mod id. It should be a string with only lowercase letters, numbers and underscores",
+  );
 
-const counter = z.object({
-  mob: z.optional(mcid.or(z.array(mcid))),
-  amount: z.number().int(),
-  perplayer: z.optional(z.boolean()),
-  perchunk: z.optional(z.boolean()),
-  mod: z.optional(modid),
-  hostile: z.optional(z.boolean()),
-  passive: z.optional(z.boolean()),
-  all: z.optional(z.boolean()),
-}).strict();
+const counter = z
+  .object({
+    mob: z.optional(mcid.or(z.array(mcid))),
+    amount: z.number().int(),
+    perplayer: z.optional(z.boolean()),
+    perchunk: z.optional(z.boolean()),
+    mod: z.optional(modid),
+    hostile: z.optional(z.boolean()),
+    passive: z.optional(z.boolean()),
+    all: z.optional(z.boolean()),
+  })
+  .strict();
 
-const itemWeighted = z.object({
-  factor: z.optional(z.number()),
-  item: z.optional(mcid),
-  damage: z.optional(z.number().int()),
-  count: z.optional(z.number().int()),
-  nbt: z.optional(z.string()),
-}).strict();
+const itemWeighted = z
+  .object({
+    factor: z.optional(z.number()),
+    item: z.optional(mcid),
+    damage: z.optional(z.number().int()),
+    count: z.optional(z.number().int()),
+    nbt: z.optional(z.string()),
+  })
+  .strict();
 
-const testExpression = z.number().int().or(z.string().refine((v) => {
-  if (v.startsWith(">=")) {
-    return !isNaN(Number.parseInt(v.slice(2)));
-  }
-  if (v.startsWith("<=")) {
-    return !isNaN(Number.parseInt(v.slice(2)));
-  }
-  if (v.startsWith(">")) {
-    return !isNaN(Number.parseInt(v.slice(1)));
-  }
-  if (v.startsWith("<")) {
-    return !isNaN(Number.parseInt(v.slice(1)));
-  }
-  if (v.startsWith("=")) {
-    return !isNaN(Number.parseInt(v.slice(1)));
-  }
-  if (v.startsWith("!=") || v.startsWith("<>")) {
-    return !isNaN(Number.parseInt(v.slice(2)));
-  }
-  if (v.includes("-")) {
-    const range = v.split("-").map((v) => Number.parseInt(v.trim()));
-    return range.length === 2 && range[0] <= range[1];
-  }
-  return !isNaN(Number.parseInt(v));
-}));
+const testExpression = z
+  .number()
+  .int()
+  .or(
+    z.string().refine((v) => {
+      if (v.startsWith(">=")) {
+        return !isNaN(Number.parseInt(v.slice(2)));
+      }
+      if (v.startsWith("<=")) {
+        return !isNaN(Number.parseInt(v.slice(2)));
+      }
+      if (v.startsWith(">")) {
+        return !isNaN(Number.parseInt(v.slice(1)));
+      }
+      if (v.startsWith("<")) {
+        return !isNaN(Number.parseInt(v.slice(1)));
+      }
+      if (v.startsWith("=")) {
+        return !isNaN(Number.parseInt(v.slice(1)));
+      }
+      if (v.startsWith("!=") || v.startsWith("<>")) {
+        return !isNaN(Number.parseInt(v.slice(2)));
+      }
+      if (v.includes("-")) {
+        const range = v.split("-").map((v) => Number.parseInt(v.trim()));
+        return range.length === 2 && range[0] <= range[1];
+      }
+      return !isNaN(Number.parseInt(v));
+    }),
+  );
 
-const itemTest = z.object({
-  item: z.optional(mcid),
-  empty: z.optional(z.boolean()),
-  damage: z.optional(testExpression),
-  count: z.optional(testExpression),
-  energy: z.optional(testExpression),
-  tag: z.optional(mcid),
-  mod: z.optional(modid),
-  nbt: z.optional(z.array(z.object({}))),
-}).strict();
+const itemTest = z
+  .object({
+    item: z.optional(mcid),
+    empty: z.optional(z.boolean()),
+    damage: z.optional(testExpression),
+    count: z.optional(testExpression),
+    energy: z.optional(testExpression),
+    tag: z.optional(mcid),
+    mod: z.optional(modid),
+    nbt: z.optional(z.array(z.object({}))),
+  })
+  .strict();
 
 const itemOrIdWeighted = z.string().or(itemWeighted);
 const itemOrIdTest = z.string().or(itemTest);
@@ -66,75 +87,122 @@ const expression = z.string().refine((v) => {
   const val = v.toLowerCase();
   if (!val.endsWith(")")) return false;
   if (val.startsWith("range(")) {
-    const range = val.slice(6, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(6, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 2 && range[0] <= range[1];
   }
   if (val.startsWith("outsiderange(")) {
-    const range = val.slice(13, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(13, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 2 && range[0] <= range[1];
   }
   if (val.startsWith("greater(")) {
-    const range = val.slice(8, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(8, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("gt(")) {
-    const range = val.slice(3, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(3, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("smaller(")) {
-    const range = val.slice(8, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(8, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("lt(")) {
-    const range = val.slice(3, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(3, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("greaterorequal(")) {
-    const range = val.slice(15, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(15, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("ge(")) {
-    const range = val.slice(3, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(3, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("smallerorequal(")) {
-    const range = val.slice(15, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(15, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("le(")) {
-    const range = val.slice(3, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(3, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("equal(")) {
-    const range = val.slice(6, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(6, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("eq(")) {
-    const range = val.slice(3, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(3, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("notequal(")) {
-    const range = val.slice(9, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(9, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("ne(")) {
-    const range = val.slice(3, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(3, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 1;
   }
   if (val.startsWith("repeat(")) {
-    const range = val.slice(7, -1).split(",").map((v) => parseInt(v.trim()));
+    const range = val
+      .slice(7, -1)
+      .split(",")
+      .map((v) => parseInt(v.trim()));
     return range.length === 3;
   }
 }, "Invalid range expression");
 
-const blockSchema = z.object({
-  tag: z.optional(mcid),
-  block: z.optional(mcid),
-  mod: z.optional(modid),
-  energy: z.optional(z.string()),
-  contains: z.optional(z.string()),
-  side: z.optional(z.enum(["up", "down", "north", "south", "east", "west"])),
-}).or(z.string());
+const blockSchema = z
+  .object({
+    tag: z.optional(mcid),
+    block: z.optional(mcid),
+    mod: z.optional(modid),
+    energy: z.optional(z.string()),
+    contains: z.optional(z.string()),
+    side: z.optional(z.enum(["up", "down", "north", "south", "east", "west"])),
+  })
+  .or(z.string());
 
 export const generalSpawnKeywords = z.object({
   result: z.enum(["default", "allow", "deny"]),
@@ -181,7 +249,9 @@ export const generalSpawnKeywords = z.object({
 
   biome: z.optional(mcid.or(z.array(mcid))),
   biometags: z.optional(mcid.or(z.array(mcid))),
-  biometype: z.optional(z.enum(["desert", "desert_legacy", "warm", "cool", "icy"])),
+  biometype: z.optional(
+    z.enum(["desert", "desert_legacy", "warm", "cool", "icy"]),
+  ),
 
   mincount: z.optional(z.number().int().or(counter)),
   maxcount: z.optional(z.number().int().or(counter)),
@@ -193,7 +263,7 @@ export const generalSpawnKeywords = z.object({
   maxdifficulty: z.optional(z.number()),
 
   block: z.optional(blockSchema.or(z.array(blockSchema))),
-  blockoffset: z.optional(z.object({})),  // @TODO: add schema
+  blockoffset: z.optional(z.object({})), // @TODO: add schema
 
   armorhelmet: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
   armorchest: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
@@ -249,76 +319,109 @@ export const generalSpawnKeywords = z.object({
   customname: z.optional(z.string()),
   potion: z.optional(mcid),
 
-  nbt: z.optional(z.object({}))
+  nbt: z.optional(z.object({})),
 });
 
-export const spawnSchema1_20 = z.array(generalSpawnKeywords.extend({
-  when: z.optional(z.enum(["position", "onjoin", "finalize", "despawn"])),
-}).strict());
+export const spawnSchema1_20 = z.array(
+  generalSpawnKeywords
+    .extend({
+      when: z.optional(z.enum(["position", "onjoin", "finalize", "despawn"])),
+    })
+    .strict(),
+);
 
-export const spawnSchema1_19 = z.array(generalSpawnKeywords.extend({
-  onjoin: z.optional(z.boolean()),
-}).strict());
+export const spawnSchema1_19 = z.array(
+  generalSpawnKeywords
+    .extend({
+      onjoin: z.optional(z.boolean()),
+    })
+    .strict(),
+);
 
-export const spawnerSchema = z.array(z.object({
-  mob: z.optional(mcid.or(z.array(mcid))),
-  weights: z.optional(z.array(z.number())),
-  mobsfrombiome: z.optional(z.enum(["monster", "creature", "ambient", "water_creature", "water_ambient", "misc"])),
-  phase: z.optional(z.string()),
-  addscoreboardtags: z.optional(z.string().or(z.array(z.string()))),
-  attempts: z.number().int(),
-  persecond: z.number(),
-  amount: z.object({
-    minimum: z.number().int(),
-    maximum: z.number().int(),
-    groupdistance: z.optional(z.number().int()),
-  }).strict(),
-  conditions: z.object({
-    dimension: mcid.or(z.array(mcid)),
-    norestrictions: z.optional(z.boolean()),
-    inwater: z.optional(z.boolean()),
-    inlava: z.optional(z.boolean()),
-    inair: z.optional(z.boolean()),
-    validspawn: z.optional(z.boolean()),
-    sturdy: z.optional(z.boolean()),
-    mindaycount: z.optional(z.number().int()),
-    maxdaycount: z.optional(z.number().int()),
-    mindist: z.optional(z.number()),
-    maxdist: z.optional(z.number()),
-    minheight: z.optional(z.number().int()),
-    maxheight: z.optional(z.number().int()),
-    minverticaldist: z.optional(z.number()),
-    maxverticaldist: z.optional(z.number()),
-    maxthis: z.optional(z.number().int()),
-    maxtotal: z.optional(z.number().int()),
-    maxpeaceful: z.optional(z.number().int()),
-    maxhostile: z.optional(z.number().int()),
-    maxneutral: z.optional(z.number().int()),
-    maxlocal: z.optional(z.number().int()),
-  }).strict()
-}).strict());
+export const spawnerSchema = z.array(
+  z
+    .object({
+      mob: z.optional(mcid.or(z.array(mcid))),
+      weights: z.optional(z.array(z.number())),
+      mobsfrombiome: z.optional(
+        z.enum([
+          "monster",
+          "creature",
+          "ambient",
+          "water_creature",
+          "water_ambient",
+          "misc",
+        ]),
+      ),
+      phase: z.optional(z.string()),
+      addscoreboardtags: z.optional(z.string().or(z.array(z.string()))),
+      attempts: z.number().int(),
+      persecond: z.number(),
+      amount: z
+        .object({
+          minimum: z.number().int(),
+          maximum: z.number().int(),
+          groupdistance: z.optional(z.number().int()),
+        })
+        .strict(),
+      conditions: z
+        .object({
+          dimension: mcid.or(z.array(mcid)),
+          norestrictions: z.optional(z.boolean()),
+          inwater: z.optional(z.boolean()),
+          inlava: z.optional(z.boolean()),
+          inair: z.optional(z.boolean()),
+          validspawn: z.optional(z.boolean()),
+          sturdy: z.optional(z.boolean()),
+          mindaycount: z.optional(z.number().int()),
+          maxdaycount: z.optional(z.number().int()),
+          mindist: z.optional(z.number()),
+          maxdist: z.optional(z.number()),
+          minheight: z.optional(z.number().int()),
+          maxheight: z.optional(z.number().int()),
+          minverticaldist: z.optional(z.number()),
+          maxverticaldist: z.optional(z.number()),
+          maxthis: z.optional(z.number().int()),
+          maxtotal: z.optional(z.number().int()),
+          maxpeaceful: z.optional(z.number().int()),
+          maxhostile: z.optional(z.number().int()),
+          maxneutral: z.optional(z.number().int()),
+          maxlocal: z.optional(z.number().int()),
+        })
+        .strict(),
+    })
+    .strict(),
+);
 
-export const phasesSchema = z.array(z.object({
-  name: z.string(),
-  conditions: z.object({
-    time: z.optional(expression),
-    mintime: z.optional(z.number().int()),
-    maxtime: z.optional(z.number().int()),
+export const phasesSchema = z
+  .array(
+    z
+      .object({
+        name: z.string(),
+        conditions: z
+          .object({
+            time: z.optional(expression),
+            mintime: z.optional(z.number().int()),
+            maxtime: z.optional(z.number().int()),
 
-    daycount: z.optional(expression),
-    mindaycount: z.optional(z.number().int()),
-    maxdaycount: z.optional(z.number().int()),
+            daycount: z.optional(expression),
+            mindaycount: z.optional(z.number().int()),
+            maxdaycount: z.optional(z.number().int()),
 
-    weather: z.optional(z.enum(["rain", "thunder"])),
+            weather: z.optional(z.enum(["rain", "thunder"])),
 
-    summer: z.optional(z.boolean()),
-    winter: z.optional(z.boolean()),
-    spring: z.optional(z.boolean()),
-    autumn: z.optional(z.boolean()),
+            summer: z.optional(z.boolean()),
+            winter: z.optional(z.boolean()),
+            spring: z.optional(z.boolean()),
+            autumn: z.optional(z.boolean()),
 
-    state: z.optional(z.string()),
-  }).strict(),
-}).strict()).refine((v) => {
+            state: z.optional(z.string()),
+          })
+          .strict(),
+      })
+      .strict(),
+  )
+  .refine((v) => {
     const names = v.map((phase) => phase.name);
     return new Set(names).size === names.length;
-}, "Phase names must be unique");
+  }, "Phase names must be unique");

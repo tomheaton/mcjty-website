@@ -1,17 +1,28 @@
 import React, { type FormEvent, useState } from "react";
 import styles from "./styles.module.css";
 import { DATA, type MinecraftVersion, type ValidatorType } from "./data";
+import { type ZodIssue } from "zod";
 
 type Props = {
   type: ValidatorType;
   version: MinecraftVersion;
 };
 
-function formatErrorLine(item) {
-  if (item.message == 'Required') {
-    return 'Rule ' + (item.path[0] + 1) + ': Expected ' + item.path[1] +  ' with values ' + item.expected;
+function formatErrorLine(item: ZodIssue) {
+  if (item.message === "Required") {
+    return (
+      "Rule " +
+      (parseInt(item.path[0].toString()) + 1) +
+      ": Expected " +
+      item.path[1] +
+      " with values " +
+      // @ts-ignore
+      item.expected
+    );
   }
-  return 'Rule ' + (item.path[0] + 1) + ': ' + item.message;
+  return (
+    "Rule " + (parseInt(item.path[0].toString()) + 1) + ": " + item.message
+  );
 }
 
 // TODO: add syntax highlighting
@@ -34,29 +45,23 @@ const Validator: React.FC<Props> = (props) => {
 
     try {
       const json = JSON.parse(text);
-      console.log(json);
       setText(JSON.stringify(json, null, 2));
 
-      // TODO: figure out how to check which schema is being used
-      //  maybe a union of each schema?
       const result = schema.safeParse(json);
-      if (result.success) {
+      if (result.success === false) {
+        console.log("invalid!");
+
+        const output = result.error.issues
+          .map((item) => formatErrorLine(item))
+          .join("\n");
+
+        setError(output);
+      } else {
         console.log("valid!");
         // @ts-ignore
         console.log(result.data);
 
         setSuccess("Valid!");
-      } else {
-        console.log("invalid!");
-        // @ts-ignore
-        console.log(result.error);
-        // @ts-ignore
-        var msg = JSON.parse(result.error.message);
-        const output = msg.map((item) => formatErrorLine(item)).join("\n");
-
-        setError(output);
-        // log the type of result.error.message
-        console.log('XXX:', msg[0]);
       }
     } catch (e) {
       setError(e.message);
@@ -86,13 +91,13 @@ const Validator: React.FC<Props> = (props) => {
       {error && (
         <>
           <br />
-          <p>{error}</p>
+          <pre>{error}</pre>
         </>
       )}
       {success && (
         <>
           <br />
-          <p>{success}</p>
+          <p>Success</p>
         </>
       )}
     </form>

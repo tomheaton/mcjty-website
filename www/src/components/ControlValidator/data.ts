@@ -1,4 +1,9 @@
-import {spawnSchema1_20, spawnSchema1_19, spawnerSchema, phasesSchema} from "./schemas";
+import {
+  spawnSchema1_20,
+  spawnSchema1_19,
+  spawnerSchema,
+  phasesSchema,
+} from "./schemas";
 import z from "zod";
 
 export const MINECRAFT_VERSIONS = [
