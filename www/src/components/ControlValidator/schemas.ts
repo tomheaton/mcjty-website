@@ -1,7 +1,7 @@
 import z from "zod";
 
-const mcid = z.string().regex(/^[a-z0-9_]+:[a-z0-9_]+/);
-const modid = z.string().regex(/^[a-z0-9_]+/);
+const mcid = z.string().regex(/^[a-z0-9_]+:[a-z0-9_]+/, "Invalid minecraft id. Format is <modid>:<id>");
+const modid = z.string().regex(/^[a-z0-9_]+/, "Invalid mod id. It should be a string with only lowercase letters, numbers and underscores");
 
 const counter = z.object({
   mob: z.optional(mcid.or(z.array(mcid))),
@@ -13,6 +13,54 @@ const counter = z.object({
   passive: z.optional(z.boolean()),
   all: z.optional(z.boolean()),
 }).strict();
+
+const itemWeighted = z.object({
+  factor: z.optional(z.number()),
+  item: z.optional(mcid),
+  damage: z.optional(z.number().int()),
+  count: z.optional(z.number().int()),
+  nbt: z.optional(z.string()),
+}).strict();
+
+const testExpression = z.number().int().or(z.string().refine((v) => {
+  if (v.startsWith(">=")) {
+    return !isNaN(Number.parseInt(v.slice(2)));
+  }
+  if (v.startsWith("<=")) {
+    return !isNaN(Number.parseInt(v.slice(2)));
+  }
+  if (v.startsWith(">")) {
+    return !isNaN(Number.parseInt(v.slice(1)));
+  }
+  if (v.startsWith("<")) {
+    return !isNaN(Number.parseInt(v.slice(1)));
+  }
+  if (v.startsWith("=")) {
+    return !isNaN(Number.parseInt(v.slice(1)));
+  }
+  if (v.startsWith("!=") || v.startsWith("<>")) {
+    return !isNaN(Number.parseInt(v.slice(2)));
+  }
+  if (v.includes("-")) {
+    const range = v.split("-").map((v) => Number.parseInt(v.trim()));
+    return range.length === 2 && range[0] <= range[1];
+  }
+  return !isNaN(Number.parseInt(v));
+}));
+
+const itemTest = z.object({
+  item: z.optional(mcid),
+  empty: z.optional(z.boolean()),
+  damage: z.optional(testExpression),
+  count: z.optional(testExpression),
+  energy: z.optional(testExpression),
+  tag: z.optional(mcid),
+  mod: z.optional(modid),
+  nbt: z.optional(z.array(z.object({}))),
+}).strict();
+
+const itemOrIdWeighted = z.string().or(itemWeighted);
+const itemOrIdTest = z.string().or(itemTest);
 
 const expression = z.string().refine((v) => {
   const val = v.toLowerCase();
@@ -147,21 +195,14 @@ export const generalSpawnKeywords = z.object({
   block: z.optional(blockSchema.or(z.array(blockSchema))),
   blockoffset: z.optional(z.object({})),  // @TODO: add schema
 
-  armorhelmet: z.optional(mcid.or(z.array(mcid))),
-  armorchest: z.optional(mcid.or(z.array(mcid))),
-  armorlegs: z.optional(mcid.or(z.array(mcid))),
-  armorboots: z.optional(mcid.or(z.array(mcid))),
-  playerhelditem: z.optional(mcid.or(z.array(mcid))),
-  helditem: z.optional(mcid.or(z.array(mcid))),
-  offhanditem: z.optional(mcid.or(z.array(mcid))),
-  bothhandsitem: z.optional(mcid.or(z.array(mcid))),
-
-  lackhelmet: z.optional(mcid.or(z.array(mcid))),
-  lackchestplate: z.optional(mcid.or(z.array(mcid))),
-  lackleggings: z.optional(mcid.or(z.array(mcid))),
-  lackboots: z.optional(mcid.or(z.array(mcid))),
-  lackhelditem: z.optional(mcid.or(z.array(mcid))),
-  lackoffhanditem: z.optional(mcid.or(z.array(mcid))),
+  armorhelmet: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  armorchest: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  armorlegs: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  armorboots: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  playerhelditem: z.optional(itemOrIdTest.or(z.array(itemOrIdTest))),
+  helditem: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  offhanditem: z.optional(itemOrIdTest.or(z.array(itemOrIdTest))),
+  bothhandsitem: z.optional(itemOrIdTest.or(z.array(itemOrIdTest))),
 
   structure: z.optional(mcid),
   scoreboardtags_all: z.optional(z.string().or(z.array(z.string()))),

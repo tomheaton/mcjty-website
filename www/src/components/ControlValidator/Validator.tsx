@@ -7,6 +7,13 @@ type Props = {
   version: MinecraftVersion;
 };
 
+function formatErrorLine(item) {
+  if (item.message == 'Required') {
+    return 'Rule ' + (item.path[0] + 1) + ': Expected ' + item.path[1] +  ' with values ' + item.expected;
+  }
+  return 'Rule ' + (item.path[0] + 1) + ': ' + item.message;
+}
+
 // TODO: add syntax highlighting
 const Validator: React.FC<Props> = (props) => {
   const schema = DATA[props.version][props.type];
@@ -44,7 +51,12 @@ const Validator: React.FC<Props> = (props) => {
         // @ts-ignore
         console.log(result.error);
         // @ts-ignore
-        setError(result.error.message);
+        var msg = JSON.parse(result.error.message);
+        const output = msg.map((item) => formatErrorLine(item)).join("\n");
+
+        setError(output);
+        // log the type of result.error.message
+        console.log('XXX:', msg[0]);
       }
     } catch (e) {
       setError(e.message);
