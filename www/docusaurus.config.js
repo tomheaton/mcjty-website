@@ -15,7 +15,7 @@ const metadata = {
   color: "#36B99F",
 };
 
-/** @type {import('@docusaurus/types').Config} */
+/** @type {import("@docusaurus/types").Config} */
 const config = {
   title: metadata.title,
   tagline: metadata.tagline,
@@ -89,7 +89,7 @@ const config = {
   presets: [
     [
       "classic",
-      /** @type {import('@docusaurus/preset-classic').Options} */
+      /** @type {import("@docusaurus/preset-classic").Options} */
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
@@ -108,7 +108,7 @@ const config = {
   ],
 
   themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    /** @type {import("@docusaurus/preset-classic").ThemeConfig} */
     ({
       metadata: [
         { name: "theme-color", content: metadata.color },
@@ -167,6 +167,11 @@ const config = {
           },*/
           // TODO: replace text with icons
           {
+            href: "https://www.youtube.com/@jorrittyberghein7398",
+            label: "YouTube",
+            position: "right",
+          },
+          {
             href: "https://www.curseforge.com/members/mcjty/projects",
             label: "CurseForge",
             position: "right",
@@ -216,6 +221,15 @@ const config = {
               {
                 label: "Mod Docs",
                 to: "/docs/mods",
+              },
+            ],
+          },
+          {
+            title: "Tools",
+            items: [
+              {
+                label: "Control Validator",
+                to: "/control-validator",
               },
             ],
           },
