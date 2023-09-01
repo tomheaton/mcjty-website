@@ -9,35 +9,39 @@ type Props = {
 };
 
 function formatErrorLine(item: ZodIssue) {
-    console.log(item);
-    // TODO: check this doesn't break anything
-    if (item.path.length === 0) {
-        return item.message;
-    }
-    if (item.message === 'Invalid input') {
-        return (
-            "Rule " +
-            (parseInt(item.path[0].toString()) + 1) +
-            ": Expected " +
-            item.path[2] +
-            " in " +
-            item.path[1]
-        );
-    }
-    if (item.message === 'Required') {
-        return (
-            "Rule " +
-            (parseInt(item.path[0].toString()) + 1) +
-            ": Expected " +
-            item.path[1] +
-            " with values " +
-            // @ts-ignore
-            item.expected
-        );
-    }
+  console.log(item);
+
+  // TODO: check this doesn't break anything
+  if (item.path.length === 0) {
+    return item.message;
+  }
+
+  if (item.message === "Invalid input") {
     return (
-        "Rule " + (parseInt(item.path[0].toString()) + 1) + ": " + item.message
+      "Rule " +
+      (parseInt(item.path[0].toString()) + 1) +
+      ": Expected " +
+      item.path[2] +
+      " in " +
+      item.path[1]
     );
+  }
+
+  if (item.message === "Required") {
+    return (
+      "Rule " +
+      (parseInt(item.path[0].toString()) + 1) +
+      ": Expected " +
+      item.path[1] +
+      " with values " +
+      // @ts-ignore
+      item.expected
+    );
+  }
+
+  return (
+    "Rule " + (parseInt(item.path[0].toString()) + 1) + ": " + item.message
+  );
 }
 
 // TODO: add syntax highlighting
@@ -45,7 +49,6 @@ const Validator: React.FC<Props> = (props) => {
   const schema = DATA[props.version][props.type];
 
   const [text, setText] = useState<string>("");
-
   const [parseError, setParseError] = useState<string>("");
   const [zodErrors, setZodErrors] = useState<
     { message: string; color: string }[]
@@ -101,10 +104,11 @@ const Validator: React.FC<Props> = (props) => {
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder={`Enter ${props.type} schema`}
+        placeholder={`Enter ${props.type} schema for ${props.version} here...`}
         required
         style={{ fontFamily: "monospace", width: "100%", height: "400px" }}
       />
+      <br />
       <br />
       <button
         type="submit"
@@ -113,6 +117,7 @@ const Validator: React.FC<Props> = (props) => {
       >
         {validating ? "Validating..." : "Validate"}
       </button>
+      <br />
       <br />
       {parseError && (
         <pre>

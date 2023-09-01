@@ -390,7 +390,11 @@ export const spawnerSchema = z.array(
         .strict(),
       conditions: z
         .object({
-          dimension: mcid.or(z.array(mcid).refine((v) => v.length > 0, "Must have at least one dimension")),
+          dimension: mcid.or(
+            z
+              .array(mcid)
+              .refine((v) => v.length > 0, "Must have at least one dimension"),
+          ),
           norestrictions: z.optional(z.boolean()),
           inwater: z.optional(z.boolean()),
           inlava: z.optional(z.boolean()),
