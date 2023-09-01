@@ -212,7 +212,7 @@ export const generalSpawnKeywords = z.object({
 
         mob: z.optional(mcid.or(z.array(mcid))),
         mod: z.optional(modid.or(z.array(modid))),
-        dimension: z.optional(mcid.or(z.array(mcid))),
+        dimension: z.optional(mcid.or(z.array(mcid).refine((v) => v.length > 0, "Must have at least one dimension"))),
         dimensionmod: z.optional(modid.or(z.array(modid))),
 
         hostile: z.optional(z.boolean()),

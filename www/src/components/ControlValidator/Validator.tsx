@@ -9,7 +9,18 @@ type Props = {
 };
 
 function formatErrorLine(item: ZodIssue) {
-    if (item.message === "Required") {
+    console.log(item);
+    if (item.message === 'Invalid input') {
+        return (
+            "Rule " +
+            (parseInt(item.path[0].toString()) + 1) +
+            ": Expected " +
+            item.path[2] +
+            " in " +
+            item.path[1]
+        );
+    }
+    if (item.message === 'Required') {
         return (
             "Rule " +
             (parseInt(item.path[0].toString()) + 1) +
