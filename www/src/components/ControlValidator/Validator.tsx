@@ -1,115 +1,131 @@
-import React, {type FormEvent, useState} from "react";
+import React, { type FormEvent, useState } from "react";
 import styles from "./styles.module.css";
-import {DATA, type MinecraftVersion, type ValidatorType} from "./data";
-import {type ZodIssue} from "zod";
+import { DATA, type MinecraftVersion, type ValidatorType } from "./data";
+import { type ZodIssue } from "zod";
 
 type Props = {
-    type: ValidatorType;
-    version: MinecraftVersion;
+  type: ValidatorType;
+  version: MinecraftVersion;
 };
 
 function formatErrorLine(item: ZodIssue) {
-    if (item.message === "Required") {
-        return (
-            "Rule " +
-            (parseInt(item.path[0].toString()) + 1) +
-            ": Expected " +
-            item.path[1] +
-            " with values " +
-            // @ts-ignore
-            item.expected
-        );
-    }
+  // TODO: check this doesn't break anything
+  if (item.path.length === 0) {
+    return item.message;
+  }
+
+  if (item.message === "Required") {
     return (
-        "Rule " + (parseInt(item.path[0].toString()) + 1) + ": " + item.message
+      "Rule " +
+      (parseInt(item.path[0].toString()) + 1) +
+      ": Expected " +
+      item.path[1] +
+      " with values " +
+      // @ts-ignore
+      item.expected
     );
+  }
+  return (
+    "Rule " + (parseInt(item.path[0].toString()) + 1) + ": " + item.message
+  );
 }
 
 // TODO: add syntax highlighting
 const Validator: React.FC<Props> = (props) => {
-    const schema = DATA[props.version][props.type];
+  const schema = DATA[props.version][props.type];
 
-    const [text, setText] = useState<string>("");
+  const [text, setText] = useState<string>("");
 
-    const [error, setError] = useState<{ error: ZodIssue, color: string }[]>([]);
-    const [success, setSuccess] = useState<string | null>(null);
-    const [validating, setValidating] = useState<boolean>(false);
+  const [parseError, setParseError] = useState<string>("");
+  const [zodErrors, setZodErrors] = useState<
+    { message: string; color: string }[]
+  >([]);
+  const [success, setSuccess] = useState<boolean>(null);
+  const [validating, setValidating] = useState<boolean>(false);
 
-    const handleValidation = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log("validating...");
+  const handleValidation = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Validating...");
 
-        setValidating(true);
-        setError(null);
-        setSuccess(null);
+    setValidating(true);
+    setZodErrors([]);
+    setSuccess(false);
 
-        try {
-            const json = JSON.parse(text);
-            setText(JSON.stringify(json, null, 2));
+    try {
+      const json = JSON.parse(text);
 
-            const result = schema.safeParse(json);
-            if (result.success === false) {
-                console.log("invalid!");
+      setText(JSON.stringify(json, null, 2));
 
-                const output = result.error.issues
-                    .map((item) => ({
-                        error: item,
-                        color: item.message.startsWith("Warning:") ? "orange" : "red"
-                    }));
+      const result = schema.safeParse(json);
 
-                setError(output);
-            } else {
-                console.log("valid!");
-                // @ts-ignore
-                console.log(result.data);
+      if (result.success === false) {
+        console.log("Invalid: Zod Error!");
 
-                setSuccess("Valid!");
-            }
-        } catch (e) {
-            setError(e.message);
-        }
+        const output = result.error.issues.map((error) => ({
+          message: formatErrorLine(error),
+          color: error.message.startsWith("Warning:") ? "orange" : "red",
+        }));
 
-        setValidating(false);
-    };
+        console.log(output);
 
-    return (
-        <form onSubmit={handleValidation} className={styles.form}>
-            {/* TODO: add syntax highlighting */}
-            <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder={`Enter ${props.type} schema`}
-                required
-                style={{fontFamily: "monospace", width: "100%", height: "400px"}}
-            />
-            <br/>
-            <button
-                type="submit"
-                className="button button--primary button--lg"
-                disabled={validating}
-            >
-                {validating ? "Validating..." : "Validate"}
-            </button>
-            {error && (
-                <>
-                    <br />
-                    <pre>
-            {error.map((item, index) => (
-                <span key={index} style={{ color: item.color }}>
-                {formatErrorLine(item.error)}{"\n"}
-              </span>
-            ))}
-          </pre>
-                </>
-            )}
-            {success && (
-                <>
-                    <br/>
-                    <p>Success</p>
-                </>
-            )}
-        </form>
-    );
+        setZodErrors(output);
+      } else {
+        console.log("Valid!");
+
+        setText(JSON.stringify(result.data, null, 2));
+
+        setSuccess(true);
+      }
+    } catch (e) {
+      console.log("Invalid: Parse Error!");
+
+      setParseError(e.message);
+    }
+
+    setValidating(false);
+  };
+
+  return (
+    <form onSubmit={handleValidation} className={styles.form}>
+      {/* TODO: add syntax highlighting */}
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder={`Enter ${props.type} schema`}
+        required
+        style={{ fontFamily: "monospace", width: "100%", height: "400px" }}
+      />
+      <br />
+      <button
+        type="submit"
+        className="button button--primary button--lg"
+        disabled={validating}
+      >
+        {validating ? "Validating..." : "Validate"}
+      </button>
+      <br />
+      {parseError && (
+        <pre>
+          <span style={{ color: "red" }}>{parseError}</span>
+        </pre>
+      )}
+      {zodErrors.length > 0 && (
+        <pre>
+          {zodErrors.map((error, index) => (
+            <span key={index} style={{ color: error.color }}>
+              {error.message}
+              {"\n"}
+            </span>
+          ))}
+        </pre>
+      )}
+      {success && (
+        <pre>
+          <span style={{ color: "green" }}>Success!</span>
+        </pre>
+      )}
+    </form>
+  );
 };
 
 export default Validator;
