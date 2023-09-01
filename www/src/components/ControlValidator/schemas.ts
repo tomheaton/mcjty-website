@@ -210,10 +210,10 @@ export const generalSpawnKeywords = z.object({
   phase: z.optional(z.string()),
   random: z.optional(z.number().gte(0).lte(1)),
 
-        mob: z.optional(mcid.or(z.array(mcid))),
-        mod: z.optional(modid.or(z.array(modid))),
-        dimension: z.optional(mcid.or(z.array(mcid).refine((v) => v.length > 0, "Must have at least one dimension"))),
-        dimensionmod: z.optional(modid.or(z.array(modid))),
+  mob: z.optional(mcid.or(z.array(mcid))),
+  mod: z.optional(modid.or(z.array(modid))),
+  dimension: z.optional(mcid.or(z.array(mcid))),
+  dimensionmod: z.optional(modid.or(z.array(modid))),
 
   hostile: z.optional(z.boolean()),
   passive: z.optional(z.boolean()),
@@ -390,7 +390,7 @@ export const spawnerSchema = z.array(
         .strict(),
       conditions: z
         .object({
-          dimension: mcid.or(z.array(mcid)),
+          dimension: mcid.or(z.array(mcid).refine((v) => v.length > 0, "Must have at least one dimension")),
           norestrictions: z.optional(z.boolean()),
           inwater: z.optional(z.boolean()),
           inlava: z.optional(z.boolean()),
