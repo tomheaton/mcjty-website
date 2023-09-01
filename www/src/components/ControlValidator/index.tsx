@@ -31,12 +31,13 @@ const ControlValidator: React.FC<Props> = ({}) => {
   return (
     <div style={{ width: "100%" }}>
       <div
-        style={{
-          width: "60%",
-          display: "flex ",
-          paddingLeft: "60px",
-          margin: "0 auto",
-        }}
+        // style={{
+        //   width: "60%",
+        //   display: "flex ",
+        //   paddingLeft: "60px",
+        //   margin: "0 auto",
+        // }}
+        className="flex flex-col sm:flex-row p-4 w-1/2 mx-auto gap-x-8"
       >
         <select
           value={version}
@@ -54,8 +55,8 @@ const ControlValidator: React.FC<Props> = ({}) => {
           ))}
         </select>
         <ul
-          className="tabs tabs--block"
-          style={{ width: "100%", paddingLeft: "60px" }}
+          className="tabs tabs--block w-full"
+          // style={{ width: "100%", paddingLeft: "60px" }}
         >
           {Object.keys(DATA[version]).map((validator) => (
             <li
@@ -72,12 +73,13 @@ const ControlValidator: React.FC<Props> = ({}) => {
       </div>
       <br />
       <div
-        style={{
-          width: "60%",
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-        }}
+        // style={{
+        //   width: "60%",
+        //   margin: "0 auto",
+        //   display: "flex",
+        //   flexDirection: "column",
+        // }}
+        className="sm:w-1/2 mx-auto"
       >
         <Validator type={tab as ValidatorType} version={version} />
         {/*{Object.keys(DATA[version]).map((validator) => (

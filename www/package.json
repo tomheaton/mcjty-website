@@ -32,6 +32,9 @@
     "@docusaurus/eslint-plugin": "^2.4.1",
     "@docusaurus/module-type-aliases": "2.4.1",
     "@tsconfig/docusaurus": "^2.0.0",
+    "autoprefixer": "^10.4.15",
+    "postcss": "^8.4.29",
+    "tailwindcss": "^3.3.3",
     "typescript": "^5.2.2"
   },
   "browserslist": {

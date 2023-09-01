@@ -61,6 +61,7 @@ const Validator: React.FC<Props> = (props) => {
     console.log("Validating...");
 
     setValidating(true);
+    setParseError("");
     setZodErrors([]);
     setSuccess(false);
 
@@ -120,22 +121,23 @@ const Validator: React.FC<Props> = (props) => {
       <br />
       <br />
       {parseError && (
-        <pre>
+        <pre className="whitespace-pre-wrap w-full">
           <span style={{ color: "red" }}>{parseError}</span>
         </pre>
       )}
       {zodErrors.length > 0 && (
-        <pre>
+        <pre className="whitespace-pre-wrap w-full">
           {zodErrors.map((error, index) => (
             <span key={index} style={{ color: error.color }}>
               {error.message}
+              {"\n"}
               {"\n"}
             </span>
           ))}
         </pre>
       )}
       {success && (
-        <pre>
+        <pre className="whitespace-pre-wrap w-full">
           <span style={{ color: "green" }}>Success!</span>
         </pre>
       )}
