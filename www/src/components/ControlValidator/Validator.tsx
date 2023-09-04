@@ -100,44 +100,50 @@ const Validator: React.FC<Props> = (props) => {
   };
 
   return (
-    <form onSubmit={handleValidation} className={styles.form}>
+    <form
+      onSubmit={handleValidation}
+      className="w-full flex justify-center gap-y-4 gap-x-4 h-full md:flex-row flex-col"
+    >
       {/* TODO: add syntax highlighting */}
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder={`Enter ${props.type} schema for ${props.version} here...`}
-        required
-        className="w-full h-[400px] font-mono rounded p-2"
-      />
-      <br />
-      <button
-        type="submit"
-        className="button button--primary button--lg"
-        disabled={validating}
-      >
-        {validating ? "Validating..." : "Validate"}
-      </button>
-      <br />
-      {parseError && (
-        <pre className="whitespace-pre-wrap w-full">
-          <span style={{ color: "red" }}>{parseError}</span>
-        </pre>
-      )}
-      {zodErrors.length > 0 && (
-        <pre className="whitespace-pre-wrap w-full">
-          {zodErrors.map((error, index) => (
-            <span key={index} style={{ color: error.color }}>
-              {error.message}
-              {"\n"}
-            </span>
-          ))}
-        </pre>
-      )}
-      {success && (
-        <pre className="whitespace-pre-wrap w-full">
-          <span style={{ color: "green" }}>Success!</span>
-        </pre>
-      )}
+      <div className="w-full">
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={`Enter ${props.type} schema for ${props.version} here...`}
+          required
+          className="w-full h-[400px] font-mono rounded p-2"
+        />
+      </div>
+      <div className="w-full flex justify-center h-full flex-col">
+        <button
+          type="submit"
+          className="button button--primary button--lg"
+          disabled={validating}
+        >
+          {validating ? "Validating..." : "Validate"}
+        </button>
+        <br />
+        {parseError && (
+          <pre className="whitespace-pre-wrap w-full">
+            <span style={{ color: "red" }}>{parseError}</span>
+          </pre>
+        )}
+        {zodErrors.length > 0 && (
+          <pre className="whitespace-pre-wrap w-full">
+            {zodErrors.map((error, index) => (
+              <span key={index} style={{ color: error.color }}>
+                {error.message}
+                {"\n"}
+              </span>
+            ))}
+          </pre>
+        )}
+        {success && (
+          <pre className="whitespace-pre-wrap w-full">
+            <span style={{ color: "green" }}>Success!</span>
+          </pre>
+        )}
+      </div>
     </form>
   );
 };

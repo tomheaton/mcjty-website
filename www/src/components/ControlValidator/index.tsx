@@ -37,7 +37,7 @@ const ControlValidator: React.FC<Props> = ({}) => {
         //   paddingLeft: "60px",
         //   margin: "0 auto",
         // }}
-        className="flex flex-col sm:flex-row p-4 w-1/2 mx-auto gap-x-8"
+        className="flex flex-col md:flex-row p-4 w-2/3 mx-auto gap-x-8"
       >
         <select
           value={version}
@@ -79,7 +79,7 @@ const ControlValidator: React.FC<Props> = ({}) => {
         //   display: "flex",
         //   flexDirection: "column",
         // }}
-        className="sm:w-1/2 mx-auto"
+        className="md:w-2/3 mx-auto"
       >
         <Validator type={tab as ValidatorType} version={version} />
         {/*{Object.keys(DATA[version]).map((validator) => (
