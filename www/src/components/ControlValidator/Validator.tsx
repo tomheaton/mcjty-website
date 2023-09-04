@@ -107,9 +107,8 @@ const Validator: React.FC<Props> = (props) => {
         onChange={(e) => setText(e.target.value)}
         placeholder={`Enter ${props.type} schema for ${props.version} here...`}
         required
-        style={{ fontFamily: "monospace", width: "100%", height: "400px" }}
+        className="w-full h-[400px] font-mono rounded p-2"
       />
-      <br />
       <br />
       <button
         type="submit"
@@ -118,7 +117,6 @@ const Validator: React.FC<Props> = (props) => {
       >
         {validating ? "Validating..." : "Validate"}
       </button>
-      <br />
       <br />
       {parseError && (
         <pre className="whitespace-pre-wrap w-full">
@@ -130,7 +128,6 @@ const Validator: React.FC<Props> = (props) => {
           {zodErrors.map((error, index) => (
             <span key={index} style={{ color: error.color }}>
               {error.message}
-              {"\n"}
               {"\n"}
             </span>
           ))}
