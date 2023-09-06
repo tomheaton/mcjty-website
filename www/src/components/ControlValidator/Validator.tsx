@@ -45,6 +45,18 @@ function formatErrorLine(item: ZodIssue) {
   );
 }
 
+function parseJSONWithDuplicateKeys(jsonString: string) {
+  const seenKeys = new Set();
+
+  return JSON.parse(jsonString, (key, value) => {
+    if (seenKeys.has(key)) {
+      throw new Error("Duplicate key: " + key);
+    }
+    seenKeys.add(key);
+    return value;
+  });
+}
+
 // TODO: add syntax highlighting
 const Validator: React.FC<Props> = (props) => {
   const schema = DATA[props.version][props.type];
@@ -66,7 +78,7 @@ const Validator: React.FC<Props> = (props) => {
     setSuccess(false);
 
     try {
-      const json = JSON.parse(props.text);
+      const json = parseJSONWithDuplicateKeys(props.text);
 
       props.setText(JSON.stringify(json, null, 2));
 
