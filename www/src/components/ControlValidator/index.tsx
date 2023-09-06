@@ -12,12 +12,19 @@ type Props = {
   schema?: z.ZodSchema<any>;
 };
 
-// TODO: add syntax highlighting
 const ControlValidator: React.FC<Props> = ({}) => {
   const [version, setVersion] = useState<MinecraftVersion>("1.20");
   const [tab, setTab] = useState<ValidatorType | null>(
     // TODO: clean this mess up
     Object.keys(DATA[version]).map((v) => v as ValidatorType)[0],
+  );
+  const [text, setText] = useState<{
+    [key in ValidatorType]: string;
+  }>(
+    Object.keys(DATA[version]).reduce((acc, cur) => {
+      acc[cur as ValidatorType] = "";
+      return acc;
+    }, {} as any),
   );
 
   useEffect(() => {
@@ -30,15 +37,7 @@ const ControlValidator: React.FC<Props> = ({}) => {
 
   return (
     <div style={{ width: "100%" }}>
-      <div
-        // style={{
-        //   width: "60%",
-        //   display: "flex ",
-        //   paddingLeft: "60px",
-        //   margin: "0 auto",
-        // }}
-        className="flex flex-col md:flex-row p-4 w-2/3 mx-auto gap-x-8"
-      >
+      <div className="flex flex-col md:flex-row p-4 w-2/3 mx-auto gap-x-8">
         <select
           value={version}
           onChange={(e) => setVersion(e.target.value as MinecraftVersion)}
@@ -54,10 +53,7 @@ const ControlValidator: React.FC<Props> = ({}) => {
             </option>
           ))}
         </select>
-        <ul
-          className="tabs tabs--block w-full"
-          // style={{ width: "100%", paddingLeft: "60px" }}
-        >
+        <ul className="tabs tabs--block w-full">
           {Object.keys(DATA[version]).map((validator) => (
             <li
               className={clsx(
@@ -72,23 +68,15 @@ const ControlValidator: React.FC<Props> = ({}) => {
         </ul>
       </div>
       <br />
-      <div
-        // style={{
-        //   width: "60%",
-        //   margin: "0 auto",
-        //   display: "flex",
-        //   flexDirection: "column",
-        // }}
-        className="md:w-2/3 mx-auto"
-      >
-        <Validator type={tab as ValidatorType} version={version} />
-        {/*{Object.keys(DATA[version]).map((validator) => (
-          <Validator
-            key={validator}
-            type={validator as ValidatorType}
-            version={version}
-          />
-        ))}*/}
+      <div className="md:w-2/3 mx-auto">
+        <Validator
+          type={tab as ValidatorType}
+          version={version}
+          text={text[tab as ValidatorType]}
+          setText={(text) => {
+            setText((prev) => ({ ...prev, [tab as ValidatorType]: text }));
+          }}
+        />
         {Object.keys(DATA[version]).length === 0 && (
           <p>No validators for this version!</p>
         )}

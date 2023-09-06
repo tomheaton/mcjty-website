@@ -1,11 +1,12 @@
 import React, { type FormEvent, useState } from "react";
-import styles from "./styles.module.css";
 import { DATA, type MinecraftVersion, type ValidatorType } from "./data";
 import { type ZodIssue } from "zod";
 
 type Props = {
   type: ValidatorType;
   version: MinecraftVersion;
+  text: string;
+  setText: (text: string) => void;
 };
 
 function formatErrorLine(item: ZodIssue) {
@@ -48,7 +49,6 @@ function formatErrorLine(item: ZodIssue) {
 const Validator: React.FC<Props> = (props) => {
   const schema = DATA[props.version][props.type];
 
-  const [text, setText] = useState<string>("");
   const [parseError, setParseError] = useState<string>("");
   const [zodErrors, setZodErrors] = useState<
     { message: string; color: string }[]
@@ -66,9 +66,9 @@ const Validator: React.FC<Props> = (props) => {
     setSuccess(false);
 
     try {
-      const json = JSON.parse(text);
+      const json = JSON.parse(props.text);
 
-      setText(JSON.stringify(json, null, 2));
+      props.setText(JSON.stringify(json, null, 2));
 
       const result = schema.safeParse(json);
 
@@ -86,7 +86,7 @@ const Validator: React.FC<Props> = (props) => {
       } else {
         console.log("Valid!");
 
-        setText(JSON.stringify(result.data, null, 2));
+        props.setText(JSON.stringify(result.data, null, 2));
 
         setSuccess(true);
       }
@@ -107,8 +107,8 @@ const Validator: React.FC<Props> = (props) => {
       {/* TODO: add syntax highlighting */}
       <div className="w-full">
         <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          value={props.text}
+          onChange={(e) => props.setText(e.target.value)}
           placeholder={`Enter ${props.type} schema for ${props.version} here...`}
           required
           className="w-full h-[400px] font-mono rounded p-2"
