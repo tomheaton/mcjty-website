@@ -56,6 +56,7 @@ const ControlValidator: React.FC<Props> = ({}) => {
         <ul className="tabs tabs--block w-full">
           {Object.keys(DATA[version]).map((validator) => (
             <li
+              key={validator}
               className={clsx(
                 "tabs__item",
                 tab === validator && "tabs__item--active",
