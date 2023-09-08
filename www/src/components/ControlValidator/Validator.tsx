@@ -1,6 +1,9 @@
 import React, { type FormEvent, useState } from "react";
 import { DATA, type MinecraftVersion, type ValidatorType } from "./data";
-import { type ZodIssue } from "zod";
+import {
+  formatErrorLine,
+  parseJSONWithDuplicateKeys,
+} from "@site/src/components/ControlValidator/utils";
 
 type Props = {
   type: ValidatorType;
@@ -8,54 +11,6 @@ type Props = {
   text: string;
   setText: (text: string) => void;
 };
-
-function formatErrorLine(item: ZodIssue) {
-  console.log(item);
-
-  // TODO: check this doesn't break anything
-  if (item.path.length === 0) {
-    return item.message;
-  }
-
-  if (item.message === "Invalid input") {
-    return (
-      "Rule " +
-      (parseInt(item.path[0].toString()) + 1) +
-      ": Expected " +
-      item.path[2] +
-      " in " +
-      item.path[1]
-    );
-  }
-
-  if (item.message === "Required") {
-    return (
-      "Rule " +
-      (parseInt(item.path[0].toString()) + 1) +
-      ": Expected " +
-      item.path[1] +
-      " with values " +
-      // @ts-ignore
-      item.expected
-    );
-  }
-
-  return (
-    "Rule " + (parseInt(item.path[0].toString()) + 1) + ": " + item.message
-  );
-}
-
-function parseJSONWithDuplicateKeys(jsonString: string) {
-  const seenKeys = new Set();
-
-  return JSON.parse(jsonString, (key, value) => {
-    // if (seenKeys.has(key)) {
-    //   throw new Error("Duplicate key: " + key);
-    // }
-    // seenKeys.add(key);
-    return value;
-  });
-}
 
 // TODO: add syntax highlighting
 const Validator: React.FC<Props> = (props) => {
@@ -78,6 +33,7 @@ const Validator: React.FC<Props> = (props) => {
     setSuccess(false);
 
     try {
+      // const json = JSON.parse(props.text);
       const json = parseJSONWithDuplicateKeys(props.text);
 
       props.setText(JSON.stringify(json, null, 2));
