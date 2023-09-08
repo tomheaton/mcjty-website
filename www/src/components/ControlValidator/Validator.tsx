@@ -1,10 +1,7 @@
 import React, { type FormEvent, useState } from "react";
 import { DATA, type MinecraftVersion, type ValidatorType } from "./data";
-import {
-  formatErrorLine,
-  parseJSONWithDuplicateKeys,
-} from "@site/src/components/ControlValidator/utils";
-import {jsonParser} from "@site/src/components/ControlValidator/jsonParser";
+import JSONParser from "@site/src/components/ControlValidator/jsonParser";
+import { formatErrorLine } from "@site/src/components/ControlValidator/utils";
 
 type Props = {
   type: ValidatorType;
@@ -35,35 +32,31 @@ const Validator: React.FC<Props> = (props) => {
 
     try {
       // const json = JSON.parse(props.text);
-      // const json = JSON.parse(props.text, (key, value) => {
-      //   console.log(key, value);
-      // });
-      const json = jsonParser(props.text);
-      // const json = parseJSONWithDuplicateKeys(props.text);
+      const json = new JSONParser(props.text).parse();
 
-      // props.setText(JSON.stringify(json, null, 2));
+      props.setText(JSON.stringify(json, null, 2));
 
-      // const result = schema.safeParse(json);
-      //
-      // if (result.success === false) {
-      //   console.log("Invalid: Zod Error!");
-      //
-      //   const output = result.error.issues.map((error) => ({
-      //     message: formatErrorLine(error),
-      //     color: error.message.startsWith("Warning:") ? "orange" : "red",
-      //   }));
-      //
-      //   console.log(output);
-      //
-      //   setZodErrors(output);
-      // } else {
+      const result = schema.safeParse(json);
+
+      if (result.success === false) {
+        console.log("Invalid: Zod Error!");
+
+        const output = result.error.issues.map((error) => ({
+          message: formatErrorLine(error),
+          color: error.message.startsWith("Warning:") ? "orange" : "red",
+        }));
+
+        console.log(output);
+
+        setZodErrors(output);
+      } else {
         console.log("Valid!");
 
-        // props.setText(JSON.stringify(result.data, null, 2));
+        props.setText(JSON.stringify(result.data, null, 2));
         props.setText(JSON.stringify(json, null, 2));
 
         setSuccess(true);
-      // }
+      }
     } catch (e) {
       console.log("Invalid: Parse Error!");
 

@@ -35,15 +35,3 @@ export function formatErrorLine(item: ZodIssue) {
     "Rule " + (parseInt(item.path[0].toString()) + 1) + ": " + item.message
   );
 }
-
-export function parseJSONWithDuplicateKeys(jsonString: string) {
-  const seenKeys = new Set();
-
-  return JSON.parse(jsonString, (key, value) => {
-    if (seenKeys.has(key)) {
-      throw new Error("Duplicate key: " + key);
-    }
-    seenKeys.add(key);
-    return value;
-  });
-}
