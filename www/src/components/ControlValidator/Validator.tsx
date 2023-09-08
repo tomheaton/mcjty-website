@@ -49,10 +49,10 @@ function parseJSONWithDuplicateKeys(jsonString: string) {
   const seenKeys = new Set();
 
   return JSON.parse(jsonString, (key, value) => {
-    if (seenKeys.has(key)) {
-      throw new Error("Duplicate key: " + key);
-    }
-    seenKeys.add(key);
+    // if (seenKeys.has(key)) {
+    //   throw new Error("Duplicate key: " + key);
+    // }
+    // seenKeys.add(key);
     return value;
   });
 }
