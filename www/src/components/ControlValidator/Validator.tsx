@@ -53,7 +53,6 @@ const Validator: React.FC<Props> = (props) => {
         console.log("Valid!");
 
         props.setText(JSON.stringify(result.data, null, 2));
-        props.setText(JSON.stringify(json, null, 2));
 
         setSuccess(true);
       }
