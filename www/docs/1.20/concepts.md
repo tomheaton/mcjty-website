@@ -7,6 +7,7 @@ sidebar_position: 0
 Every concept we talk about in this tutorial series will be summarized here in alphabetical
 order with links to the tutorials where they are discussed.
 
+* **Baked Model:** a baked model is a model that is defined in code. It's is static in the sense that it's geometry is baked into the chunk geometry. [Episode 5](./ep5.md)
 * **Block:** a Block is the basic building block in Minecraft. Every type of block has just one instance. [Episode 2](./ep2.md)
 * **BlockEntity:** a BlockEntity is a class that is associated with a Block. It is used to store data for a Block and often also logic. [Episode 2](./ep2.md)
 * **BlockEntityType:** a BlockEntityType is a type of BlockEntity. For example, a furnace has a BlockEntityType. It's also a singleton object. [Episode 2](./ep2.md)
@@ -26,6 +27,7 @@ order with links to the tutorials where they are discussed.
 * **Loot table:** a loot table is a way to define what items are dropped when a block is broken or an entity is killed. [Episode 2](./ep2.md)
 * **Mappings:** mappings are readable names for the obfuscated names that Minecraft uses internally. [Episode 1](./ep1.md)
 * **Model:** a model is a way to define how a block or item looks. [Episode 2](./ep2.md)
+* **Model Property:** a model property is a property that can be used by a baked model. [Episode 5](./ep5.md)
 * **NBT:** NBT is used by Minecraft to persist data. Block entities, itemstacks, entities, and more use NBT to save their data to the savefile. NBT is also used for syncing data between client and server. [Episode 2](./ep2.md)
 * **Packet:** a packet is a way to send data between client and server. [Episode 3](./ep3.md)
 * **PoseStack:** a PoseStack is a way to store transformations (for example, to transform the object space to camera space). It's used in the rendering code. [Episode 2](./ep2.md)
@@ -42,4 +44,5 @@ order with links to the tutorials where they are discussed.
 * **Texture Atlas:** a texture atlas is a texture that contains multiple textures. It's used to reduce the number of textures that need to be loaded on the graphics card. [Episode 2](./ep2.md)
 * **TextureAtlasSprite:** a TextureAtlasSprite is a texture that is part of a texture atlas. [Episode 2](./ep2.md)
 * **Tick:** a tick is a unit of time in Minecraft. The game runs at 20 ticks per second. [Episode 2](./ep2.md)
+* **Waterlogging:** waterlogging is a way to specify if a block can be waterlogged (put in water). [Episode 5](./ep5.md)
  

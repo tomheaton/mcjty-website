@@ -29,7 +29,7 @@ simple system that will work for our purposes. We want to be able to place the c
 ## Baked models
 
 It would be possible to make a cable system with a simple json based block model. However, this is
-going to generate a lot of combinations and in the future we want our model to also mimic other blocks
+going to generate a lot of combinations and we also want to mimic other blocks
 which is something you can't do with json models. So we are going to use baked models. This is a
 system where we can generate models in code. This is a bit more work but it is also more flexible.
 
@@ -41,7 +41,10 @@ system where we can generate models in code. This is a bit more work but it is a
 A cable is also a block so we need to add a new block class for it. We will call it `CableBlock`.
 There is a lot going on in this code so we will split it in a few parts.
 
-First there are the properties that indicate if there is a cable or a block in a certain direction:
+First there are the properties that indicate if there is a cable or a block in a certain direction.
+The six EnumProperties are used for the orientaiton. The `FACADEID` is a special type of
+model property that will be used by our baked model to indicate that this we are mimicing another
+block (facade).
 
 ```java
 public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
@@ -54,9 +57,24 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
     public static final EnumProperty<ConnectorType> UP = EnumProperty.<ConnectorType>create("up", ConnectorType.class);
     public static final EnumProperty<ConnectorType> DOWN = EnumProperty.<ConnectorType>create("down", ConnectorType.class);
 
+    public static final ModelProperty<BlockState> FACADEID = new ModelProperty<>();
 ```
 
+The next part is for the shape of our block. We want the shape of the block to closely
+correspond with the actual shape of the cable. That's why we have six shapes for when the
+shape on a specific direction is a cable and six shapes for when the shape is a block.
+Because ``getShape()`` must be very efficient we calculate a ``shapeCache`` where we store
+all possible shapes.
 
+The ``makeShapes()`` function is responsible for creating the cache. It is called from the
+constructor. The ``calculateShapeIndex()`` function calculates an index in the cache based
+on the type of connection at the six directions. The ``makeShape()`` function creates a shape
+based on the six directions. The ``combineShape()`` function combines a shape with a cable
+of a certain type. If the cable is a simple cable then we just add the cable shape to the
+existing shape. If the cable is a block then we add the cable shape and the block shape.
+
+``updateShape()`` is called when a neighbor block changes. We need to recalculate the shape
+in that case.
 
 ```java
     private static VoxelShape[] shapeCache = null;
@@ -74,36 +92,6 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
     private static final VoxelShape SHAPE_BLOCK_EAST = Shapes.box(.9, .2, .2, 1, .8, .8);
     private static final VoxelShape SHAPE_BLOCK_UP = Shapes.box(.2, .9, .2, .8, 1, .8);
     private static final VoxelShape SHAPE_BLOCK_DOWN = Shapes.box(.2, 0, .2, .8, .1, .8);
-
-    public CableBlock() {
-        super(Properties.of()
-                .strength(1.0f)
-                .sound(SoundType.METAL)
-                .noOcclusion()
-        );
-        makeShapes();
-        registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new CableBlockEntity(blockPos, blockState);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) {
-            return null;
-        } else {
-            return (lvl, pos, st, be) -> {
-                if (be instanceof CableBlockEntity cable) {
-                    cable.tickServer();
-                }
-            };
-        }
-    }
 
     private int calculateShapeIndex(ConnectorType north, ConnectorType south, ConnectorType west, ConnectorType east, ConnectorType up, ConnectorType down) {
         int l = ConnectorType.values().length;
@@ -143,7 +131,7 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
         shape = combineShape(shape, down, SHAPE_CABLE_DOWN, SHAPE_BLOCK_DOWN);
         return shape;
     }
-
+    
     private VoxelShape combineShape(VoxelShape shape, ConnectorType connectorType, VoxelShape cableShape, VoxelShape blockShape) {
         if (connectorType == ConnectorType.CABLE) {
             return Shapes.join(shape, cableShape, BooleanOp.OR);
@@ -153,7 +141,7 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
             return shape;
         }
     }
-
+    
     @Nonnull
     @Override
     public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
@@ -167,6 +155,55 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
         return shapeCache[index];
     }
 
+    @Nonnull
+    @Override
+    public BlockState updateShape(BlockState state, @Nonnull Direction direction, @Nonnull BlockState neighbourState, @Nonnull LevelAccessor world, @Nonnull BlockPos current, @Nonnull BlockPos offset) {
+        if (state.getValue(WATERLOGGED)) {
+            world.getFluidTicks().schedule(new ScheduledTick<>(Fluids.WATER, current, Fluids.WATER.getTickDelay(world), 0L));   // @todo 1.18 what is this last parameter exactly?
+        }
+        return calculateState(world, current, state);
+    }
+```
+
+Now we have the constructor (where we call ``makeShapes()``) and we set waterlogging to false.
+We also do the functions for the block entity and the block entity ticker.
+
+```java
+    public CableBlock() {
+        super(Properties.of()
+                .strength(1.0f)
+                .sound(SoundType.METAL)
+                .noOcclusion()
+        );
+        makeShapes();
+        registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new CableBlockEntity(blockPos, blockState);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide) {
+            return null;
+        } else {
+            return (lvl, pos, st, be) -> {
+                if (be instanceof CableBlockEntity cable) {
+                    cable.tickServer();
+                }
+            };
+        }
+    }
+```
+
+``neighborChanged()`` and ``setPlacedBy()`` are used to mark the block entity dirty when
+something changes. This is so our block entity can update the cable network (more on that later).
+
+```java
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
@@ -186,20 +223,51 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
             level.setBlockAndUpdate(pos, blockState);
         }
     }
+```
 
+``getConnectorType()`` and ``isConnectable()`` are used to determine the type of connection
+in a certain direction. This is used to calculate the shape of the cable.
+
+```java
+    // Return the connector type for the given position and facing direction
+    private ConnectorType getConnectorType(BlockGetter world, BlockPos connectorPos, Direction facing) {
+        BlockPos pos = connectorPos.relative(facing);
+        BlockState state = world.getBlockState(pos);
+        Block block = state.getBlock();
+        if (block instanceof CableBlock) {
+            return ConnectorType.CABLE;
+        } else if (isConnectable(world, connectorPos, facing)) {
+            return ConnectorType.BLOCK;
+        } else {
+            return ConnectorType.NONE;
+        }
+    }
+
+    // Return true if the block at the given position is connectable to a cable. This is the
+    // case if the block supports forge energy
+    public static boolean isConnectable(BlockGetter world, BlockPos connectorPos, Direction facing) {
+        BlockPos pos = connectorPos.relative(facing);
+        BlockState state = world.getBlockState(pos);
+        if (state.isAir()) {
+            return false;
+        }
+        BlockEntity te = world.getBlockEntity(pos);
+        if (te == null) {
+            return false;
+        }
+        return te.getCapability(ForgeCapabilities.ENERGY).isPresent();
+    }
+```
+
+The remaining functions are needed for defining and setting the possible states
+on this block. Having support for waterlogging is as easy as adding the ``WATERLOGGED``
+property and overriding ``getFluidState()``.
+   
+```java 
     @Override
     protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(WATERLOGGED, NORTH, SOUTH, EAST, WEST, UP, DOWN);
-    }
-
-    @Nonnull
-    @Override
-    public BlockState updateShape(BlockState state, @Nonnull Direction direction, @Nonnull BlockState neighbourState, @Nonnull LevelAccessor world, @Nonnull BlockPos current, @Nonnull BlockPos offset) {
-        if (state.getValue(WATERLOGGED)) {
-            world.getFluidTicks().schedule(new ScheduledTick<>(Fluids.WATER, current, Fluids.WATER.getTickDelay(world), 0L));   // @todo 1.18 what is this last parameter exactly?
-        }
-        return calculateState(world, current, state);
     }
 
     @Nullable
@@ -234,37 +302,10 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
-
-    // Return the connector type for the given position and facing direction
-    private ConnectorType getConnectorType(BlockGetter world, BlockPos connectorPos, Direction facing) {
-        BlockPos pos = connectorPos.relative(facing);
-        BlockState state = world.getBlockState(pos);
-        Block block = state.getBlock();
-        if (block instanceof CableBlock) {
-            return ConnectorType.CABLE;
-        } else if (isConnectable(world, connectorPos, facing)) {
-            return ConnectorType.BLOCK;
-        } else {
-            return ConnectorType.NONE;
-        }
-    }
-
-    // Return true if the block at the given position is connectable to a cable. This is the
-    // case if the block supports forge energy
-    public static boolean isConnectable(BlockGetter world, BlockPos connectorPos, Direction facing) {
-        BlockPos pos = connectorPos.relative(facing);
-        BlockState state = world.getBlockState(pos);
-        if (state.isAir()) {
-            return false;
-        }
-        BlockEntity te = world.getBlockEntity(pos);
-        if (te == null) {
-            return false;
-        }
-        return te.getCapability(ForgeCapabilities.ENERGY).isPresent();
-    }
 }
 ```
 
-
 ![waterlogged cables](../assets/tutorials/cables_waterlogged.png)
+
+### Block Entity
+
