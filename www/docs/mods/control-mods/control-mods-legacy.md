@@ -7,6 +7,8 @@ This page is for versions of Minecraft 1.15 or older!
 If you want documentation for the latest 1.16 version please go to [this page](./control-mods-16.md) instead!
 :::
 
+**Old YouTube Tutorial for 1.12:** [YouTube Link](https://youtu.be/NJoIQ0t64Cc?si=XUs6d2T2qyTQcSBu)
+
 [In Control](https://minecraft.curseforge.com/projects/in-control) is a mod that supports a rule based system that allows you to control various aspects about mobs.
 There are rule files to control spawning, loot, experience and so on.
 

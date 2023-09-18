@@ -2,6 +2,8 @@
 
 ## Introduction
 
+**YouTube Tutorial for 1.16 and higher:** [YouTube Link](https://youtu.be/JTwi89j4c_w?si=Pc85q2Vz4HED8CYR)
+
 :::danger Warning
 This wiki page is only for 1.18 and 1.19! It is not valid for Minecraft 1.20!
 :::

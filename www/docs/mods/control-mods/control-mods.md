@@ -2,6 +2,8 @@
 
 ## Introduction
 
+**Get help here:** [McJty Discord](https://youtu.be/NJoIQ0t64Cc?si=XUs6d2T2qyTQcSBu)
+
 :::danger Warning
 `potentialspawn.json` is for 1.12 ONLY.
 On 1.16 or higher you use `spawner.json`!

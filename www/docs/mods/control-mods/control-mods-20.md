@@ -6,6 +6,8 @@
 FxControl no longer exists on 1.20. It's functionality has been merged into InControl
 :::
 
+**YouTube Tutorial for 1.16 and higher:** [YouTube Link](https://youtu.be/JTwi89j4c_w?si=Pc85q2Vz4HED8CYR)
+
 [In Control](https://minecraft.curseforge.com/projects/in-control) is a mod that supports a rule based system that allows you to control various aspects about mobs.
 There are rule files to control spawning, loot, experience and so on.
 
