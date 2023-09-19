@@ -309,3 +309,199 @@ property and overriding ``getFluidState()``.
 
 ### Block Entity
 
+The block entity of the cable is responsible for keeping track of the cable network. It will
+also keep track of the power that is flowing through the cable. The cable network is simply
+represented by a set of positions that have a energy receiver. The cable network is recalculated
+whenever a neighbor block changes. The cable network is also recalculated when the block is
+placed or removed.
+
+:::danger Warning
+The cable network implementation that is given here works but it is not perfect. It is just
+a simple implementation that works for our purposes. More advanced mods (like for example
+``XNet``) have much more advanced cable networks and cache their network data in a ``SavedData``
+structure.
+:::
+
+
+The first part of this block entity is as usual. A cable section is also an energy handler so we
+need the capability for that.
+
+```java
+public class CableBlockEntity extends BlockEntity {
+
+    public static final String ENERGY_TAG = "Energy";
+
+    public static final int MAXTRANSFER = 100;
+    public static final int CAPACITY = 1000;
+
+    private final EnergyStorage energy = createEnergyStorage();
+    private final LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> new AdaptedEnergyStorage(energy) {
+        @Override
+        public int extractEnergy(int maxExtract, boolean simulate) {
+            return 0;
+        }
+
+        @Override
+        public int receiveEnergy(int maxReceive, boolean simulate) {
+            setChanged();
+            return super.receiveEnergy(maxReceive, simulate);
+        }
+
+        @Override
+        public boolean canExtract() {
+            return false;
+        }
+
+        @Override
+        public boolean canReceive() {
+            return true;
+        }
+    });
+
+    protected CableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
+    public CableBlockEntity(BlockPos pos, BlockState state) {
+        super(Registration.CABLE_BLOCK_ENTITY.get(), pos, state);
+    }
+```
+
+The following block is responsible for the cached outputs. The ``outputs`` variable is a lazy
+calculated set of all energy receivers that are connected to this cable network. The ``checkOutputs()``
+function will calculate this set. It will do this by traversing all cables connected to this cable
+and then check for all energy receivers around those cables. The ``markDirty()`` function will
+invalidate the cached outputs for this cable and all connected cables. This is needed when the
+cable network changes.
+
+The ``traverse()`` function is a generic function that will traverse all cables connected to this cable
+and call the given consumer for each cable.
+
+```java
+    // Cached outputs
+    private Set<BlockPos> outputs = null;
+
+    // This function will cache all outputs for this cable network. It will do this
+    // by traversing all cables connected to this cable and then check for all energy
+    // receivers around those cables.
+    private void checkOutputs() {
+        if (outputs == null) {
+            outputs = new HashSet<>();
+            traverse(worldPosition, cable -> {
+                // Check for all energy receivers around this position (ignore cables)
+                for (Direction direction : Direction.values()) {
+                    BlockPos p = cable.getBlockPos().relative(direction);
+                    BlockEntity te = level.getBlockEntity(p);
+                    if (te != null && !(te instanceof CableBlockEntity)) {
+                        te.getCapability(ForgeCapabilities.ENERGY).ifPresent(handler -> {
+                            if (handler.canReceive()) {
+                                outputs.add(p);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    public void markDirty() {
+        traverse(worldPosition, cable -> cable.outputs = null);
+    }
+
+    // This is a generic function that will traverse all cables connected to this cable
+    // and call the given consumer for each cable.
+    private void traverse(BlockPos pos, Consumer<CableBlockEntity> consumer) {
+        Set<BlockPos> traversed = new HashSet<>();
+        traversed.add(pos);
+        consumer.accept(this);
+        traverse(pos, traversed, consumer);
+    }
+
+    private void traverse(BlockPos pos, Set<BlockPos> traversed, Consumer<CableBlockEntity> consumer) {
+        for (Direction direction : Direction.values()) {
+            BlockPos p = pos.relative(direction);
+            if (!traversed.contains(p)) {
+                traversed.add(p);
+                if (level.getBlockEntity(p) instanceof CableBlockEntity cable) {
+                    consumer.accept(cable);
+                    cable.traverse(p, traversed, consumer);
+                }
+            }
+        }
+    }
+```
+
+The ``tickServer()`` function is called every tick on the server. It will distribute the energy
+over all outputs. It will do this by first checking if there is any energy in the cable. If there
+is no energy then we don't need to do anything. If there is energy then we check if there are
+any outputs. If there are no outputs then we don't need to do anything. If there are outputs
+then we distribute the energy over all outputs. We do this by dividing the energy over all outputs
+and then for each output we check if it can receive energy. If it can then we send the energy
+to that output. We do this by getting the energy capability of the output and then we call
+``receiveEnergy()`` on that capability. This will return the amount of energy that was actually
+received. We then subtract that amount from the energy in the cable.
+
+:::danger Warning
+Again, this is not a perfect algorithm. The way it is implemented it is possible that some receivers
+will get less energy than others. This is because we divide the energy over all outputs and then
+we send the energy to the outputs one by one. If the first output can't receive energy then we
+will send the energy to the second output. If the second output can receive energy then it will
+get all the energy. If the second output can't receive energy then we will send the energy to
+the third output. And so on. This means that the first output will get less energy than the
+second output. This is not a problem for our purposes but it is something to keep in mind.
+:::
+
+
+```java
+    public void tickServer() {
+        if (energy.getEnergyStored() > 0) {
+            // Only do something if we have energy
+            checkOutputs();
+            if (!outputs.isEmpty()) {
+                // Distribute energy over all outputs
+                int amount = energy.getEnergyStored() / outputs.size();
+                for (BlockPos p : outputs) {
+                    BlockEntity te = level.getBlockEntity(p);
+                    if (te != null) {
+                        te.getCapability(ForgeCapabilities.ENERGY).ifPresent(handler -> {
+                            if (handler.canReceive()) {
+                                int received = handler.receiveEnergy(amount, false);
+                                energy.extractEnergy(received, false);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        tag.put(ENERGY_TAG, energy.serializeNBT());
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains(ENERGY_TAG)) {
+            energy.deserializeNBT(tag.get(ENERGY_TAG));
+        }
+    }
+
+    @Nonnull
+    private EnergyStorage createEnergyStorage() {
+        return new EnergyStorage(CAPACITY, MAXTRANSFER, MAXTRANSFER);
+    }
+
+    @NotNull
+    @Override
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ENERGY) {
+            return energyHandler.cast();
+        } else {
+            return super.getCapability(cap, side);
+        }
+    }
+}
+```
