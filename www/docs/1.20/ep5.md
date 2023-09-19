@@ -33,10 +33,36 @@ going to generate a lot of combinations and we also want to mimic other blocks
 which is something you can't do with json models. So we are going to use baked models. This is a
 system where we can generate models in code. This is a bit more work but it is also more flexible.
 
+### Cable
 
 ![cables](../assets/tutorials/cables.png)
 
-### Block
+#### The ConnectorType Enum
+
+This is an enum that is used to indicate the type of connection in a certain direction.
+It has three possible values: ``CABLE``, ``BLOCK`` and ``NONE``:
+
+* ``CABLE`` means that there is a cable in this direction
+* ``BLOCK`` means that there is a block in this direction
+* ``NONE`` means that there is nothing in this direction
+
+```java
+public enum ConnectorType implements StringRepresentable {
+    NONE,
+    CABLE,
+    BLOCK;
+
+    public static final ConnectorType[] VALUES = values();
+
+    @Override
+    @Nonnull
+    public String getSerializedName() {
+        return name().toLowerCase();
+    }
+}
+```
+
+#### Cable Block
 
 A cable is also a block so we need to add a new block class for it. We will call it `CableBlock`.
 There is a lot going on in this code so we will split it in a few parts.
@@ -307,7 +333,7 @@ property and overriding ``getFluidState()``.
 
 ![waterlogged cables](../assets/tutorials/cables_waterlogged.png)
 
-### Block Entity
+#### Cable Block Entity
 
 The block entity of the cable is responsible for keeping track of the cable network. It will
 also keep track of the power that is flowing through the cable. The cable network is simply
@@ -505,3 +531,831 @@ second output. This is not a problem for our purposes but it is something to kee
     }
 }
 ```
+
+### The Facade
+
+The facade is a block that can be used to mimic another block. A facade is actually a
+special type of cable. That means that ``FacadeBlock`` extends ``CableBlock`` and that
+``FacadeBlockEntity`` extends ``CableBlockEntity``. Let's go over the code:
+
+#### The Facade Block
+
+The facade block is like the cable block but in addition it will have some logic in case
+the facade is destroyed (so that the original cable can be restored). In addition we also
+override ``getShape()`` so that we can return the shape of the mimiced block.
+
+```java
+public class FacadeBlock extends CableBlock implements EntityBlock {
+
+    public FacadeBlock() {
+        super();
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+        return new FacadeBlockEntity(pos, state);
+    }
+
+    @NotNull
+    @Override
+    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        if (world.getBlockEntity(pos) instanceof FacadeBlockEntity facade) {
+            BlockState mimicBlock = facade.getMimicBlock();
+            if (mimicBlock != null) {
+                return mimicBlock.getShape(world, pos, context);
+            }
+        }
+        return super.getShape(state, world, pos, context);
+    }
+
+    // This function is called when the facade block is succesfully harvested by the player
+    // When the player destroys the facade we need to drop the facade block item with the correct mimiced block
+    @Override
+    public void playerDestroy(@Nonnull Level level, @Nonnull Player player, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable BlockEntity te, @Nonnull ItemStack stack) {
+        ItemStack item = new ItemStack(Registration.FACADE_BLOCK.get());
+        BlockState mimicBlock;
+        if (te instanceof FacadeBlockEntity) {
+            mimicBlock = ((FacadeBlockEntity) te).getMimicBlock();
+        } else {
+            mimicBlock = Blocks.COBBLESTONE.defaultBlockState();
+        }
+        FacadeBlockItem.setMimicBlock(item, mimicBlock);
+        popResource(level, pos, item);
+    }
+
+    // When the player destroys the facade we need to restore the cable block
+    @Override
+    public boolean onDestroyedByPlayer(BlockState state, Level world, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+        BlockState defaultState = Registration.CABLE_BLOCK.get().defaultBlockState();
+        BlockState newState = CableBlock.calculateState(world, pos, defaultState);
+        return ((LevelAccessor) world).setBlock(pos, newState, ((LevelAccessor) world).isClientSide()
+                ? Block.UPDATE_ALL + Block.UPDATE_IMMEDIATE
+                : Block.UPDATE_ALL);
+    }
+
+}
+```
+
+#### The Facade Block Entity
+
+The facade block entity is like the cable block entity but in addition it will keep track
+of the block that is mimiced. It extends ``CableBlockEntity`` so that it is also recognized
+as a valid cable for the purpose of transfering power.
+
+It is very important to note that baked models cannot access the level and so they cannot
+access the block entity. That means that we cannot use the block entity to get the mimiced
+block. Instead we need to communicate this information through the model data system (using
+the ``FACADEID`` model property).
+
+See the comments in the code for more information about what each method does.
+
+```java
+public class FacadeBlockEntity extends CableBlockEntity {
+
+    public static final String MIMIC_TAG = "mimic";
+
+    @Nullable private BlockState mimicBlock = null;
+
+    public FacadeBlockEntity(BlockPos pos, BlockState state) {
+        super(Registration.FACADE_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    // The default onDataPacket() will call load() to load the data from the packet.
+    // In addition to that we send a block update to the client
+    // and also request a model data update (for the cable baked model)
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
+        super.onDataPacket(net, packet);
+
+        if (level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            requestModelDataUpdate();
+        }
+    }
+
+    // getUpdatePacket() is called on the server when a block is placed or updated.
+    // It should return a packet containing all information needed to render this block on the client.
+    // In our case this is the block mimic information. On the client side onDataPacket() is called
+    // with this packet.
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        CompoundTag nbtTag = new CompoundTag();
+        saveMimic(nbtTag);
+        return ClientboundBlockEntityDataPacket.create(this, (BlockEntity entity) -> {return nbtTag;});
+    }
+
+    // getUpdateTag() is called on the server on initial load of the chunk. It will cause
+    // the packet to be sent to the client and handleUpdateTag() will be called on the client.
+    // The default implementation of handleUpdateTag() will call load() to load the data from the packet.
+    // In our case this is sufficient
+    @Nonnull
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag updateTag = super.getUpdateTag();
+        saveMimic(updateTag);
+        return updateTag;
+    }
+
+    public @Nullable BlockState getMimicBlock() {
+        return mimicBlock;
+    }
+
+    // This is used to build the model data for the cable baked model.
+    @Nonnull
+    @Override
+    public ModelData getModelData() {
+        return ModelData.builder()
+                .with(CableBlock.FACADEID, mimicBlock)
+                .build();
+    }
+
+
+    public void setMimicBlock(BlockState mimicBlock) {
+        this.mimicBlock = mimicBlock;
+        setChanged();
+        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_CLIENTS + Block.UPDATE_NEIGHBORS);
+    }
+
+    @Override
+    public void load(CompoundTag tagCompound) {
+        super.load(tagCompound);
+        loadMimic(tagCompound);
+    }
+
+    private void loadMimic(CompoundTag tagCompound) {
+        if (tagCompound.contains(MIMIC_TAG)) {
+            mimicBlock = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tagCompound.getCompound(MIMIC_TAG));
+        } else {
+            mimicBlock = null;
+        }
+    }
+
+    @Override
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
+        super.saveAdditional(tagCompound);
+        saveMimic(tagCompound);
+    }
+
+    private void saveMimic(@NotNull CompoundTag tagCompound) {
+        if (mimicBlock != null) {
+            CompoundTag tag = NbtUtils.writeBlockState(mimicBlock);
+            tagCompound.put(MIMIC_TAG, tag);
+        }
+    }
+}
+```
+
+#### The Facade Block Item
+
+Because we need some special handling when the facade block is placed we need to create
+a custom block item for it. This is the ``FacadeBlockItem``. It is responsible for
+setting the mimiced block when the facade is placed.
+
+```java
+public class FacadeBlockItem extends BlockItem {
+
+    public static final String FACADE_IS_MIMICING = "tutorial.facade.is_mimicing";
+
+    private static String getMimickingString(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag != null) {
+            CompoundTag mimic = tag.getCompound("mimic");
+            Block value = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(mimic.getString("Name")));
+            if (value != null) {
+                ItemStack s = new ItemStack(value, 1);
+                s.getItem();
+                return s.getHoverName().getString();
+            }
+        }
+        return "<unset>";
+    }
+
+
+    public FacadeBlockItem(FacadeBlock block, Item.Properties properties) {
+        super(block, properties);
+    }
+
+    private static void userSetMimicBlock(@Nonnull ItemStack item, BlockState mimicBlock, UseOnContext context) {
+        Level world = context.getLevel();
+        Player player = context.getPlayer();
+        setMimicBlock(item, mimicBlock);
+        if (world.isClientSide) {
+            player.displayClientMessage(Component.translatable(FACADE_IS_MIMICING, mimicBlock.getBlock().getDescriptionId()), false);
+        }
+    }
+
+    public static void setMimicBlock(@Nonnull ItemStack item, BlockState mimicBlock) {
+        CompoundTag tagCompound = new CompoundTag();
+        CompoundTag nbt = NbtUtils.writeBlockState(mimicBlock);
+        tagCompound.put("mimic", nbt);
+        item.setTag(tagCompound);
+    }
+
+    public static BlockState getMimicBlock(Level level, @Nonnull ItemStack stack) {
+        CompoundTag tagCompound = stack.getTag();
+        if (tagCompound == null || !tagCompound.contains("mimic")) {
+            return Blocks.COBBLESTONE.defaultBlockState();
+        } else {
+            return NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tagCompound.getCompound("mimic"));
+        }
+    }
+
+    @Override
+    protected boolean canPlace(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+        return true;
+    }
+
+    // This function is called when our block item is right clicked on something. When this happens
+    // we want to either set the minic block or place the facade block
+    @Nonnull
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Player player = context.getPlayer();
+        BlockState state = world.getBlockState(pos);
+        Block block = state.getBlock();
+
+        ItemStack itemstack = context.getItemInHand();
+
+        if (!itemstack.isEmpty()) {
+
+            if (block == Registration.CABLE_BLOCK.get()) {
+                // We are hitting a cable block. We want to replace it with a facade block
+                FacadeBlock facadeBlock = (FacadeBlock) this.getBlock();
+                BlockPlaceContext blockContext = new ReplaceBlockItemUseContext(context);
+                BlockState placementState = facadeBlock.getStateForPlacement(blockContext)
+                        .setValue(NORTH, state.getValue(NORTH))
+                        .setValue(SOUTH, state.getValue(SOUTH))
+                        .setValue(WEST, state.getValue(WEST))
+                        .setValue(EAST, state.getValue(EAST))
+                        .setValue(UP, state.getValue(UP))
+                        .setValue(DOWN, state.getValue(DOWN))
+                        ;
+
+                if (placeBlock(blockContext, placementState)) {
+                    SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
+                    world.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                    BlockEntity te = world.getBlockEntity(pos);
+                    if (te instanceof FacadeBlockEntity) {
+                        ((FacadeBlockEntity) te).setMimicBlock(getMimicBlock(world, itemstack));
+                    }
+                    int amount = -1;
+                    itemstack.grow(amount);
+                }
+            } else if (block == Registration.FACADE_BLOCK.get()) {
+                // We are hitting a facade block. We want to copy the block it is mimicing
+                BlockEntity te = world.getBlockEntity(pos);
+                if (!(te instanceof FacadeBlockEntity facade)) {
+                    return InteractionResult.FAIL;
+                }
+                if (facade.getMimicBlock() == null) {
+                    return InteractionResult.FAIL;
+                }
+                userSetMimicBlock(itemstack, facade.getMimicBlock(), context);
+            } else {
+                // We are hitting something else. We want to set that block as what we are going to mimic
+                userSetMimicBlock(itemstack, state, context);
+            }
+            return InteractionResult.SUCCESS;
+        } else {
+            return InteractionResult.FAIL;
+        }
+    }
+
+    @Override
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltip, flag);
+        if (stack.hasTag()) {
+            tooltip.add(Component.translatable(FACADE_IS_MIMICING, getMimickingString(stack)));
+        }
+    }
+}
+```
+
+We also need a little class that helps us with the right click handling. This is the
+``ReplaceBlockItemUseContext``. It is a ``BlockPlaceContext`` that will set ``replaceClicked``
+to true. This will make sure that when our facade is placed it will replace the cable that is there:
+
+```java
+public class ReplaceBlockItemUseContext extends BlockPlaceContext {
+
+    public ReplaceBlockItemUseContext(UseOnContext context) {
+        super(context);
+        replaceClicked = true;
+    }
+}
+```
+
+### Registration
+
+Here is the code to register both our cable and facade blocks:
+
+```java
+public class Registration {
+    
+    ...
+    
+    public static final RegistryObject<CableBlock> CABLE_BLOCK = BLOCKS.register("cable", CableBlock::new);
+    public static final RegistryObject<Item> CABLE_BLOCK_ITEM = ITEMS.register("cable", () -> new BlockItem(CABLE_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<BlockEntityType<CableBlockEntity>> CABLE_BLOCK_ENTITY = BLOCK_ENTITIES.register("cable",
+            () -> BlockEntityType.Builder.of(CableBlockEntity::new, CABLE_BLOCK.get()).build(null));
+
+    public static final RegistryObject<FacadeBlock> FACADE_BLOCK = BLOCKS.register("facade", FacadeBlock::new);
+    public static final RegistryObject<Item> FACADE_BLOCK_ITEM = ITEMS.register("facade", () -> new FacadeBlockItem(FACADE_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<BlockEntityType<FacadeBlockEntity>> FACADE_BLOCK_ENTITY = BLOCK_ENTITIES.register("facade",
+            () -> BlockEntityType.Builder.of(FacadeBlockEntity::new, FACADE_BLOCK.get()).build(null));
+
+    public static RegistryObject<CreativeModeTab> TAB = TABS.register("tutpower", () -> CreativeModeTab.builder()
+            .title(Component.translatable("tab.tutpower"))
+            .icon(() -> new ItemStack(GENERATOR_BLOCK.get()))
+            .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+            .displayItems((featureFlags, output) -> {
+                output.accept(GENERATOR_BLOCK.get());
+                output.accept(CHARGER_BLOCK.get());
+                output.accept(CABLE_BLOCK.get());
+                output.accept(FACADE_BLOCK.get());
+            })
+            .build());
+}
+```
+
+### Baked Model
+
+The baked model is responsible for generating the actual model for the cable. It will do this
+by looking at the six directions and the type of cable in that direction and then generating
+the appropriate quads. Both the cable block and the facade block use the same baked model.
+
+#### The Baked Model Loader
+
+To implement a baked model you first need to implement a model loader. This loader is responsible
+for loading the model from the json file. In our case we have a single json file that is used
+for both the cable block and the facade block. Because we need to distinguish between the two
+we use a ``facade`` property in the json file. This property is set to ``true`` for the facade
+and to ``false`` for the cable block. The loader will read this property and then create the
+appropriate ``CableBakedModel``.
+
+```java
+public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableModelGeometry> {
+
+    public static final ResourceLocation GENERATOR_LOADER = new ResourceLocation(TutorialPower.MODID, "cableloader");
+
+    public static void register(ModelEvent.RegisterGeometryLoaders event) {
+        event.register("cableloader", new CableModelLoader());
+    }
+
+
+    @Override
+    public CableModelGeometry read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
+        boolean facade = jsonObject.has("facade") && jsonObject.get("facade").getAsBoolean();
+        return new CableModelGeometry(facade);
+    }
+
+    public static class CableModelGeometry implements IUnbakedGeometry<CableModelGeometry> {
+
+        private final boolean facade;
+
+        public CableModelGeometry(boolean facade) {
+            this.facade = facade;
+        }
+
+        @Override
+        public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+            return new CableBakedModel(context, facade);
+        }
+    }
+}
+```
+
+The ``register()`` method needs to be called from the ``ModelEvent.RegisterGeometryLoaders`` event.
+We do that in ``ClientSetup``. In addition we also need to register the block color handler which
+will be covered later. This color handler makes sure that when we are (for example) mimicing grass,
+it will get the correct color (from the biome).
+
+```java
+@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+public class ClientSetup {
+
+    ...
+
+    @SubscribeEvent
+    public static void modelInit(ModelEvent.RegisterGeometryLoaders event) {
+        CableModelLoader.register(event);
+    }
+
+    @SubscribeEvent
+    public static void registerBlockColor(RegisterColorHandlersEvent.Block event) {
+        event.register(new FacadeBlockColor(), Registration.FACADE_BLOCK.get());
+    }
+
+}
+```
+
+#### The block color handler
+
+When we are mimicing another block we need to make sure that the color of the block is correct.
+For example, if we are mimicing grass then we need to make sure that the grass is the correct
+color:
+
+```java
+public class FacadeBlockColor implements BlockColor {
+
+    @Override
+    public int getColor(@Nonnull BlockState blockState, @Nullable BlockAndTintGetter world, @Nullable BlockPos pos, int tint) {
+        if (world != null) {
+            BlockEntity te = world.getBlockEntity(pos);
+            if (te instanceof FacadeBlockEntity facade) {
+                BlockState mimic = facade.getMimicBlock();
+                if (mimic != null) {
+                    return Minecraft.getInstance().getBlockColors().getColor(mimic, world, pos, tint);
+                }
+            }
+        }
+        return -1;
+    }
+}
+```
+
+#### The Baked Model
+
+The baked model is responsible for generating the actual model for the cable. It will do this
+by looking at the six directions and the type of cable in that direction and then generating
+the appropriate quads. Both the cable block and the facade block use the same baked model.
+
+This code uses the ``CablePatterns`` helper class to generate the quads. That class knows
+how to translate a certain connector type to the correct quads.
+
+The important routine in this class is the ``getQuads()`` routine. This routine is called
+by the renderer to get the quads for the cable.
+
+```java
+public class CableBakedModel implements IDynamicBakedModel {
+
+    private final IGeometryBakingContext context;
+    private final boolean facade;
+
+    private TextureAtlasSprite spriteConnector;
+    private TextureAtlasSprite spriteNoneCable;
+    private TextureAtlasSprite spriteNormalCable;
+    private TextureAtlasSprite spriteEndCable;
+    private TextureAtlasSprite spriteCornerCable;
+    private TextureAtlasSprite spriteThreeCable;
+    private TextureAtlasSprite spriteCrossCable;
+    private TextureAtlasSprite spriteSide;
+
+    static {
+        // For all possible patterns we define the sprite to use and the rotation. Note that each
+        // pattern looks at the existance of a cable section for each of the four directions
+        // excluding the one we are looking at.
+        CablePatterns.PATTERNS.put(Pattern.of(false, false, false, false), QuadSetting.of(SPRITE_NONE, 0));
+        CablePatterns.PATTERNS.put(Pattern.of(true, false, false, false), QuadSetting.of(SPRITE_END, 3));
+        CablePatterns.PATTERNS.put(Pattern.of(false, true, false, false), QuadSetting.of(SPRITE_END, 0));
+        CablePatterns.PATTERNS.put(Pattern.of(false, false, true, false), QuadSetting.of(SPRITE_END, 1));
+        CablePatterns.PATTERNS.put(Pattern.of(false, false, false, true), QuadSetting.of(SPRITE_END, 2));
+        CablePatterns.PATTERNS.put(Pattern.of(true, true, false, false), QuadSetting.of(SPRITE_CORNER, 0));
+        CablePatterns.PATTERNS.put(Pattern.of(false, true, true, false), QuadSetting.of(SPRITE_CORNER, 1));
+        CablePatterns.PATTERNS.put(Pattern.of(false, false, true, true), QuadSetting.of(SPRITE_CORNER, 2));
+        CablePatterns.PATTERNS.put(Pattern.of(true, false, false, true), QuadSetting.of(SPRITE_CORNER, 3));
+        CablePatterns.PATTERNS.put(Pattern.of(false, true, false, true), QuadSetting.of(SPRITE_STRAIGHT, 0));
+        CablePatterns.PATTERNS.put(Pattern.of(true, false, true, false), QuadSetting.of(SPRITE_STRAIGHT, 1));
+        CablePatterns.PATTERNS.put(Pattern.of(true, true, true, false), QuadSetting.of(SPRITE_THREE, 0));
+        CablePatterns.PATTERNS.put(Pattern.of(false, true, true, true), QuadSetting.of(SPRITE_THREE, 1));
+        CablePatterns.PATTERNS.put(Pattern.of(true, false, true, true), QuadSetting.of(SPRITE_THREE, 2));
+        CablePatterns.PATTERNS.put(Pattern.of(true, true, false, true), QuadSetting.of(SPRITE_THREE, 3));
+        CablePatterns.PATTERNS.put(Pattern.of(true, true, true, true), QuadSetting.of(SPRITE_CROSS, 0));
+    }
+
+    public CableBakedModel(IGeometryBakingContext context, boolean facade) {
+        this.context = context;
+        this.facade = facade;
+    }
+
+    private void initTextures() {
+        if (spriteConnector == null) {
+            spriteConnector = getTexture("block/cable/connector");
+            spriteNormalCable = getTexture("block/cable/normal");
+            spriteNoneCable = getTexture("block/cable/none");
+            spriteEndCable = getTexture("block/cable/end");
+            spriteCornerCable = getTexture("block/cable/corner");
+            spriteThreeCable = getTexture("block/cable/three");
+            spriteCrossCable = getTexture("block/cable/cross");
+            spriteSide = getTexture("block/cable/side");
+        }
+    }
+
+    // All textures are baked on a big texture atlas. This function gets the texture from that atlas
+    private TextureAtlasSprite getTexture(String path) {
+        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(TutorialPower.MODID, path));
+    }
+
+    private TextureAtlasSprite getSpriteNormal(CablePatterns.SpriteIdx idx) {
+        initTextures();
+        return switch (idx) {
+            case SPRITE_NONE -> spriteNoneCable;
+            case SPRITE_END -> spriteEndCable;
+            case SPRITE_STRAIGHT -> spriteNormalCable;
+            case SPRITE_CORNER -> spriteCornerCable;
+            case SPRITE_THREE -> spriteThreeCable;
+            case SPRITE_CROSS -> spriteCrossCable;
+        };
+    }
+
+    @Override
+    public boolean usesBlockLight() {
+        return false;
+    }
+
+    @Override
+    @NotNull
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData extraData, @Nullable RenderType layer) {
+        initTextures();
+        List<BakedQuad> quads = new ArrayList<>();
+        if (side == null && (layer == null || layer.equals(RenderType.solid()))) {
+            // Called with the blockstate from our block. Here we get the values of the six properties and pass that to
+            // our baked model implementation. If state == null we are called from the inventory and we use the default
+            // values for the properties
+            ConnectorType north, south, west, east, up, down;
+            if (state != null) {
+                north = state.getValue(CableBlock.NORTH);
+                south = state.getValue(CableBlock.SOUTH);
+                west = state.getValue(CableBlock.WEST);
+                east = state.getValue(CableBlock.EAST);
+                up = state.getValue(CableBlock.UP);
+                down = state.getValue(CableBlock.DOWN);
+            } else {
+                // If we are a facade and we are an item then we render as the 'side' texture as a full block
+                if (facade) {
+                    quads.add(quad(v(0, 1, 1), v(1, 1, 1), v(1, 1, 0), v(0, 1, 0), spriteSide));
+                    quads.add(quad(v(0, 0, 0), v(1, 0, 0), v(1, 0, 1), v(0, 0, 1), spriteSide));
+                    quads.add(quad(v(1, 0, 0), v(1, 1, 0), v(1, 1, 1), v(1, 0, 1), spriteSide));
+                    quads.add(quad(v(0, 0, 1), v(0, 1, 1), v(0, 1, 0), v(0, 0, 0), spriteSide));
+                    quads.add(quad(v(0, 1, 0), v(1, 1, 0), v(1, 0, 0), v(0, 0, 0), spriteSide));
+                    quads.add(quad(v(0, 0, 1), v(1, 0, 1), v(1, 1, 1), v(0, 1, 1), spriteSide));
+                    return quads;
+                }
+                north = south = west = east = up = down = NONE;
+            }
+
+            TextureAtlasSprite spriteCable = spriteNormalCable;
+            Function<CablePatterns.SpriteIdx, TextureAtlasSprite> spriteGetter = this::getSpriteNormal;
+
+            double o = .4;      // Thickness of the cable. .0 would be full block, .5 is infinitely thin.
+            double p = .1;      // Thickness of the connector as it is put on the connecting block
+            double q = .2;      // The wideness of the connector
+
+            // For each side we either cap it off if there is no similar block adjacent on that side
+            // or else we extend so that we touch the adjacent block:
+            if (up == CABLE) {
+                quads.add(quad(v(1 - o, 1, o), v(1 - o, 1, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, 1 - o, o), spriteCable));
+                quads.add(quad(v(o, 1, 1 - o), v(o, 1, o), v(o, 1 - o, o), v(o, 1 - o, 1 - o), spriteCable));
+                quads.add(quad(v(o, 1, o), v(1 - o, 1, o), v(1 - o, 1 - o, o), v(o, 1 - o, o), spriteCable));
+                quads.add(quad(v(o, 1 - o, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, 1, 1 - o), v(o, 1, 1 - o), spriteCable));
+            } else if (up == BLOCK) {
+                quads.add(quad(v(1 - o, 1 - p, o), v(1 - o, 1 - p, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, 1 - o, o), spriteCable));
+                quads.add(quad(v(o, 1 - p, 1 - o), v(o, 1 - p, o), v(o, 1 - o, o), v(o, 1 - o, 1 - o), spriteCable));
+                quads.add(quad(v(o, 1 - p, o), v(1 - o, 1 - p, o), v(1 - o, 1 - o, o), v(o, 1 - o, o), spriteCable));
+                quads.add(quad(v(o, 1 - o, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, 1 - p, 1 - o), v(o, 1 - p, 1 - o), spriteCable));
+
+                quads.add(quad(v(1 - q, 1 - p, q), v(1 - q, 1, q), v(1 - q, 1, 1 - q), v(1 - q, 1 - p, 1 - q), spriteSide));
+                quads.add(quad(v(q, 1 - p, 1 - q), v(q, 1, 1 - q), v(q, 1, q), v(q, 1 - p, q), spriteSide));
+                quads.add(quad(v(q, 1, q), v(1 - q, 1, q), v(1 - q, 1 - p, q), v(q, 1 - p, q), spriteSide));
+                quads.add(quad(v(q, 1 - p, 1 - q), v(1 - q, 1 - p, 1 - q), v(1 - q, 1, 1 - q), v(q, 1, 1 - q), spriteSide));
+
+                quads.add(quad(v(q, 1 - p, q), v(1 - q, 1 - p, q), v(1 - q, 1 - p, 1 - q), v(q, 1 - p, 1 - q), spriteConnector));
+                quads.add(quad(v(q, 1, q), v(q, 1, 1 - q), v(1 - q, 1, 1 - q), v(1 - q, 1, q), spriteSide));
+            } else {
+                QuadSetting pattern = CablePatterns.findPattern(west, south, east, north);
+                quads.add(quad(v(o, 1 - o, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, 1 - o, o), v(o, 1 - o, o), spriteGetter.apply(pattern.sprite()), pattern.rotation()));
+            }
+
+            if (down == CABLE) {
+                quads.add(quad(v(1 - o, o, o), v(1 - o, o, 1 - o), v(1 - o, 0, 1 - o), v(1 - o, 0, o), spriteCable));
+                quads.add(quad(v(o, o, 1 - o), v(o, o, o), v(o, 0, o), v(o, 0, 1 - o), spriteCable));
+                quads.add(quad(v(o, o, o), v(1 - o, o, o), v(1 - o, 0, o), v(o, 0, o), spriteCable));
+                quads.add(quad(v(o, 0, 1 - o), v(1 - o, 0, 1 - o), v(1 - o, o, 1 - o), v(o, o, 1 - o), spriteCable));
+            } else if (down == BLOCK) {
+                quads.add(quad(v(1 - o, o, o), v(1 - o, o, 1 - o), v(1 - o, p, 1 - o), v(1 - o, p, o), spriteCable));
+                quads.add(quad(v(o, o, 1 - o), v(o, o, o), v(o, p, o), v(o, p, 1 - o), spriteCable));
+                quads.add(quad(v(o, o, o), v(1 - o, o, o), v(1 - o, p, o), v(o, p, o), spriteCable));
+                quads.add(quad(v(o, p, 1 - o), v(1 - o, p, 1 - o), v(1 - o, o, 1 - o), v(o, o, 1 - o), spriteCable));
+
+                quads.add(quad(v(1 - q, 0, q), v(1 - q, p, q), v(1 - q, p, 1 - q), v(1 - q, 0, 1 - q), spriteSide));
+                quads.add(quad(v(q, 0, 1 - q), v(q, p, 1 - q), v(q, p, q), v(q, 0, q), spriteSide));
+                quads.add(quad(v(q, p, q), v(1 - q, p, q), v(1 - q, 0, q), v(q, 0, q), spriteSide));
+                quads.add(quad(v(q, 0, 1 - q), v(1 - q, 0, 1 - q), v(1 - q, p, 1 - q), v(q, p, 1 - q), spriteSide));
+
+                quads.add(quad(v(q, p, 1 - q), v(1 - q, p, 1 - q), v(1 - q, p, q), v(q, p, q), spriteConnector));
+                quads.add(quad(v(q, 0, 1 - q), v(q, 0, q), v(1 - q, 0, q), v(1 - q, 0, 1 - q), spriteSide));
+            } else {
+                QuadSetting pattern = CablePatterns.findPattern(west, north, east, south);
+                quads.add(quad(v(o, o, o), v(1 - o, o, o), v(1 - o, o, 1 - o), v(o, o, 1 - o), spriteGetter.apply(pattern.sprite()), pattern.rotation()));
+            }
+
+            if (east == CABLE) {
+                quads.add(quad(v(1, 1 - o, 1 - o), v(1, 1 - o, o), v(1 - o, 1 - o, o), v(1 - o, 1 - o, 1 - o), spriteCable));
+                quads.add(quad(v(1, o, o), v(1, o, 1 - o), v(1 - o, o, 1 - o), v(1 - o, o, o), spriteCable));
+                quads.add(quad(v(1, 1 - o, o), v(1, o, o), v(1 - o, o, o), v(1 - o, 1 - o, o), spriteCable));
+                quads.add(quad(v(1, o, 1 - o), v(1, 1 - o, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, o, 1 - o), spriteCable));
+            } else if (east == BLOCK) {
+                quads.add(quad(v(1 - p, 1 - o, 1 - o), v(1 - p, 1 - o, o), v(1 - o, 1 - o, o), v(1 - o, 1 - o, 1 - o), spriteCable));
+                quads.add(quad(v(1 - p, o, o), v(1 - p, o, 1 - o), v(1 - o, o, 1 - o), v(1 - o, o, o), spriteCable));
+                quads.add(quad(v(1 - p, 1 - o, o), v(1 - p, o, o), v(1 - o, o, o), v(1 - o, 1 - o, o), spriteCable));
+                quads.add(quad(v(1 - p, o, 1 - o), v(1 - p, 1 - o, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, o, 1 - o), spriteCable));
+
+                quads.add(quad(v(1 - p, 1 - q, 1 - q), v(1, 1 - q, 1 - q), v(1, 1 - q, q), v(1 - p, 1 - q, q), spriteSide));
+                quads.add(quad(v(1 - p, q, q), v(1, q, q), v(1, q, 1 - q), v(1 - p, q, 1 - q), spriteSide));
+                quads.add(quad(v(1 - p, 1 - q, q), v(1, 1 - q, q), v(1, q, q), v(1 - p, q, q), spriteSide));
+                quads.add(quad(v(1 - p, q, 1 - q), v(1, q, 1 - q), v(1, 1 - q, 1 - q), v(1 - p, 1 - q, 1 - q), spriteSide));
+
+                quads.add(quad(v(1 - p, q, 1 - q), v(1 - p, 1 - q, 1 - q), v(1 - p, 1 - q, q), v(1 - p, q, q), spriteConnector));
+                quads.add(quad(v(1, q, 1 - q), v(1, q, q), v(1, 1 - q, q), v(1, 1 - q, 1 - q), spriteSide));
+            } else {
+                QuadSetting pattern = CablePatterns.findPattern(down, north, up, south);
+                quads.add(quad(v(1 - o, o, o), v(1 - o, 1 - o, o), v(1 - o, 1 - o, 1 - o), v(1 - o, o, 1 - o), spriteGetter.apply(pattern.sprite()), pattern.rotation()));
+            }
+
+            if (west == CABLE) {
+                quads.add(quad(v(o, 1 - o, 1 - o), v(o, 1 - o, o), v(0, 1 - o, o), v(0, 1 - o, 1 - o), spriteCable));
+                quads.add(quad(v(o, o, o), v(o, o, 1 - o), v(0, o, 1 - o), v(0, o, o), spriteCable));
+                quads.add(quad(v(o, 1 - o, o), v(o, o, o), v(0, o, o), v(0, 1 - o, o), spriteCable));
+                quads.add(quad(v(o, o, 1 - o), v(o, 1 - o, 1 - o), v(0, 1 - o, 1 - o), v(0, o, 1 - o), spriteCable));
+            } else if (west == BLOCK) {
+                quads.add(quad(v(o, 1 - o, 1 - o), v(o, 1 - o, o), v(p, 1 - o, o), v(p, 1 - o, 1 - o), spriteCable));
+                quads.add(quad(v(o, o, o), v(o, o, 1 - o), v(p, o, 1 - o), v(p, o, o), spriteCable));
+                quads.add(quad(v(o, 1 - o, o), v(o, o, o), v(p, o, o), v(p, 1 - o, o), spriteCable));
+                quads.add(quad(v(o, o, 1 - o), v(o, 1 - o, 1 - o), v(p, 1 - o, 1 - o), v(p, o, 1 - o), spriteCable));
+
+                quads.add(quad(v(0, 1 - q, 1 - q), v(p, 1 - q, 1 - q), v(p, 1 - q, q), v(0, 1 - q, q), spriteSide));
+                quads.add(quad(v(0, q, q), v(p, q, q), v(p, q, 1 - q), v(0, q, 1 - q), spriteSide));
+                quads.add(quad(v(0, 1 - q, q), v(p, 1 - q, q), v(p, q, q), v(0, q, q), spriteSide));
+                quads.add(quad(v(0, q, 1 - q), v(p, q, 1 - q), v(p, 1 - q, 1 - q), v(0, 1 - q, 1 - q), spriteSide));
+
+                quads.add(quad(v(p, q, q), v(p, 1 - q, q), v(p, 1 - q, 1 - q), v(p, q, 1 - q), spriteConnector));
+                quads.add(quad(v(0, q, q), v(0, q, 1 - q), v(0, 1 - q, 1 - q), v(0, 1 - q, q), spriteSide));
+            } else {
+                QuadSetting pattern = CablePatterns.findPattern(down, south, up, north);
+                quads.add(quad(v(o, o, 1 - o), v(o, 1 - o, 1 - o), v(o, 1 - o, o), v(o, o, o), spriteGetter.apply(pattern.sprite()), pattern.rotation()));
+            }
+
+            if (north == CABLE) {
+                quads.add(quad(v(o, 1 - o, o), v(1 - o, 1 - o, o), v(1 - o, 1 - o, 0), v(o, 1 - o, 0), spriteCable));
+                quads.add(quad(v(o, o, 0), v(1 - o, o, 0), v(1 - o, o, o), v(o, o, o), spriteCable));
+                quads.add(quad(v(1 - o, o, 0), v(1 - o, 1 - o, 0), v(1 - o, 1 - o, o), v(1 - o, o, o), spriteCable));
+                quads.add(quad(v(o, o, o), v(o, 1 - o, o), v(o, 1 - o, 0), v(o, o, 0), spriteCable));
+            } else if (north == BLOCK) {
+                quads.add(quad(v(o, 1 - o, o), v(1 - o, 1 - o, o), v(1 - o, 1 - o, p), v(o, 1 - o, p), spriteCable));
+                quads.add(quad(v(o, o, p), v(1 - o, o, p), v(1 - o, o, o), v(o, o, o), spriteCable));
+                quads.add(quad(v(1 - o, o, p), v(1 - o, 1 - o, p), v(1 - o, 1 - o, o), v(1 - o, o, o), spriteCable));
+                quads.add(quad(v(o, o, o), v(o, 1 - o, o), v(o, 1 - o, p), v(o, o, p), spriteCable));
+
+                quads.add(quad(v(q, 1 - q, p), v(1 - q, 1 - q, p), v(1 - q, 1 - q, 0), v(q, 1 - q, 0), spriteSide));
+                quads.add(quad(v(q, q, 0), v(1 - q, q, 0), v(1 - q, q, p), v(q, q, p), spriteSide));
+                quads.add(quad(v(1 - q, q, 0), v(1 - q, 1 - q, 0), v(1 - q, 1 - q, p), v(1 - q, q, p), spriteSide));
+                quads.add(quad(v(q, q, p), v(q, 1 - q, p), v(q, 1 - q, 0), v(q, q, 0), spriteSide));
+
+                quads.add(quad(v(q, q, p), v(1 - q, q, p), v(1 - q, 1 - q, p), v(q, 1 - q, p), spriteConnector));
+                quads.add(quad(v(q, q, 0), v(q, 1 - q, 0), v(1 - q, 1 - q, 0), v(1 - q, q, 0), spriteSide));
+            } else {
+                QuadSetting pattern = CablePatterns.findPattern(west, up, east, down);
+                quads.add(quad(v(o, 1 - o, o), v(1 - o, 1 - o, o), v(1 - o, o, o), v(o, o, o), spriteGetter.apply(pattern.sprite()), pattern.rotation()));
+            }
+
+            if (south == CABLE) {
+                quads.add(quad(v(o, 1 - o, 1), v(1 - o, 1 - o, 1), v(1 - o, 1 - o, 1 - o), v(o, 1 - o, 1 - o), spriteCable));
+                quads.add(quad(v(o, o, 1 - o), v(1 - o, o, 1 - o), v(1 - o, o, 1), v(o, o, 1), spriteCable));
+                quads.add(quad(v(1 - o, o, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, 1 - o, 1), v(1 - o, o, 1), spriteCable));
+                quads.add(quad(v(o, o, 1), v(o, 1 - o, 1), v(o, 1 - o, 1 - o), v(o, o, 1 - o), spriteCable));
+            } else if (south == BLOCK) {
+                quads.add(quad(v(o, 1 - o, 1 - p), v(1 - o, 1 - o, 1 - p), v(1 - o, 1 - o, 1 - o), v(o, 1 - o, 1 - o), spriteCable));
+                quads.add(quad(v(o, o, 1 - o), v(1 - o, o, 1 - o), v(1 - o, o, 1 - p), v(o, o, 1 - p), spriteCable));
+                quads.add(quad(v(1 - o, o, 1 - o), v(1 - o, 1 - o, 1 - o), v(1 - o, 1 - o, 1 - p), v(1 - o, o, 1 - p), spriteCable));
+                quads.add(quad(v(o, o, 1 - p), v(o, 1 - o, 1 - p), v(o, 1 - o, 1 - o), v(o, o, 1 - o), spriteCable));
+
+                quads.add(quad(v(q, 1 - q, 1), v(1 - q, 1 - q, 1), v(1 - q, 1 - q, 1 - p), v(q, 1 - q, 1 - p), spriteSide));
+                quads.add(quad(v(q, q, 1 - p), v(1 - q, q, 1 - p), v(1 - q, q, 1), v(q, q, 1), spriteSide));
+                quads.add(quad(v(1 - q, q, 1 - p), v(1 - q, 1 - q, 1 - p), v(1 - q, 1 - q, 1), v(1 - q, q, 1), spriteSide));
+                quads.add(quad(v(q, q, 1), v(q, 1 - q, 1), v(q, 1 - q, 1 - p), v(q, q, 1 - p), spriteSide));
+
+                quads.add(quad(v(q, 1 - q, 1 - p), v(1 - q, 1 - q, 1 - p), v(1 - q, q, 1 - p), v(q, q, 1 - p), spriteConnector));
+                quads.add(quad(v(q, 1 - q, 1), v(q, q, 1), v(1 - q, q, 1), v(1 - q, 1 - q, 1), spriteSide));
+            } else {
+                QuadSetting pattern = CablePatterns.findPattern(west, down, east, up);
+                quads.add(quad(v(o, o, 1 - o), v(1 - o, o, 1 - o), v(1 - o, 1 - o, 1 - o), v(o, 1 - o, 1 - o), spriteGetter.apply(pattern.sprite()), pattern.rotation()));
+            }
+        }
+
+        // Render the facade if we have one in addition to the cable above. Note that the facade comes from the model data property
+        // (FACADEID)
+        BlockState facadeId = extraData.get(CableBlock.FACADEID);
+        if (facadeId != null) {
+            BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(facadeId);
+            ChunkRenderTypeSet renderTypes = model.getRenderTypes(facadeId, rand, extraData);
+            if (layer == null || renderTypes.contains(layer)) { // always render in the null layer or the block-breaking textures don't show up
+                try {
+                    quads.addAll(model.getQuads(state, side, rand, ModelData.EMPTY, layer));
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        return quads;
+    }
+
+    @Override
+    public boolean useAmbientOcclusion() {
+        return true;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return false;
+    }
+
+    @Override
+    public boolean isCustomRenderer() {
+        return false;
+    }
+
+    // Because we can potentially mimic other blocks we need to render on all render types
+    @Override
+    @Nonnull
+    public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data) {
+        return ChunkRenderTypeSet.all();
+    }
+
+    @Nonnull
+    @Override
+    public TextureAtlasSprite getParticleIcon() {
+        return spriteNormalCable == null
+                ? Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply((new ResourceLocation("minecraft", "missingno")))
+                : spriteNormalCable;
+    }
+
+    // To let our cable/facade render correctly as an item (both in inventory and on the ground) we
+    // get the correct transforms from the context
+    @Nonnull
+    @Override
+    public ItemTransforms getTransforms() {
+        return context.getTransforms();
+    }
+
+    @Nonnull
+    @Override
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
+    }
+
+}
+```
+
+#### The CablePatterns helper
+
+```java
+public class CablePatterns {
+
+    // This map takes a pattern of four directions (excluding the one we are looking at) and returns the sprite index
+    // and rotation for the quad that we are looking at.
+    static final Map<Pattern, QuadSetting> PATTERNS = new HashMap<>();
+
+    // Given a pattern of four directions (excluding the one we are looking at) we return the sprite index and rotation
+    // for the quad that we are looking at.
+    public static QuadSetting findPattern(ConnectorType s1, ConnectorType s2, ConnectorType s3, ConnectorType s4) {
+        return PATTERNS.get(new Pattern(s1 != NONE, s2 != NONE, s3 != NONE, s4 != NONE));
+    }
+
+    // This enum represents the type of sprite (texture)
+    public enum SpriteIdx {
+        SPRITE_NONE,
+        SPRITE_END,
+        SPRITE_STRAIGHT,
+        SPRITE_CORNER,
+        SPRITE_THREE,
+        SPRITE_CROSS
+    }
+
+    // This enum represents the type of sprite (texture) as well as the rotation for that sprite
+    public record QuadSetting(SpriteIdx sprite, int rotation) {
+
+        public static QuadSetting of(SpriteIdx sprite, int rotation) {
+            return new QuadSetting(sprite, rotation);
+        }
+    }
+
+    // A pattern represents a configuration (cable or no cable) for the four directions excluding the one we are looking at
+    public record Pattern(boolean s1, boolean s2, boolean s3, boolean s4) {
+
+        public static Pattern of(boolean s1, boolean s2, boolean s3, boolean s4) {
+            return new Pattern(s1, s2, s3, s4);
+        }
+    }
+}
+```
+
+### Data Generation
+
+The final thing we need to explain is data generation. We are not going into full detail here as you should
+know how this works by now. You can look at the github code to see specifics. However, I do want
+to explain how we can also do datageneration for our models that use the baked model system.
+
