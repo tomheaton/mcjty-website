@@ -1353,9 +1353,125 @@ public class CablePatterns {
 }
 ```
 
+#### The BakedModelHelper
+
+The ``BakedModelHelper`` is a helper class that contains some helper methods for creating quads. We
+use this class to create the quads for the cables.
+
+```java
+public class BakedModelHelper {
+
+    public static BakedQuad quad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, TextureAtlasSprite sprite, int rotation) {
+        return switch (rotation) {
+            case 0 -> quad(v1, v2, v3, v4, sprite);
+            case 1 -> quad(v2, v3, v4, v1, sprite);
+            case 2 -> quad(v3, v4, v1, v2, sprite);
+            case 3 -> quad(v4, v1, v2, v3, sprite);
+            default -> quad(v1, v2, v3, v4, sprite);
+        };
+    }
+
+    public static BakedQuad quad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, TextureAtlasSprite sprite) {
+        Vec3 normal = v3.subtract(v2).cross(v1.subtract(v2)).normalize();
+
+        BakedQuad[] quad = new BakedQuad[1];
+        QuadBakingVertexConsumer builder = new QuadBakingVertexConsumer(q -> quad[0] = q);
+        builder.setSprite(sprite);
+        builder.setDirection(Direction.getNearest(normal.x, normal.y, normal.z));
+        putVertex(builder, normal, v1.x, v1.y, v1.z, 0, 0, sprite);
+        putVertex(builder, normal, v2.x, v2.y, v2.z, 0, 16, sprite);
+        putVertex(builder, normal, v3.x, v3.y, v3.z, 16, 16, sprite);
+        putVertex(builder, normal, v4.x, v4.y, v4.z, 16, 0, sprite);
+        return quad[0];
+    }
+
+    private static void putVertex(VertexConsumer builder, Position normal,
+                                 double x, double y, double z, float u, float v,
+                                 TextureAtlasSprite sprite) {
+        float iu = sprite.getU(u);
+        float iv = sprite.getV(v);
+        builder.vertex(x, y, z)
+                .uv(iu, iv)
+                .uv2(0, 0)
+                .color(1.0f, 1.0f, 1.0f, 1.0f)
+                .normal((float) normal.x(), (float) normal.y(), (float) normal.z())
+                .endVertex();
+    }
+
+    public static Vec3 v(double x, double y, double z) {
+        return new Vec3(x, y, z);
+    }
+}
+```
+
 ### Data Generation
 
 The final thing we need to explain is data generation. We are not going into full detail here as you should
 know how this works by now. You can look at the github code to see specifics. However, I do want
 to explain how we can also do datageneration for our models that use the baked model system.
 
+For generating the jsons for the cable and facade we can use the following code in ``TutBlockStates``.
+Because we need a custom builder for our model we need to create a custom builder class. This class
+is called ``CableLoaderBuilder`` and it extends ``CustomLoaderBuilder``. The ``CableLoaderBuilder`` takes
+a ``ResourceLocation`` for the loader id, a ``BlockModelBuilder`` for the parent, an ``ExistingFileHelper`` and
+a boolean that indicates if we are generating a facade or not. The ``CableLoaderBuilder`` overrides the
+``toJson`` method to add the ``facade`` property to the json. The ``facade`` property is used in the
+``CableModelLoader`` to determine if we are generating a cable or a facade.
+
+In ``registerCable()`` and ``registerFacade()`` we create a ``BlockModelBuilder`` and set the parent to
+``cube``. We then set the custom loader to our ``CableLoaderBuilder`` and set the ``facade`` property.
+Finally we call ``simpleBlock`` with the ``BlockModelBuilder`` and the block.
+
+Because we use the standard vanilla ``cube`` model as the parent we will inherit the proper transformations
+for the item. This means that the cable and facade will render correctly in the inventory and on the ground
+(also because in our baked model we use the ``context`` to get the transforms).
+
+```java
+public class TutBlockStates extends BlockStateProvider {
+
+    ...
+
+    @Override
+    protected void registerStatesAndModels() {
+        ...
+        registerCable();
+        registerFacade();
+    }
+
+    private void registerCable() {
+        BlockModelBuilder model = models().getBuilder("cable")
+                .parent(models().getExistingFile(mcLoc("cube")))
+                .customLoader((builder, helper) -> new CableLoaderBuilder(CableModelLoader.GENERATOR_LOADER, builder, helper, false))
+                .end();
+        simpleBlock(Registration.CABLE_BLOCK.get(), model);
+    }
+
+    private void registerFacade() {
+        BlockModelBuilder model = models().getBuilder("facade")
+                .parent(models().getExistingFile(mcLoc("cube")))
+                .customLoader((builder, helper) -> new CableLoaderBuilder(CableModelLoader.GENERATOR_LOADER, builder, helper, true))
+                .end();
+        simpleBlock(Registration.FACADE_BLOCK.get(), model);
+    }
+
+    ...
+    
+    public static class CableLoaderBuilder extends CustomLoaderBuilder<BlockModelBuilder> {
+
+        private final boolean facade;
+
+        public CableLoaderBuilder(ResourceLocation loader, BlockModelBuilder parent, ExistingFileHelper existingFileHelper,
+                                  boolean facade) {
+            super(loader, parent, existingFileHelper);
+            this.facade = facade;
+        }
+
+        @Override
+        public JsonObject toJson(JsonObject json) {
+            JsonObject obj = super.toJson(json);
+            obj.addProperty("facade", facade);
+            return obj;
+        }
+    }
+}
+```
