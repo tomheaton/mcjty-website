@@ -55,6 +55,14 @@ The following changes were made:
 
 Here is a list of all (recent and important) changes to InControl and Fx Control:
 
+* **3 Nobember 2023:**
+  * New events.json system that allows the player to spawn mobs whenever something happens. Currently implemented 'mob_killed' and 'block_broken' events
+  * New 'eventspawn' test in 'spawn.json' that can be used to test for mobs spawned by the new events.json system
+  * Added new 'setphase', 'clearphase', and 'togglephase' actions for effects, experience, leftclicks, rightclicks, harvests, and spawn events
+  * New area system in 'areas.json'. This can be used by map makers to define predefined locations on the map. These areas can then be used in various rules. For example to create a peaceful area on a server
+  * New 'area' test that can be used in nearly all rules (like spawn.json, loot.json, effects.json, ...). This will evaluate to true if the position is in the specified area
+  * Added new /incontrol area command to show the current area
+  * Added 'setphase' and 'clearphase' commands
 * **9 Jul 2023:**
   * In Control for 1.20 works differently then previous versions. "onjoin" is gone. Instead there is now "when" with four possible values 'position', 'onjoin', 'finalize', and 'despawn'
   * The 'special.json' file is gone. Instead you can now use 'spawn.json' for all your needs. Using 'when' at finalize you can now control the equipment and stats of mobs
@@ -81,13 +89,16 @@ Here is a list of all (recent and important) changes to InControl and Fx Control
 
 These mods have various commands that allow you to debug and tweak what is going on:
 
-* `incontrol reload (In Control)`: after editing the rule files you can use this command to reload it and reapply the new rules
-* `incontrol debug (In Control)`: dumps debug info about spawning in the log. Warning! This can produce a lot of output
-* `incontrol show (In Control)`: show all entities and their names that can be used in spawn.json for mob names
-* `incontrol kill (In Control)`: kill all entities of a given type. Possible types are: 'all', 'hostile', 'passive', or 'entity'. It is also possible to give the name of an entity instead of a type (like 'minecraft:enderman'). There is also an optional extra parameter for a dimension ID
-* `incontrol list (In Control)`: list all current mobs present in the current dimension (and how many there are of each type)
-* `incontrol days (In Control)`: without parameters it shows the current day. You can also change the current day using this command
-* `incontrol phases (In Control)`: this shows all currently active phases
+* `incontrol reload`: after editing the rule files you can use this command to reload it and reapply the new rules
+* `incontrol debug`: dumps debug info about spawning in the log. Warning! This can produce a lot of output
+* `incontrol show`: show all entities and their names that can be used in spawn.json for mob names
+* `incontrol kill`: kill all entities of a given type. Possible types are: 'all', 'hostile', 'passive', or 'entity'. It is also possible to give the name of an entity instead of a type (like 'minecraft:enderman'). There is also an optional extra parameter for a dimension ID
+* `incontrol list`: list all current mobs present in the current dimension (and how many there are of each type)
+* `incontrol days`: without parameters it shows the current day. You can also change the current day using this command
+* `incontrol phases`: this shows all currently active phases
+* `incontrol setphase <phase>`: set a phase
+* `incontrol clearphase <phase>`: clear a phase
+* `incontrol area`: show the current area
 
 ## Rule Files
 
@@ -105,6 +116,8 @@ The following rule files are currently supported:
 * `placeevents.json`: with this file you can add effects to the player or world when a block is placed (and also prevent the block from being placed)
 * `rightclicks.json`: with this file you can add effects to the player or world when the player right-clicks a block (and also prevent interaction)
 * `leftclicks.json`: with this file you can add effects to the player or world when the player left-clicks a block (and also prevent interaction)
+* `areas.json`: with this file you can define named areas that can be used by the rules
+* `events.json`: with this file you can define events that allow you to spawn mobs whenever something happens. Currently implemented 'mob_killed' and 'block_broken' events
 
 ### spawn.json
 
@@ -156,7 +169,7 @@ Whenever something happens the corresponding rules are evaluated from top to bot
 In most cases the first rule that matches will be executed and further rules are ignored (the rules in `spawner.json` and `loot.json` are an exception to that.
 For these all matching rules are executed)
 
-## Expressions
+### Expressions
 
 In some of the conditions it is possible to use expressions.
 An expression is basically a string specifying some test to do on an integer value.
@@ -169,7 +182,7 @@ Here are a few examples:
 
 The following comparators are supported: `>`, `>=`, `<`, `<=`, `=`, and `!=`.
 
-## Numeric Expressions
+### Numeric Expressions
 
 A few keywords support numeric expressions. These are special expressions that are used to specify integer ranges. For example the `daycount` and `time` tests can use this. The following numeric expressions are supported:
 * `greater` or `gt`: evaluate to true if the number is greater than the specified value
@@ -198,7 +211,7 @@ To clarify this. Here are a few examples:
 "daycount": "repeat(10,3,4)"
 ```
 
-## Item filters
+### Item filters
 
 Many conditions are very simple but when testing for items things can be a bit more complicated. That's why there is a specific syntax that can be used when testing on items. In this section we will go over all the possibilities and also present a few examples. In most cases when testing for an item (like test if the player holds a specific item in their hand) you can either use a single item filter or else a list of item filters. Let's talk about the case of an individual item filter. The following possibilities are supported:
 
@@ -217,7 +230,7 @@ Many conditions are very simple but when testing for items things can be a bit m
     * `value`: the stringified value of the NBT tag to test on
     * `contains`: use this instead of `value` in case the tag represents a list. The value after contains should be a JSON array which in turn contains nbt matching tags like what we're describing now (see example later to make this more clear)
 
-### Item Filter Examples
+#### Item Filter Examples
 
 The following examples are all applied on `playerhelditem` but it is of course possible to use them for any kind of condition that supports items.
 
@@ -302,7 +315,7 @@ In this final example we test if a pickaxe has a specific enchantment (unbreakin
 }
 ```
 
-## Block Filters
+### Block Filters
 
 Similarly to item filters there is also the `block` condition that can test on the existence of a specific block.
 Like with items it is possible to specify a list or a single block filter.
@@ -319,7 +332,7 @@ Here are the possibilities on an individual block filter:
   * `contains`: either a single JSON object or else an array of JSON objects representing item filters as explained in the item filter section. The contains test will succeed if it finds any matching item in the inventory (if the block to test actually represents an inventory)
   * `side`: this is a modifier for both `energy` and `contains`. If present it will indicate the side from which we want to examine the energy or inventory contents. If not present the 'null' side is used. This should be a string like `east`, `west`, `south`, `north`, `up`, or `down`.
 
-### Block Filter Examples
+#### Block Filter Examples
 
 A diamond block:
 
@@ -387,7 +400,7 @@ A powered button:
 }
 ```
 
-## Mob Counter
+### Mob Counter
 
 The `maxcount` and `mincount` tags to control mob spawning can be either a simple number or string containing a number and a mob, but it can also be a more complex JSON with various conditions.
 The following tags are supported:
@@ -410,7 +423,7 @@ However, as soon as you specify any of those keywords it will count what you
 specify. For example if you specify a skeleton mob inside the `mincount` block then
 it will count skeletons even if the counter is being used in a rule that spawns zombies.
 
-### Mob Counter Examples
+#### Mob Counter Examples
 
 In `spawn.json`: deny skeletons if there are already more then 50 hostile mobs present per player:
 
@@ -453,7 +466,7 @@ Contrast above example with the old syntax where it would compare the amount of 
   }
 ```
 
-## Conditions
+### Conditions
 
 In this section all possible conditions are explained.
 Some conditions are not usable in all rules.
@@ -485,7 +498,9 @@ Please scroll horizontally to see all fields.
 | daycount                                                              | `I/E`        | V       | V     | V      |      |     |         |           |            |       |        | this is true if the day counter is a multiple of the given parameter. It also supports an expression in which case the expression is evaluated (see more on numeric expressions above in this wiki)                                                                                                                                                                                                   |
 | baby                                                                  | `B`          |         | V     |        | V    | V   |         |           |            |       |        | true if this is a baby                                                                                                                                                                                                                                                                                                                                                                                |
 | spawner                                                               | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by a spawner                                                                                                                                                                                                                                                                                                                                                                          |
-| incontrol                                                             | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by the new In Control spawner system (`spawner.json`)                                                                                                                                                                                                                                                                                                                                 |
+| incontrol                                                             | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by the In Control spawner system (`spawner.json`)                                                                                                                                                                                                                                                                                                                                     |
+| eventspawn                                                            | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by the In Control event system (`events.json`)                                                                                                                                                                                                                                                                                                                                        |
+| area                                                                  | 'S'          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | test if the position is in a certain area (see `areas.json`)                                                                                                                                                                                                                                                                                                                                          |
 | minheight / maxheight                                                 | `I`          | V       | V     | V      | V    | V   | V       | V         | V          | V     | V      | indicates the minimum (inclusive) or maximum height at which this rule will fire                                                                                                                                                                                                                                                                                                                      |
 | height                                                                | `E`          | V       | V     | V      | V    | V   | V       | V         | V          | V     | V      | uses a numeric expression to test the height at which the mob will spawn                                                                                                                                                                                                                                                                                                                              |
 | minlight / maxlight                                                   | `I`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | value between `0` and `15` indicating the minimum and maximum block light level on the given block                                                                                                                                                                                                                                                                                                    |
@@ -522,7 +537,7 @@ Please scroll horizontally to see all fields.
 | random                                                                | `F`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | this will succeed rule if a random number is less then this number. So if you want to have a rule that fires with `10%`chance then use `0.1` here                                                                                                                                                                                                                                                     |
 | player / fakeplayer / realplayer                                      | `B`          |         |       |        | V    | V   |         |           |            |       |        | indicating if the mob was killed by a player (fake or real), a fake player (automation that behaves like a player) and a real player                                                                                                                                                                                                                                                                  |
 | projectile / explosion / magic / fire                                 | `B`          |         |       |        | V    | V   |         |           |            |       |        | indicating if the mob was killed by a projectile, explosion, magic or fire                                                                                                                                                                                                                                                                                                                            |
-| source                                                                | `S/[S]`      |         |       |        | V    | V   |         |           |            |       |        | the damage source. Some sources are `minecraft:lightning_bolt`, `minecraft:lava`, `minecraft:cactus`, `minecraft:wither`, `minecraft:hot_floor`, ...                                                                                                                                                                                                                   |
+| source                                                                | `S/[S]`      |         |       |        | V    | V   |         |           |            |       |        | the damage source. Some sources are `minecraft:lightning_bolt`, `minecraft:lava`, `minecraft:cactus`, `minecraft:wither`, `minecraft:hot_floor`, ...                                                                                                                                                                                                                                                  |
 | playerhelditem / offhanditem / bothhandsitem                          | `S/[S]/JSON` |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | a representation of the item(s) that the player is holding in their main hand (or offhand). Use a correct item filter (or list of item filters)                                                                                                                                                                                                                                                       |
 | lackhelditem / lackoffhanditem                                        | `S/[S]/JSON` |         |       |        |      |     | V       | V         | V          | V     | V      | a representation of the item(s) that the player is not holding in their main hand (or offhand). Use a correct item filter (or list of item filters)                                                                                                                                                                                                                                                   |
 | helmet / chestplate / leggings / boots                                | `S/[S]/JSON` |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | a representation of the item(s) that the player is having as armor. Use a correct item filter (or list of item filters)                                                                                                                                                                                                                                                                               |
@@ -537,11 +552,11 @@ Please scroll horizontally to see all fields.
 | amulet / ring / belt / trinket / charm / body / head **(Baubles)**    | `S/[S]/JSON` |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | check if an item is in a bauble slot (NOT IMPLEMENTED YET IN 1.16)                                                                                                                                                                                                                                                                                                                                    |
 | state / pstate **(EnigmaScript)**                                     | `S`          |         |       |        | V    | V   |         |           |            |       |        | this can be used to test the value of a (player) state with a string like this `state=value` (NOT IMPLEMENTED YET IN 1.16)                                                                                                                                                                                                                                                                            |
 
-## Actions
+### Actions
 
 In this section all the actions per rule type are listed.
 
-### Spawn and SummonAid
+#### Spawn and SummonAid
 
 For `spawn.json` the following actions are supported:
 
@@ -561,11 +576,14 @@ For `spawn.json` the following actions are supported:
 * `armorhelmet`: is either a single string or a list of strings representing random armor that the spawned mob will wear
 * `armorlegs`: is either a single string or a list of strings representing random armor that the spawned mob will wear
 * `armorchest`: is either a single string or a list of strings representing random armor that the spawned mob will wear
+* `setphase`: this is a string representing a phase that will be set
+* `clearphase`: this is a string representing a phase that will be cleared
+* `togglephase`: this is a string representing a phase that will be toggled
 
 In addition, `gamestage`, `playerhelditem`, and related tags (which are tied to a player) are also supported.
 In that case the nearest player will be used as the basis for deciding the rule.
 
-### Loot Control
+#### Loot Control
 
 In contrast with most other rule files every rule is evaluated every time. i.e. a successful loot rule doesn't prevent the other loot rules from firing.
 Loot supports the following actions:
@@ -576,7 +594,7 @@ Loot supports the following actions:
 * `remove`: this is a string or a list of strings representing items to remove from the loot
 * `removeall`: if this is present then all items will be removed from the loot (before new items are added by this rule)
 
-### Experience
+#### Experience
 
 This is similar to loot control except that it controls how much experience you get from killing a mob.
 All keywords from loot control can be used here except the ones that are about damage type (magic, explosion, ...) as that information is not present in this event.
@@ -586,8 +604,11 @@ There are four outputs that work for these rules:
 * `setxp`: set a fixed XP instead of the default one
 * `multxp`: multiply the normal XP with this number
 * `addxp`: after multiplying the normal XP add this amount to the final XP
+* `setphase`: this is a string representing a phase that will be set
+* `clearphase`: this is a string representing a phase that will be cleared
+* `togglephase`: this is a string representing a phase that will be toggled
 
-### Effects
+#### Effects
 
 With effects, you can specify an additional `timeout` keyword in the rule.
 This represents the number of ticks that will be waited before testing the rule again.
@@ -609,14 +630,17 @@ Then there are a number of actions:
 * `command`: this is a string representing a command that will be executed. The @p will be replaced with the player name. For example `give @p minecraft:diamond_sword`
 * `addstage`: this is a string representing a game stage that will be added to the player
 * `removestage`: this is a string representing a game stage that will be removed from the player
+* `setphase`: this is a string representing a phase that will be set
+* `clearphase`: this is a string representing a phase that will be cleared
+* `togglephase`: this is a string representing a phase that will be toggled
 
-### Break and Place
+#### Break and Place
 
 There is no `timeout` keyword here.
 In addition to the actions that you can do for effects this also has a `result` output which can be `allow` or `deny`.
 Note that (in contrast with `spawn.json`) the other actions are still executed even if the rule says `deny`!
 
-### Left click and Right click
+#### Left click and Right click
 
 There is no `timeout` keyword here.
 In addition to the actions that you can do for effects this also has a `result` output which can be `allow` or `deny`.
@@ -635,10 +659,143 @@ In addition, it is much cleaner. Phases only work with a limited set of conditio
 * `winter`, `summer`, `spring`, and `autumn`
 * `state`
 
+Since 1.20.1 it is now also possible to set phases from `spawn.json` or some other rule files. Note that these phases should be separate
+from the phases defined in `phases.json` because otherwise setting them will have no effect.
+
+## Areas
+
+Areas are defined in `areas.json` and can be used in various rules like `spawn.json`. There are two types of areas: `box` and `sphere`.
+Check the example below to see how you can define an area. You can also use the `incontrol area` command to see if you are in an area in game.
+
+## Events
+
+Events are a new powerful system that allows you to spawn mobs when something happens. Currently the `block_broken` and `mob_killed` events are supported.
+
+Events are defined in `events.json` and have the following structure:
+
+* `on`: this is a string representing the event that will trigger this event. Currently the following events are supported:
+  * `block_broken`: this event is triggered when a block is broken
+  * `mob_killed`: this event is triggered when a mob is killed
+* `parameters`: this is a JSON object with parameters that are specific to the event. See below for more information.
+* `conditions`: this is a JSON object with generic conditions. The following keys are supported:
+  * `dimension`: this is a string or a list of strings representing the dimension(s) in which the event will trigger
+  * `random`: this is a floating point number between `0` and `1` representing the chance that the event will trigger
+  * `phase`: this is a string or a list of strings representing the phase(s) that must be active for the event to trigger
+* `spawn`: this is a JSON object with the following structure:
+  * `mob`: this is a string or a list of strings representing the mob(s) that will be spawned
+  * `mincount`/`maxcount`: the minimum/maximum amount of mobs to spawn. Default is 1 for both
+  * `mindistance`/`maxdistance`: the minimum/maximum distance from the event to spawn the mob
+  * `attempts`: the number of attempts to spawn the mob. Default is 10
+  * `norestrictions`: if this is true then the mob specific restrictions on spawning are ignored
+
+Mobs spawned through this system will still go through `spawn.json` and can be distinguished with the `eventspawn` tag.
+
+The `mob_killed` event supports the following parameters:
+
+* `mob`: this is a string or a list of strings for the mob to detect
+* `player`: this is a boolean indicating if the player should be the one that kills the mob
+
+The `block_broken` event supports the following parameters:
+
+* `block`: this is a json object for the block that has to be broken
+
+See the examples below on how to use this.
+
+## Custom Spawner System (spawner.json)
+
+Starting with 1.16 In Control supports a new spawning system that replaces the potentialspawn system.
+Rules of this type are put in `spawner.json`.
+Every rule in this file represents an option for one of more mobs to spawn under certain circumstances.
+The spawning system works per dimension and only attempts to spawn mobs every second.
+
+:::danger Warning
+Warning! `spawner.json` only supports the keywords mentioned here.
+Don't use ANY other keyword here.
+Other conditions (like biome) have to be specified in `spawn.json`.
+:::
+
+Every spawner rule has two parts:
+
+* A part describing what will be spawned and how often the rule will fire
+* A part describing conditions for spawning
+
+The following JSON keys are possible in the root of every rule:
+
+* `phase`: a string or list of strings representing all phases that must be active for this rule to work
+* `mob`: a single mob or list of mobs (like 'minecraft:zombie'). The entire rule will be evalulated for every mob specified in this list. This is a required setting
+* `weights`: an optional list of weights which will be used in combination with the mobs specified by 'mob'. By using weights you can give some spawns more importance
+* `mobsfrombiome`: this is a string that can be equal to 'monster', 'creature', 'ambient', 'water_creature', 'water_ambient', or 'misc'. Use this instead of specifying 'mob' manually. This will let the spawn take a random mob (given weight) that is valid for the current biome
+* `addscoreboardtags`: this is string or list of strings that can be used to add scoreboard tags to the spawned entity.
+* `attempts`: the number of times In Control will attempt to find a good position to spawn the mob. By default, this is 1
+* `persecond`: a floating point number indicating the chance of this rule firing. If this is 0.5 then there is 50% chance that this rule will spawn a mob (meaning that on average it will fire every 2 seconds). The default of this value is 1 (which means the rules fire onces per second). The maximum is also 1
+* `amount`: a JSON object containing a 'minimum', 'maximum' and an optional 'groupdistance'. This is the number of mobs that the spawnwer will attempt to spawn at once. The default is 1 for both. If 'groupdistance' is set then these mobs will spawn in groups (near each other). Note that 'groupdistance' is only for 1.18 and higher
+* `conditions`: a JSON object containing a set of conditions (see below)
+
+The following JSON keys are possible in the conditions block (and ONLY those, for other conditions combine with regular spawn rules):
+
+:::danger Warning
+Warning! Don't depend on the defaults here! Best is to specify all the conditions so you're sure things are allright.
+Especially 'dimension' since that is mandatory!
+:::
+
+* `dimension`: a single dimension or list of dimensions (like 'minecraft:overworld'). This is required. If you don't specify any dimensions then nothing will happen
+* `mindaycount` and `maxdaycount`: the minimum/maximum daycount to allow this rule to work
+* `mindist` and `maxdist`: the minimum/maximum distance to the player for controlling the spawn. By default, this is equal to 24/120.
+* `minverticaldist` and `maxverticaldist`: the minimum/maximum vertical distance to the player for controlling the spawn.
+* `minheight` and `maxheight`: the minimum/maximum height of the spawn. By default, this is 1/256
+* `norestrictions`: remove the mob specific (usually light related) restrictions on spawning
+* `inliquid`: if true then allow spawning in any liquid (this will ignore the mob specific restrictions it might have on spawning in liquids)
+* `inwater`: if true then allow spawning in water (this will ignore the mob specific restrictions it might have on spawning in liquids)
+* `inlava`: if true then allow spawning in lava (this will ignore the mob specific restrictions it might have on spawning in liquids)
+* `inair`: if true then allow spawning in the air
+* `maxthis`: the maximum amount of mobs of the given type
+* `maxtotal`: the maximum amount of mobs total
+* `maxpeaceful`: the maximum amount of passive mobs
+* `maxhostile`: the maximum amount of hostile mobs
+* `maxneutral`: the maximum amount of neutral mobs
+* `maxlocal`: this will cause counting in the spawn box around the player. This is somewhat more expensive so use with care
+* `validspawn`: this will add a stronger check to the possible spawn positions to make sure the block is solid as well as correct light and other mob/block specific conditions.
+* `sturdy`: this will add a stronger check to the possible spawn positions to make sure the block is sturdy (not a slab for example)
+
+
 ## Examples
 
 Sometimes it is best to explain things with examples.
 In this section we will present many examples that you can use as a basis to make your own rules:
+
+### Areas
+
+Using this in `areas.json` you can define a safe zone around spawn:
+
+```json
+[
+  {
+    "dimension": "minecraft:overworld",
+    "name": "spawn",
+    "type": "box",
+    "x": 0,
+    "y": 60,
+    "z": 0,
+    "dimx": 50,
+    "dimy": 50,
+    "dimz": 50
+  }
+]
+```
+
+And then in `spawn.json`:
+
+```json
+[
+  {
+    "hostile": true,
+    "area": "spawn",
+    "when": "onjoin",
+    "result": "deny"
+  }
+]
+```
+
 
 ### Phases
 
@@ -1101,63 +1258,62 @@ If we extend this example with another rule then we can also make sure that the 
 ]
 ```
 
-## Custom Spawner System
+### Examples for events
 
-Starting with 1.16 In Control supports a new spawning system that replaces the potentialspawn system.
-Rules of this type are put in `spawner.json`.
-Every rule in this file represents an option for one of more mobs to spawn under certain circumstances.
-The spawning system works per dimension and only attempts to spawn mobs every second.
+In this example we spawn a random amount of chickens when a cow is killed:
 
-:::danger Warning
-Warning! `spawner.json` only supports the keywords mentioned here.
-Don't use ANY other keyword here.
-Other conditions (like biome) have to be specified in `spawn.json`.
-:::
+```json
+[
+  {
+    "on": "mob_killed",
+    "parameters": {
+      "mob": "minecraft:cow",
+      "player": true
+    },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "random": 0.3
+    },
+    "spawn": {
+      "mob": "minecraft:chicken",
+      "mindistance": 3,
+      "maxdistance": 5,
+      "mincount": 2,
+      "maxcount": 3,
+      "attempts": 20
+    }
+  }
+]
+```
 
-Every spawner rule has two parts:
+In this example we possibly spawn a wither skeleton when we break a diamond ore block:
 
-* A part describing what will be spawned and how often the rule will fire
-* A part describing conditions for spawning
+```json
+[
+  {
+    "on": "block_broken",
+    "parameters": {
+      "block": {
+        "block": "minecraft:diamond_ore"
+      }
+    },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "random": 0.3
+    },
+    "spawn": {
+      "mob": "minecraft:wither_skeleton",
+      "mindistance": 0,
+      "maxdistance": 2,
+      "attempts": 20,
+      "norestrictions": true
+    }
+  }
+]
+```
 
-The following JSON keys are possible in the root of every rule:
 
-* `phase`: a string or list of strings representing all phases that must be active for this rule to work
-* `mob`: a single mob or list of mobs (like 'minecraft:zombie'). The entire rule will be evalulated for every mob specified in this list. This is a required setting
-* `weights`: an optional list of weights which will be used in combination with the mobs specified by 'mob'. By using weights you can give some spawns more importance
-* `mobsfrombiome`: this is a string that can be equal to 'monster', 'creature', 'ambient', 'water_creature', 'water_ambient', or 'misc'. Use this instead of specifying 'mob' manually. This will let the spawn take a random mob (given weight) that is valid for the current biome
-* `addscoreboardtags`: this is string or list of strings that can be used to add scoreboard tags to the spawned entity.
-* `attempts`: the number of times In Control will attempt to find a good position to spawn the mob. By default, this is 1
-* `persecond`: a floating point number indicating the chance of this rule firing. If this is 0.5 then there is 50% chance that this rule will spawn a mob (meaning that on average it will fire every 2 seconds). The default of this value is 1 (which means the rules fire onces per second). The maximum is also 1
-* `amount`: a JSON object containing a 'minimum', 'maximum' and an optional 'groupdistance'. This is the number of mobs that the spawnwer will attempt to spawn at once. The default is 1 for both. If 'groupdistance' is set then these mobs will spawn in groups (near each other). Note that 'groupdistance' is only for 1.18 and higher
-* `conditions`: a JSON object containing a set of conditions (see below)
-
-The following JSON keys are possible in the conditions block (and ONLY those, for other conditions combine with regular spawn rules):
-
-:::danger Warning
-Warning! Don't depend on the defaults here! Best is to specify all the conditions so you're sure things are allright.
-Especially 'dimension' since that is mandatory!
-:::
-
-* `dimension`: a single dimension or list of dimensions (like 'minecraft:overworld'). This is required. If you don't specify any dimensions then nothing will happen
-* `mindaycount` and `maxdaycount`: the minimum/maximum daycount to allow this rule to work
-* `mindist` and `maxdist`: the minimum/maximum distance to the player for controlling the spawn. By default, this is equal to 24/120.
-* `minverticaldist` and `maxverticaldist`: the minimum/maximum vertical distance to the player for controlling the spawn.
-* `minheight` and `maxheight`: the minimum/maximum height of the spawn. By default, this is 1/256
-* `norestrictions`: remove the mob specific (usually light related) restrictions on spawning
-* `inliquid`: if true then allow spawning in any liquid (this will ignore the mob specific restrictions it might have on spawning in liquids)
-* `inwater`: if true then allow spawning in water (this will ignore the mob specific restrictions it might have on spawning in liquids)
-* `inlava`: if true then allow spawning in lava (this will ignore the mob specific restrictions it might have on spawning in liquids)
-* `inair`: if true then allow spawning in the air
-* `maxthis`: the maximum amount of mobs of the given type
-* `maxtotal`: the maximum amount of mobs total
-* `maxpeaceful`: the maximum amount of passive mobs
-* `maxhostile`: the maximum amount of hostile mobs
-* `maxneutral`: the maximum amount of neutral mobs
-* `maxlocal`: this will cause counting in the spawn box around the player. This is somewhat more expensive so use with care
-* `validspawn`: this will add a stronger check to the possible spawn positions to make sure the block is solid as well as correct light and other mob/block specific conditions.
-* `sturdy`: this will add a stronger check to the possible spawn positions to make sure the block is sturdy (not a slab for example)
-
-### Basic Example
+### Basic Example for spawner
 
 Spawns random villagers near the player in water.
 Using `groupdistance` these villager groups will spawn near each other (only for 1.18 and higher):
@@ -1186,7 +1342,7 @@ Using `groupdistance` these villager groups will spawn near each other (only for
 ]
 ```
 
-### Example using Phases
+### Spawner example using Phases
 
 In the following example we globally increase hostile mob spawns after day 20 (using phases).
 
@@ -1224,7 +1380,7 @@ Then `spawner.json`:
 ]
 ```
 
-### Advanced Example
+### Advanced Example for spawner
 
 Here is a more advanced example where `spawn.json` and `spawner.json` are used together to get full control.
 Let's say you want to spawn some extra mobs in deserts but otherwise keep vanilla spawn rates the same.
