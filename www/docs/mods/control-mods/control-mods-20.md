@@ -119,7 +119,7 @@ The following rule files are currently supported:
 * `areas.json`: with this file you can define named areas that can be used by the rules
 * `events.json`: with this file you can define events that allow you to spawn mobs whenever something happens. Currently implemented 'mob_killed' and 'block_broken' events
 
-### spawn.json
+#### spawn.json
 
 With this rule file you can control various aspects of when a mob should spawn (or despawn). Note that
 you cannot use this file to add new mobs to the game. For that you need to use `spawner.json` too.
@@ -1503,6 +1503,47 @@ also say that we don't want to spawn any zombies in the first 5 days after start
     "mob": "minecraft:zombie",
     "random": 0.8,
     "result": "deny"
+  }
+]
+```
+
+### Making a dangerous world after spawning a wither
+
+As soon as a wither is spawned in the world we want to make the world more dangerous and start spawning wither skeletons.
+First in `spawn.json` we detect if a wither is spawned and then we set the `wither` phase:
+
+```json
+[
+  {
+    "mob": "minecraft:wither",
+    "when": "onjoin",
+    "setphase": "wither",
+    "result": "default"
+  }
+]
+```
+
+Then in `spawner.json` we start spawning wither skeletons as soon as the `wither` phase is set:
+
+```json
+[
+  {
+    "mob": "minecraft:wither_skeleton",
+    "persecond": 5,
+    "attempts": 20,
+    "phase": "wither",
+    "amount": {
+      "minimum": 1,
+      "maximum": 1
+    },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "mindist": 20,
+      "maxdist": 90,
+      "minheight": -64,
+      "maxheight": 256,
+      "maxthis": 10
+    }
   }
 ]
 ```
