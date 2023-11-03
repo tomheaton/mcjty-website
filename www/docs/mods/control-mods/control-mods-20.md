@@ -763,7 +763,7 @@ Especially 'dimension' since that is mandatory!
 Sometimes it is best to explain things with examples.
 In this section we will present many examples that you can use as a basis to make your own rules:
 
-### Areas
+### Using areas for safe spawn
 
 Using this in `areas.json` you can define a safe zone around spawn:
 
@@ -797,7 +797,7 @@ And then in `spawn.json`:
 ```
 
 
-### Phases
+### Phases for time control
 
 Define a phase that is true if we are after day 10.
 You can then use this phase in all In Control rules:
@@ -838,7 +838,7 @@ Define phases depending on a 10 day cycle and where in the cycle we are. These p
 ]
 ```
 
-### Spawn
+### Spawns: allow only in plains biome
 
 Here are some examples for `spawn.json`.
 
@@ -856,6 +856,8 @@ All other spawns are prevented:
   }
 ]
 ```
+
+### Spawn: prevent too many zombies
 
 Simple script to disable spawns of a particular type of mob if there are too many (not more then 10):
 
@@ -892,6 +894,8 @@ Just prevent all zombies, even from spawners. This is a much stronger test. Noth
 ]
 ```
 
+### Spawn: prevent all passive mobs in a dimension
+
 This example prevents ALL passive mob spawns in a certain dimension:
 
 ```json title="spawn.json"
@@ -904,6 +908,8 @@ This example prevents ALL passive mob spawns in a certain dimension:
   }
 ]
 ```
+
+### Spawn: allow some specific mobs only
 
 Only allow creepers, skeletons and passive mobs:
 
@@ -922,6 +928,8 @@ Only allow creepers, skeletons and passive mobs:
   }
 ]
 ```
+
+### Spawn: allow based on height
 
 Disallow hostile mob spawns above 50.
 Below 50 only allow spawns on stone and cobblestone:
@@ -943,6 +951,8 @@ Below 50 only allow spawns on stone and cobblestone:
   }
 ]
 ```
+
+### Spawn: beefed up mobs
 
 Make all mobs on the surface very dangerous.
 Underground there is a small chance of spawning invisible but weak zombies.
@@ -1009,7 +1019,7 @@ Make all zombies slower but have more health:
 ]
 ```
 
-### Loot
+### Loot examples
 
 Here are some examples for `loot.json`.
 
@@ -1067,7 +1077,7 @@ In this example zombies will drop an enchanted diamond sword:
   }
 ```
 
-### Effects
+### Effect examples
 
 Here are a few examples for `effects.json`:
 
@@ -1208,7 +1218,7 @@ With 50% chance give an extra diamond when the player mines a diamond ore block:
 ```
 
 
-### Examples for Right Clicks
+### Right Click examples
 
 Here are a few examples for `rightclicks.json`:
 
@@ -1258,7 +1268,7 @@ If we extend this example with another rule then we can also make sure that the 
 ]
 ```
 
-### Examples for events
+### Events: spawn chickens when a cow is killed
 
 In this example we spawn a random amount of chickens when a cow is killed:
 
@@ -1285,6 +1295,8 @@ In this example we spawn a random amount of chickens when a cow is killed:
   }
 ]
 ```
+
+### Events: spawn wither skeleton when diamond ore is broken 
 
 In this example we possibly spawn a wither skeleton when we break a diamond ore block:
 
@@ -1313,7 +1325,7 @@ In this example we possibly spawn a wither skeleton when we break a diamond ore 
 ```
 
 
-### Basic Example for spawner
+### Spawner: spawn villagers in water
 
 Spawns random villagers near the player in water.
 Using `groupdistance` these villager groups will spawn near each other (only for 1.18 and higher):
@@ -1342,7 +1354,7 @@ Using `groupdistance` these villager groups will spawn near each other (only for
 ]
 ```
 
-### Spawner example using Phases
+### Spawner: increase hostile mob spawns after day 20
 
 In the following example we globally increase hostile mob spawns after day 20 (using phases).
 
@@ -1380,7 +1392,7 @@ Then `spawner.json`:
 ]
 ```
 
-### Advanced Example for spawner
+### Spawner: advanced example, extra mobs in deserts
 
 Here is a more advanced example where `spawn.json` and `spawner.json` are used together to get full control.
 Let's say you want to spawn some extra mobs in deserts but otherwise keep vanilla spawn rates the same.
