@@ -20,14 +20,14 @@ Here is a gallery with screenshots:
 
 [Gallery](https://minecraft.curseforge.com/projects/the-lost-cities/images)
 
-**Lost Worlds** is a companion mod that adds two new world presets (Lost Worlds and Lost Worlds (Wasted)).
+**Lost Worlds** is a companion mod that adds two new world presets (Lost Worlds and Lost Worlds (Wastes)).
 With these world types you can generate a few different types of worlds:
 
 * Islands: this is a void world with floating islands. In combination with Lost Cities you can populate these islands with cities (use the 'floating' profile for that)
 * IslandsW: this is similar but instead of a void world the islands are floating on top of an infinite ocean
 * Caves: this is a world similar to the nether but with regular stone and ores. You can use this in combination with the 'cavern' profile for Lost Cities. Warning! This is very hard
 * Spheres: this is a void world that you can use in combination with the 'space' profile for Lost Cities. This will generate spheres which may contain cities
-* Normal: this is a normal style world that can be used in combination with the Lost Cities 'biosphere' profile. This is best used in combination with the 'Wasted' version of the world preset
+* Normal: this is a normal style world that can be used in combination with the Lost Cities 'biosphere' profile. This is best used in combination with the 'Wastes' version of the world preset
 
 ## How to use
 
@@ -63,6 +63,31 @@ It is NOT needed to copy the entire single player world to the server. Only the 
 If you want to configure the world on the server itself then you can do that by editing the _lostcities-server.toml_ file.
 
 ### Lost Worlds Single Player
+
+While Lost Cities adds cities to whatever world type that you created it doesn't actually modify how the world itself is generated.
+The Lost Worlds mod adds two new world types that you can use to generate worlds that are more suitable for Lost Cities.
+
+To select this world type you need to go to the _World_ options tab and then select the _Lost Worlds_ world type:
+
+![Extra configuration](../../assets/lostcities/lostworld_customize.png)
+
+There is also a second world type called _Lost Worlds (Wastes)_. This is similar to the _Lost Worlds_ world type but it has a different
+biome distribution. Many biomes are replaced with more wasteland-like biomes (deserts, badlands, gravelly mountains, etc).
+
+It's also possible to customize the world type by pressing the _Customize_ button. This will open a screen where you can configure
+this world type:
+
+![Extra configuration](../../assets/lostcities/lostworld_config.png)
+
+The five possible types are:
+
+* Islands: this is a void world with floating islands. In combination with Lost Cities you can populate these islands with cities (use the 'floating' profile for that)
+* IslandsW: this is similar but instead of a void world the islands are floating on top of an infinite ocean
+* Caves: this is a world similar to the nether but with regular stone and ores. You can use this in combination with the 'cavern' profile for Lost Cities. Warning! This is very hard. It may be recommended to use a spawn chest to help get started
+* Spheres: this is a void world that you can use in combination with the 'space' profile for Lost Cities. This will generate spheres which may contain cities
+* Normal: this is a normal style world that can be used in combination with the Lost Cities 'biosphere' profile. This is best used in combination with the 'Wastes' version of the world preset
+
+### Lost Worlds Multiplayer
 
 
 
