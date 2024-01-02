@@ -1,18 +1,70 @@
-# Lost Cities
+# Lost Cities and Lost Worlds
 
-The Lost Cities is a world generation mod.
+The Lost Cities is a world generation mod. Lost Worlds is a companion mod that adds two new world
+types that can be used in conjuction with Lost Cities. In this chapter both mods are explained.
+
+This documentation is mostly relevant for Minecraft 1.18.2 or later. Lost Worlds is only available
+on Minecraft 1.20.1 or later.
+
+You can find the documentation for older versions here:
+[The Lost Cities Legacy](./lost-cities/lost-cities-legacy.md)
 
 ## Introduction
 
-It has two major functionalities:
+**Lost Cities** has two major functionalities:
 
-* Add a new world type, so you can generate the overworld with this mod
-* Add a new dimension (default ID `111`) so you can travel to this dimension from within a normal overworld (or from another Lost City world)
+* You can configure it to add cities to the overworld. It should be compatible with most world types
+* It also adds a new dimension ('lostcities:lostcity') that you can travel to from within a normal overworld (or from another Lost City world)
 
-The world generation is about an abandoned city.
 Here is a gallery with screenshots:
 
 [Gallery](https://minecraft.curseforge.com/projects/the-lost-cities/images)
+
+**Lost Worlds** is a companion mod that adds two new world presets (Lost Worlds and Lost Worlds (Wasted)).
+With these world types you can generate a few different types of worlds:
+
+* Islands: this is a void world with floating islands. In combination with Lost Cities you can populate these islands with cities (use the 'floating' profile for that)
+* IslandsW: this is similar but instead of a void world the islands are floating on top of an infinite ocean
+* Caves: this is a world similar to the nether but with regular stone and ores. You can use this in combination with the 'cavern' profile for Lost Cities. Warning! This is very hard
+* Spheres: this is a void world that you can use in combination with the 'space' profile for Lost Cities. This will generate spheres which may contain cities
+* Normal: this is a normal style world that can be used in combination with the Lost Cities 'biosphere' profile. This is best used in combination with the 'Wasted' version of the world preset
+
+## How to use
+
+### Lost Cities Single Player
+
+When creating a world go to the tab where you can do extra configuration and there you press the _Cities_ button:
+
+![Extra configuration](../../assets/lostcities/configuring_single_player.png)
+
+Using the profile button you can choose between different profiles. These profiles control the style of the cities that are generated.
+
+![Extra configuration](../../assets/lostcities/cities_profile_button.png)
+
+It is also possible to further customize the cities by pressing the _Customize_ button:
+
+![Extra configuration](../../assets/lostcities/cities_customize_button.png)
+
+Using that button you can configure the style of the cities, the amount of cities, the distance between cities, the height of the buildings,
+how much damage there is and so on.
+
+After you have configured the world you can press the _Done_ button and continue with creating the world.
+
+### Lost Cities Multiplayer
+
+The easiest way to configure Lost Cities for multiplayer is to first configure it for single player and then copy the
+_lostcities-server.toml_ file that you can find in your created single player world (_saves/<yourworld>/serverconfig/lostcities-server.toml_)
+to the server _defaultconfigs_ directory BEFORE creating the world there.
+
+:::danger Warning
+It is NOT needed to copy the entire single player world to the server. Only the _lostcities-server.toml_ file is needed
+:::
+
+If you want to configure the world on the server itself then you can do that by editing the _lostcities-server.toml_ file.
+
+### Lost Worlds Single Player
+
+
 
 ## Basic Structure
 
