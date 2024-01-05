@@ -16,7 +16,8 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "clean": "rm -rf node_modules .docusaurus .build"
   },
   "dependencies": {
     "@docusaurus/core": "3.0.1",
@@ -30,7 +31,9 @@
   },
   "devDependencies": {
     "@docusaurus/eslint-plugin": "^3.0.1",
-    "@docusaurus/module-type-aliases": "3.0.1",
+    "@docusaurus/module-type-aliases": "^3.0.1",
+    "@docusaurus/tsconfig": "^3.0.1",
+    "@docusaurus/types": "^3.0.1",
     "@tsconfig/docusaurus": "^2.0.2",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.33",

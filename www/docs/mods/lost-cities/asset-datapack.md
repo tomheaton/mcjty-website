@@ -49,8 +49,8 @@ Using the new 'lowcode' system from Forge it's possible to make mods without any
 
 * `<FolderName>`
   * `data`
-    * `lostcities/lostcities` <- put assets here to override Lost City assets
-    * `<modid>/lostcities` <- put new custom assets here
+    * `lostcities/lostcities` - put assets here to override Lost City assets
+    * `<modid>/lostcities` - put new custom assets here
   * `META-INF`
     * `mods.toml`
     * `pack.mcmeta`
