@@ -57,7 +57,7 @@ After you have configured the world you can press the _Done_ button and continue
 ### Lost Cities Multiplayer
 
 The easiest way to configure Lost Cities for multiplayer is to first configure it for single player and then copy the
-_lostcities-server.toml_ file that you can find in your created single player world (_saves/<yourworld>/serverconfig/lostcities-server.toml_)
+_lostcities-server.toml_ file that you can find in your created single player world (_saves/&lt;yourworld&gt;/serverconfig/lostcities-server.toml_)
 to the server _defaultconfigs_ directory BEFORE creating the world there.
 
 :::danger Warning
