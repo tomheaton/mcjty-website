@@ -23,11 +23,15 @@ Here is a gallery with screenshots:
 **Lost Worlds** is a companion mod that adds two new world presets (Lost Worlds and Lost Worlds (Wastes)).
 With these world types you can generate a few different types of worlds:
 
-* Islands: this is a void world with floating islands. In combination with Lost Cities you can populate these islands with cities (use the 'floating' profile for that)
-* IslandsW: this is similar but instead of a void world the islands are floating on top of an infinite ocean
-* Caves: this is a world similar to the nether but with regular stone and ores. You can use this in combination with the 'cavern' profile for Lost Cities. Warning! This is very hard
-* Spheres: this is a void world that you can use in combination with the 'space' profile for Lost Cities. This will generate spheres which may contain cities
-* Normal: this is a normal style world that can be used in combination with the Lost Cities 'biosphere' profile. This is best used in combination with the 'Wastes' version of the world preset
+* **Islands**: this is a void world with floating islands. In combination with Lost Cities you can populate these islands with cities (use the 'floating' profile for that)
+* **Caves**: this is a world similar to the nether but with regular stone and ores. You can use this in combination with the 'cavern' profile for Lost Cities. Warning! This is very hard. It may be recommended to use a spawn chest to help get started
+* **Spheres**: this is a void world that you can use in combination with the 'space' profile for Lost Cities. This will generate spheres which may contain cities
+* **Normal**: this is a normal style world that can be used in combination with the Lost Cities 'biosphere' profile. This is best used in combination with the 'Wastes' version of the world preset
+* **Atlantis**: this is a normal style world that can be used in combination with the Lost Cities 'atlantis' profile. The sea will be at height 90
+
+With the fog button you can configure the fog color for the overworld.
+The sea slider allows you to configure the sea level. This is only relevant for the _Islands_ and
+_Spheres_ world types. For the other world types the sea level is fixed.
 
 ## How to use
 
