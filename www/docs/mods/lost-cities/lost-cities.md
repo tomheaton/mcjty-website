@@ -1,6 +1,6 @@
 # Lost Cities and Lost Worlds
 
-The Lost Cities is a world generation mod. Lost Worlds is a companion mod that adds two new world
+Lost Cities is a world generation mod. Lost Worlds is a companion mod that adds two new world
 types that can be used in conjuction with Lost Cities. In this chapter both mods are explained.
 
 This documentation is mostly relevant for Minecraft 1.18.2 or later. Lost Worlds is only available
