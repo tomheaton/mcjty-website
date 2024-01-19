@@ -62,6 +62,19 @@ It is NOT needed to copy the entire single player world to the server. Only the 
 
 If you want to configure the world on the server itself then you can do that by editing the _lostcities-server.toml_ file.
 
+Note, if you don't want to first create a single player world then you can also configure the server
+by placing a _lostcities-server.toml_ file in the _defaultconfigs_ directory. Here is an example of how that
+would look like:
+
+```toml
+#General settings
+[profiles]
+	#Block to put underneath a bed so that it qualifies as a teleporter bed
+	specialBedBlock = "minecraft:diamond_block"
+	selectedProfile = "profile"
+	selectedCustomJson = ""
+```
+
 ### Lost Worlds Single Player
 
 While Lost Cities adds cities to whatever world type that you created it doesn't actually modify how the world itself is generated.
@@ -81,15 +94,79 @@ this world type:
 
 The five possible types are:
 
-* Islands: this is a void world with floating islands. In combination with Lost Cities you can populate these islands with cities (use the 'floating' profile for that)
-* IslandsW: this is similar but instead of a void world the islands are floating on top of an infinite ocean
-* Caves: this is a world similar to the nether but with regular stone and ores. You can use this in combination with the 'cavern' profile for Lost Cities. Warning! This is very hard. It may be recommended to use a spawn chest to help get started
-* Spheres: this is a void world that you can use in combination with the 'space' profile for Lost Cities. This will generate spheres which may contain cities
-* Normal: this is a normal style world that can be used in combination with the Lost Cities 'biosphere' profile. This is best used in combination with the 'Wastes' version of the world preset
+* **Islands**: this is a void world with floating islands. In combination with Lost Cities you can populate these islands with cities (use the 'floating' profile for that)
+* **Caves**: this is a world similar to the nether but with regular stone and ores. You can use this in combination with the 'cavern' profile for Lost Cities. Warning! This is very hard. It may be recommended to use a spawn chest to help get started
+* **Spheres**: this is a void world that you can use in combination with the 'space' profile for Lost Cities. This will generate spheres which may contain cities
+* **Normal**: this is a normal style world that can be used in combination with the Lost Cities 'biosphere' profile. This is best used in combination with the 'Wastes' version of the world preset
+* **Atlantis**: this is a normal style world that can be used in combination with the Lost Cities 'atlantis' profile. The sea will be at height 90
+
+With the fog button you can configure the fog color for the overworld.
+The sea slider allows you to configure the sea level. This is only relevant for the _Islands_ and
+_Spheres_ world types. For the other world types the sea level is fixed.
+
+Note that selecting a world type will automatically select the corresponding profile for Lost Cities. You
+can still change this later if you want.
 
 ### Lost Worlds Multiplayer
 
+When you want to configure Lost Worlds on a server you first have to follow the steps to configure
+Lost Cities on a server. Make sure to pick the profile that is compatible with the world type that
+you want to use.
 
+After that the only thing you have to do is to configure the world type itself. This can be done
+by editing the _server.properties_ file and changing this line:
+
+```
+level-type=lostworlds\:lost_worlds
+```
+Make sure you have a new world (delete the 'world' directory if needed) and the server should use
+the default lost worlds type (which corresponds to floating islands).
+
+#### Using another Lost Worlds type 
+
+Using another Lost Worlds type is possible but a bit more complicated. Lost Worlds comes with
+three more world types:
+
+* _lostworlds:lost_worlds_caves_
+* _lostworlds:lost_worlds_spheres_
+* _lostworlds:lost_worlds_atlantis_ 
+
+To use these you have to make a small datapack that adds the desired world type to the right tag. For
+example. Let's say you want to make a caves type world. You'll have to do the following things:
+
+* Setup Lost Cities for a 'cavern' style world (see above in the multiplayer section of Lost Cities)
+* Edit _server.properties_ and change the _level-type_ to _lostworlds:lost_worlds_caves_
+* Make a datapack to add the lost_worlds_caves preset to the tag.
+
+To do this last step you first have to make sure you have a _world_ folder that is empty.
+In that folder you then create a _datapacks_ folder and in that folder you create a folder
+for your datapack (can have any name you want).
+You then create the _pack.mcmeta_ file in that folder:
+
+```mcmeta
+{
+  "pack": {
+    "pack_format": 10,
+    "description": "New world preset"
+  }
+}
+```
+
+In addition you create the folder _data/minecraft/tags/worldgen/world_preset_ and in that folder
+create the _normal.json_ file with the following contents:
+
+```json
+{
+  "values": [
+    "lostworlds:lost_worlds_caves"
+  ]
+}
+```
+
+Then also create an _extended.json_ file with exactly the same contents.
+
+If you followed all these steps correctly then you should be able to start the server and it will
+use the caves world type.
 
 ## Basic Structure
 
@@ -106,13 +183,8 @@ Nevertheless, this mod maintains several world-wide data structures and is able 
 
 Read about it here: [Basic Structure](./structure.md)
 
-## Configuration
-
-TODO
 
 ## The Asset System
 
 The asset system is a powerful system that you can customize to make your own buildings, decorations, control loot, mob spawners, building blocks and more.
-
-* For 1.17 and older you can read about it here: [Asset System](./asset.md)
-* For 1.18 and newer you need to visit this: [Asset DataPack System](./asset-datapack.md)
+Read about it here: [Asset DataPack System](./asset-datapack.md)
