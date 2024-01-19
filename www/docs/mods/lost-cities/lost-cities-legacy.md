@@ -1,6 +1,7 @@
-# Lost Cities
+# Lost Cities Legacy Edition
 
-The Lost Cities is a world generation mod.
+The Lost Cities is a world generation mod. This page is for Minecraft 1.12.2 and 1.16.5. For more modern versions
+of Lost Cities go to [Lost Cities](./lost-cities.md).
 
 ## Introduction
 

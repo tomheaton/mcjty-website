@@ -7,7 +7,7 @@ This documentation is mostly relevant for Minecraft 1.18.2 or later. Lost Worlds
 on Minecraft 1.20.1 or later.
 
 You can find the documentation for older versions here:
-[The Lost Cities Legacy](./lost-cities/lost-cities-legacy.md)
+[The Lost Cities Legacy Version](./lost-cities-legacy.md)
 
 ## Introduction
 
@@ -16,9 +16,9 @@ You can find the documentation for older versions here:
 * You can configure it to add cities to the overworld. It should be compatible with most world types
 * It also adds a new dimension ('lostcities:lostcity') that you can travel to from within a normal overworld (or from another Lost City world)
 
-Here is a gallery with screenshots:
+Here is a gallery with screenshots: [Gallery](https://minecraft.curseforge.com/projects/the-lost-cities/images)
 
-[Gallery](https://minecraft.curseforge.com/projects/the-lost-cities/images)
+---
 
 **Lost Worlds** is a companion mod that adds two new world presets (Lost Worlds and Lost Worlds (Wastes)).
 With these world types you can generate a few different types of worlds:
