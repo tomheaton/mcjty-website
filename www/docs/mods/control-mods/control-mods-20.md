@@ -61,9 +61,9 @@ Here is a list of all (recent and important) changes to InControl and Fx Control
 * **27 Januari 2024:**
   - New named number system where you have variables with a name and an integer value:
     - Two new commands: 'numbers' to show the current numbers and 'setnumber' to set a number
-    - New 'number' test that can be used in almost all rules to test if a number satisfies a given expression. Example expression: "number": { "name": "mycounter", "expression": "gt(10)" }
+    - New 'number' test that can be used in almost all rules to test if a number satisfies a given expression
     - This test also works for events and spawner rules. Basically everwhere that you can test for a phase you can now also test for a number
-    - New event action called 'number'. This will allow you to modify a number when an event happens. For example: { "name": "mycounter", "value": "+1" }
+    - New event action called 'number'. This will allow you to modify a number when an event happens
     - New 'changenumber' action that can be used in many rules. Same syntax as the number event action: "changenumber": "mycounter=+1"
   - Various fixes and improvements to the phase system:
     - Manually set phases will now also be persisted when the world is reloaded
