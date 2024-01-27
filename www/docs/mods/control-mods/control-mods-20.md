@@ -39,6 +39,9 @@ Because both mods have a very similar structure the documentation for them is me
 * Q: How can I get zombies to spawn more often?
     * A: This question is asked so much that it really is considered a FAQ. As I already told you above you can't add spawns using spawn.json alone. You need to add a rule to `spawner.json` and possibly set conditions in `spawn.json`. See the examples at the bottom of this wiki. 
 
+* Q: I set the Minecraft time to a certain day but In Control rules don't seem to notice?
+    * A: In Control uses an internal day counter which is not the same as the Minecraft day. You can use the `/incontrol days` command to see the current day and also to set it 
+
 ## Differences between the 1.20 version and older
 
 In 1.20 InControl was changed heavily due to some new spawning events in Forge. In addition FxControl has been removed and
@@ -55,34 +58,49 @@ The following changes were made:
 
 Here is a list of all (recent and important) changes to InControl and Fx Control:
 
+* **27 Januari 2024:**
+  - New named number system where you have variables with a name and an integer value:
+    - Two new commands: 'numbers' to show the current numbers and 'setnumber' to set a number
+    - New 'number' test that can be used in almost all rules to test if a number satisfies a given expression. Example expression: "number": { "name": "mycounter", "expression": "gt(10)" }
+    - This test also works for events and spawner rules. Basically everwhere that you can test for a phase you can now also test for a number
+    - New event action called 'number'. This will allow you to modify a number when an event happens. For example: { "name": "mycounter", "value": "+1" }
+    - New 'changenumber' action that can be used in many rules. Same syntax as the number event action: "changenumber": "mycounter=+1"
+  - Various fixes and improvements to the phase system:
+    - Manually set phases will now also be persisted when the world is reloaded
+    - New event action called 'phase'. This will allow you to set or clear a phase when an event happens. For example, you can now set a phase when a player kills a mob and then use that phase in a spawner rule to spawn mobs only when that phase is set
+    - The 'phase' test is now also supported for experience, loot, effect, harvest, left click, right click, place, and summon aid rules
+  - New custom event:
+    - New 'customevent' action that you can use from within many rules to fire a custom event
+    - New event trigger called 'custom'
+    - New 'result' called 'deny_with_actions' which will deny the event but still execute the actions. This can be used to deny the spawn of a mob but still send out an event
 * **3 Nobember 2023:**
-  * New events.json system that allows the player to spawn mobs whenever something happens. Currently implemented 'mob_killed' and 'block_broken' events
-  * New 'eventspawn' test in 'spawn.json' that can be used to test for mobs spawned by the new events.json system
-  * Added new 'setphase', 'clearphase', and 'togglephase' actions for effects, experience, leftclicks, rightclicks, harvests, and spawn events
-  * New area system in 'areas.json'. This can be used by map makers to define predefined locations on the map. These areas can then be used in various rules. For example to create a peaceful area on a server
-  * New 'area' test that can be used in nearly all rules (like spawn.json, loot.json, effects.json, ...). This will evaluate to true if the position is in the specified area
-  * Added new /incontrol area command to show the current area
-  * Added 'setphase' and 'clearphase' commands
+  - New events.json system that allows the player to spawn mobs whenever something happens. Currently implemented 'mob_killed' and 'block_broken' events
+  - New 'eventspawn' test in 'spawn.json' that can be used to test for mobs spawned by the new events.json system
+  - Added new 'setphase', 'clearphase', and 'togglephase' actions for effects, experience, leftclicks, rightclicks, harvests, and spawn events
+  - New area system in 'areas.json'. This can be used by map makers to define predefined locations on the map. These areas can then be used in various rules. For example to create a peaceful area on a server
+  - New 'area' test that can be used in nearly all rules (like spawn.json, loot.json, effects.json, ...). This will evaluate to true if the position is in the specified area
+  - Added new /incontrol area command to show the current area
+  - Added 'setphase' and 'clearphase' commands
 * **9 Jul 2023:**
-  * In Control for 1.20 works differently then previous versions. "onjoin" is gone. Instead there is now "when" with four possible values 'position', 'onjoin', 'finalize', and 'despawn'
-  * The 'special.json' file is gone. Instead you can now use 'spawn.json' for all your needs. Using 'when' at finalize you can now control the equipment and stats of mobs
-  * Merged all FxControl functionality into InControl
+  - In Control for 1.20 works differently then previous versions. "onjoin" is gone. Instead there is now "when" with four possible values 'position', 'onjoin', 'finalize', and 'despawn'
+  - The 'special.json' file is gone. Instead you can now use 'spawn.json' for all your needs. Using 'when' at finalize you can now control the equipment and stats of mobs
+  - Merged all FxControl functionality into InControl
 * **1 Jul 2023:**
-  * Added 'minlight_full' and 'maxlight_full' keywords. These are similar to 'minlight' and 'maxlight' but they will test the full light level (including the sky light level). 'minlight' and 'maxlight' only test block light level
+  - Added 'minlight_full' and 'maxlight_full' keywords. These are similar to 'minlight' and 'maxlight' but they will test the full light level (including the sky light level). 'minlight' and 'maxlight' only test block light level
 * **10 May 2023:**
-  * New 'addscoreboardtags' keyword for spawner.json and spawn.json. With this you can add scoreboard tags on each entity spawned by this rule
-  * New 'scoreboardtags_all' and 'scoreboardtags_any' conditions for spawn, experience, loot, special, and summonaid. These will test if all or any of the given tags are present on the entity
-  * New 'nodespawn' action for spawn, special, and summonaid. This will prevent the mob from despawning
-  * New 'time', 'height', and 'light' keywords which are supported wherever the corresponding min/max versions are supported. Using these keywords you can do more precise testing on the specific values. The wiki will contain more documentation on this
-  * The 'daycount' keyword now also supports this new expression syntax. Using this you can now do things like: 'spawn zombies for two days every 10 days and spawn creepers for one day in the same cycle'
-  * Added new 'minverticaldist' and 'maxverticaldist' keywords to the spawner system. These will allow you to specify a vertical distance between the spawner and the spawn position
-  * The spawner system will now fail if no dimensions are specified (as it should, it's not optional)
+  - New 'addscoreboardtags' keyword for spawner.json and spawn.json. With this you can add scoreboard tags on each entity spawned by this rule
+  - New 'scoreboardtags_all' and 'scoreboardtags_any' conditions for spawn, experience, loot, special, and summonaid. These will test if all or any of the given tags are present on the entity
+  - New 'nodespawn' action for spawn, special, and summonaid. This will prevent the mob from despawning
+  - New 'time', 'height', and 'light' keywords which are supported wherever the corresponding min/max versions are supported. Using these keywords you can do more precise testing on the specific values. The wiki will contain more documentation on this
+  - The 'daycount' keyword now also supports this new expression syntax. Using this you can now do things like: 'spawn zombies for two days every 10 days and spawn creepers for one day in the same cycle'
+  - Added new 'minverticaldist' and 'maxverticaldist' keywords to the spawner system. These will allow you to specify a vertical distance between the spawner and the spawn position
+  - The spawner system will now fail if no dimensions are specified (as it should, it's not optional)
 * **30 April 2023:**
-  * Added new 'building' keyword that you can use to test as a condition. This will allow testing if (for example) a spawn is in a certain list of buildings
+  - Added new 'building' keyword that you can use to test as a condition. This will allow testing if (for example) a spawn is in a certain list of buildings
 * **28 April 2023:**
-  * Added support for the 'tag' keyword in a block description (in favor of the old and non functional 'ore' keyword)
+  - Added support for the 'tag' keyword in a block description (in favor of the old and non functional 'ore' keyword)
 * **7 Feb 2023:**
-  * Added new 'validspawn' and 'sturdy' conditions to the spawner system. This avoids spawning mobs on slabs for example
+  - Added new 'validspawn' and 'sturdy' conditions to the spawner system. This avoids spawning mobs on slabs for example
 
 
 ## Commands
@@ -98,6 +116,8 @@ These mods have various commands that allow you to debug and tweak what is going
 * `incontrol phases`: this shows all currently active phases
 * `incontrol setphase <phase>`: set a phase
 * `incontrol clearphase <phase>`: clear a phase
+* `incontrol numbers`: show all currently active numbers
+* `incontrol setnumber <name> <value>`: set a number to a specific value
 * `incontrol area`: show the current area
 
 ## Rule Files
@@ -117,7 +137,7 @@ The following rule files are currently supported:
 * `rightclicks.json`: with this file you can add effects to the player or world when the player right-clicks a block (and also prevent interaction)
 * `leftclicks.json`: with this file you can add effects to the player or world when the player left-clicks a block (and also prevent interaction)
 * `areas.json`: with this file you can define named areas that can be used by the rules
-* `events.json`: with this file you can define events that allow you to spawn mobs whenever something happens. Currently implemented 'mob_killed' and 'block_broken' events
+* `events.json`: with this file you can define events that allow you to spawn mobs whenever something happens. Currently implemented 'mob_killed', 'block_broken', and 'custom' events
 
 #### spawn.json
 
@@ -132,12 +152,14 @@ Rules in this file are essentially split into four different categories:
 
 The category of a spawn rule is set with the new `when` keyword. This keyword is optional and defaults to `position`.
 
-Some additional notes about spawn.json. Each rule has a result which can be `allow`, `default`, or `deny`.
+Some additional notes about spawn.json. Each rule has a result which can be `allow`, `default`, `deny`, or `deny_with_actions`.
 In case of `deny` the spawn will simply be canceled. The difference between `allow` and `default` is that with `default`
 some simple vanilla spawn restrictions (like not spawn inside a block) are still tested. When `when`
 is equal to `finalize` then the difference between `default` and `allow` is that `default` will still let
 the vanilla finalize operation do its job (for example, skeletons will still get their bow). If you
 use `allow` then only your own actions will be executed.
+
+The difference between `deny` and `deny_with_actions` is that with `deny` no actions will be executed.
 
 In addition, each rule can have a `continue` keyword. This will cause a matching rule to work but then continue
 processing potential different rules (remember! Rules are executed in order)
@@ -492,7 +514,8 @@ Please scroll horizontally to see all fields.
 
 | Name                                                                  | Type         | spawner | spawn | summon | loot | exp | harvest | leftclick | rightclick | place | effect | Description                                                                                                                                                                                                                                                                                                                                                                                           |
 |-----------------------------------------------------------------------|--------------|---------|-------|--------|------|-----|---------|-----------|------------|-------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| phase                                                                 | `S/[S]`      | V       | V     | V      |      |     |         |           |            |       |        | all phases that must be active for this rule to work. Phases are defined in `phases.json`. Putting conditions in a phase is more efficient and cleaner                                                                                                                                                                                                                                                |
+| phase                                                                 | `S/[S]`      | V       | V     | V      | V    | V   | V       | V         | V          | V     | V      | all phases that must be active for this rule to work. Phases are defined in `phases.json`. Putting conditions in a phase is more efficient and cleaner                                                                                                                                                                                                                                                |
+| number                                                                | `JSON`       | V       | V     | V      | V    | V   | V       | V         | V          | V     | V      | A json describing a numeric condition that must be valid before this rule can work. See the section on the numeric system for more information                                                                                                                                                                                                                                                        |                                                                                                                                                                                                                                                                                                                    
 | when                                                                  | `S`          |         | V     |        |      |     |         |           |            |       |        | can be equal to 'position', 'finalize', 'onjoin', or 'despawn'. Default is 'position'                                                                                                                                                                                                                                                                                                                 |
 | mindaycount / maxdaycount                                             | `I`          | V       | V     | V      |      |     |         |           |            |       |        | indicate the minimum (inclusive) or maximum day count. The day counter starts at `0` (see the `days` command)                                                                                                                                                                                                                                                                                         |
 | daycount                                                              | `I/E`        | V       | V     | V      |      |     |         |           |            |       |        | this is true if the day counter is a multiple of the given parameter. It also supports an expression in which case the expression is evaluated (see more on numeric expressions above in this wiki)                                                                                                                                                                                                   |
@@ -556,6 +579,14 @@ Please scroll horizontally to see all fields.
 
 In this section all the actions per rule type are listed.
 
+The following actions are possible in all rules:
+
+* `setphase`: this is a string representing a phase that will be set
+* `clearphase`: this is a string representing a phase that will be cleared
+* `togglephase`: this is a string representing a phase that will be toggled
+* `changenumber`: this is a string representing a change for a number. See the number system section for more information
+* `customevent`: this is a string representing a custom event that will be fired. See the event system section for more information
+
 #### Spawn and SummonAid
 
 For `spawn.json` the following actions are supported:
@@ -576,9 +607,6 @@ For `spawn.json` the following actions are supported:
 * `armorhelmet`: is either a single string or a list of strings representing random armor that the spawned mob will wear
 * `armorlegs`: is either a single string or a list of strings representing random armor that the spawned mob will wear
 * `armorchest`: is either a single string or a list of strings representing random armor that the spawned mob will wear
-* `setphase`: this is a string representing a phase that will be set
-* `clearphase`: this is a string representing a phase that will be cleared
-* `togglephase`: this is a string representing a phase that will be toggled
 
 In addition, `gamestage`, `playerhelditem`, and related tags (which are tied to a player) are also supported.
 In that case the nearest player will be used as the basis for deciding the rule.
@@ -604,9 +632,6 @@ There are four outputs that work for these rules:
 * `setxp`: set a fixed XP instead of the default one
 * `multxp`: multiply the normal XP with this number
 * `addxp`: after multiplying the normal XP add this amount to the final XP
-* `setphase`: this is a string representing a phase that will be set
-* `clearphase`: this is a string representing a phase that will be cleared
-* `togglephase`: this is a string representing a phase that will be toggled
 
 #### Effects
 
@@ -630,9 +655,6 @@ Then there are a number of actions:
 * `command`: this is a string representing a command that will be executed. The @p will be replaced with the player name. For example `give @p minecraft:diamond_sword`
 * `addstage`: this is a string representing a game stage that will be added to the player
 * `removestage`: this is a string representing a game stage that will be removed from the player
-* `setphase`: this is a string representing a phase that will be set
-* `clearphase`: this is a string representing a phase that will be cleared
-* `togglephase`: this is a string representing a phase that will be toggled
 
 #### Break and Place
 
@@ -662,6 +684,72 @@ In addition, it is much cleaner. Phases only work with a limited set of conditio
 Since 1.20.1 it is now also possible to set phases from `spawn.json` or some other rule files. Note that these phases should be separate
 from the phases defined in `phases.json` because otherwise setting them will have no effect.
 
+## Number System
+
+The number system is similar to the phase system in that it is also state that is remembered by In Control and
+that can be used in various places (rules, spawner, event system) to conditionally allow or disallow the
+execution of a rule. Numbers are basically integers with a name and a value. The value can be changed by
+various systems (like the 'changenumber' action in a rule or the 'number' action in an event).
+
+When a number is used as a condition (either in a rule or in a condition for an event) then it is a JSON
+object with the following keys:
+
+* `name`: the name of the number
+* `expression`: an expression in which the number will be used. See the numeric expression section higher up in this wiki for more information
+
+For example. Here is a condition that tests if a number is larger then 10:
+
+```json
+{
+  "name": "counter",
+  "expression": "gt(10)"
+}
+```
+
+When a number is set to a value (either in a rule or in an action for an event) then it is a string
+which basically represents a series of operators and operands. Examples are the best way to explain this.
+
+In case of a rule (like `spawn.json`):
+
+Add 1 to a number called `counter`:
+
+```json
+{
+  ...
+  "changenumber": "counter=+1"
+}
+```
+
+Or from events. Here we set a specific number to a constant value:
+
+```json
+{
+  "name": "counter",
+  "value": "10"
+}
+```
+
+Increase the number with 1:
+
+```json
+{
+  "name": "counter",
+  "value": "+1"
+}
+```
+
+Multiply the number with 2 and subtract 1:
+
+```json
+{
+  "name": "counter",
+  "value": "*2-1"
+}
+```
+
+
+
+
 ## Areas
 
 Areas are defined in `areas.json` and can be used in various rules like `spawn.json`. There are two types of areas: `box` and `sphere`.
@@ -669,24 +757,38 @@ Check the example below to see how you can define an area. You can also use the 
 
 ## Events
 
-Events are a new powerful system that allows you to spawn mobs when something happens. Currently the `block_broken` and `mob_killed` events are supported.
+Events are a new powerful system that allows you to spawn mobs when something happens. Currently the `block_broken`, `mob_killed`, and `custom` events are supported.
 
 Events are defined in `events.json` and have the following structure:
 
 * `on`: this is a string representing the event that will trigger this event. Currently the following events are supported:
   * `block_broken`: this event is triggered when a block is broken
   * `mob_killed`: this event is triggered when a mob is killed
+  * `custom`: this is a custom event as fired from any rule where `customevent` is used
 * `parameters`: this is a JSON object with parameters that are specific to the event. See below for more information.
 * `conditions`: this is a JSON object with generic conditions. The following keys are supported:
   * `dimension`: this is a string or a list of strings representing the dimension(s) in which the event will trigger
   * `random`: this is a floating point number between `0` and `1` representing the chance that the event will trigger
   * `phase`: this is a string or a list of strings representing the phase(s) that must be active for the event to trigger
-* `spawn`: this is a JSON object with the following structure:
+  * `number`: this is a json object (or a list) with two keys:
+      * `name`: the name of the number to test
+      * `expression`: an expression in which the number will be used. See the numeric expression section higher up in this wiki for more information
+* `spawn`: this is an optional JSON object with the following structure:
   * `mob`: this is a string or a list of strings representing the mob(s) that will be spawned
   * `mincount`/`maxcount`: the minimum/maximum amount of mobs to spawn. Default is 1 for both
   * `mindistance`/`maxdistance`: the minimum/maximum distance from the event to spawn the mob
   * `attempts`: the number of attempts to spawn the mob. Default is 10
   * `norestrictions`: if this is true then the mob specific restrictions on spawning are ignored
+* `phase`: this is an optional JSON object with the following structure:
+  * `set`: this is a boolean indicating if the phase(s) will be set. If this is not specified then it is assumed to be true
+  * `names`: this is a string or a list of strings representing the phase(s) that will be set or cleared
+* `number`: this is an optional JSON object with the following structure:
+  * `name`: the name of the number to change
+  * `value`: this is a value in a special format. See below for more information
+
+The value as used in the number action is a string which basically represents a series of operators
+and operands. This is explained in the section about numbers above.
+
 
 Mobs spawned through this system will still go through `spawn.json` and can be distinguished with the `eventspawn` tag.
 
@@ -700,6 +802,10 @@ The `block_broken` event supports the following parameters:
 * `block`: this is a json object for the block that has to be broken
 
 See the examples below on how to use this.
+
+The `custom` event supports the following parameters:
+
+* `name`: this is a string representing the name of the custom event
 
 ## Custom Spawner System (spawner.json)
 
@@ -722,6 +828,7 @@ Every spawner rule has two parts:
 The following JSON keys are possible in the root of every rule:
 
 * `phase`: a string or list of strings representing all phases that must be active for this rule to work
+* `number`: a JSON object or a list of JSON objects containing a 'name' and 'expression' key. This is a numeric expression that will be evaluated and if it is true then the rule will work. See the numeric expression section higher up in this wiki for more information
 * `mob`: a single mob or list of mobs (like 'minecraft:zombie'). The entire rule will be evalulated for every mob specified in this list. This is a required setting
 * `weights`: an optional list of weights which will be used in combination with the mobs specified by 'mob'. By using weights you can give some spawns more importance
 * `mobsfrombiome`: this is a string that can be equal to 'monster', 'creature', 'ambient', 'water_creature', 'water_ambient', or 'misc'. Use this instead of specifying 'mob' manually. This will let the spawn take a random mob (given weight) that is valid for the current biome
@@ -866,6 +973,22 @@ Simple script to disable spawns of a particular type of mob if there are too man
   {
     "mob": "minecraft:zombie",
     "mincount": 10,
+    "result": "deny"
+  }
+]
+```
+
+Prevent all zombies based on the total number of hostile mobs. i.e. no zombies spawn if there are
+already more then 50 hostile mobs:
+
+```json title="spawn.json"
+[
+  {
+    "mob": "minecraft:zombie",
+    "mincount": {
+      "amount": 50,
+      "hostile": true
+    },
     "result": "deny"
   }
 ]
@@ -1544,6 +1667,110 @@ Then in `spawner.json` we start spawning wither skeletons as soon as the `wither
     "persecond": 5,
     "attempts": 20,
     "phase": "wither",
+    "amount": {
+      "minimum": 1,
+      "maximum": 1
+    },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "mindist": 20,
+      "maxdist": 90,
+      "minheight": -64,
+      "maxheight": 256,
+      "maxthis": 10
+    }
+  }
+]
+```
+
+### Changing what a spawner spawns
+
+In this example we change zombie spawners so that they spawn chickens instead:
+
+In `spawn.json` we add a rule for spawns from zombies and send out a custom event called `chicken_instead`.
+We use `deny_with_actions` as a result because we want to deny the spawn but still call the custom event action.
+
+```json
+  {
+    "mob": "minecraft:zombie",
+    "spawner": true,
+    "customevent": "chicken_instead",
+    "when": "onjoin",
+    "result": "deny_with_actions"
+  }
+```
+
+In `events.json` we add a rule for the custom event `chicken_instead` and we spawn a chicken instead of a zombie:
+
+```json
+  {
+    "on": "custom",
+    "parameters": {
+      "name": "chicken_instead"
+    },
+    "conditions": {
+      "dimension": "minecraft:overworld"
+    },
+    "spawn": {
+      "mob": "minecraft:chicken",
+      "mindistance": 0,
+      "maxdistance": 2,
+      "mincount": 1,
+      "maxcount": 1,
+      "attempts": 20,
+      "norestrictions": true
+    }
+  }
+```
+
+### Spawning wither skeletons as soon as too many diamond ore blocks are mined
+
+First we define an event to count whenever a diamond ore block is broken. Add this to
+`events.json`:
+
+```json
+[
+  {
+    "on": "block_broken",
+    "parameters": {
+      "block": {
+        "block": "minecraft:diamond_ore"
+      }
+    },
+    "conditions": {
+      "dimension": "minecraft:overworld"
+    },
+    "number": {
+      "name": "diamonds",
+      "value": "+1"
+    }
+  }
+]
+```
+
+Instead of this we could also have added a rule to `breakevents.json` to count the number of diamonds:
+
+```json
+[
+  {
+    "block": "minecraft:diamond_ore",
+    "changenumber": "diamonds=+1"
+  }
+]
+```
+
+Then in `spawner.json` we add spawning of wither skeletons as soon as the number is high enough:
+
+```json
+[
+  {
+    "mob": "minecraft:wither_skeleton",
+    "number": {
+      "name": "diamonds",
+      "expression": "gt(100)"
+    },
+    "persecond": 1,
+    "attempts": 20,
     "amount": {
       "minimum": 1,
       "maximum": 1
