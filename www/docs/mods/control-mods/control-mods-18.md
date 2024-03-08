@@ -917,7 +917,7 @@ They will be put on fire if they goe to the nether, and they will get the slowne
   },
   {
     "timeout": 20,
-    "dimension": "minecraft:nether",
+    "dimension": "minecraft:the_nether",
     "fire": 20
   },
   {
