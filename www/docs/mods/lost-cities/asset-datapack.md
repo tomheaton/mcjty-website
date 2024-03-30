@@ -53,7 +53,7 @@ Using the new 'lowcode' system from Forge it's possible to make mods without any
     * `<modid>/lostcities` - put new custom assets here
   * `META-INF`
     * `mods.toml`
-    * `pack.mcmeta`
+  * `pack.mcmeta`
 
 Your `<modid>` should be a lowercase name like for example `testassets`, `fancyassets`, `ruins_ng` or whatever you like.
 
