@@ -6,9 +6,9 @@ sidebar_position: 1
 
 ## Links
 
-* [Video](https://youtu.be/BpUbD0NXfp8)
-* [Back to 1.20.4 Tutorial Index](./1.20.4_neo.md)
-* [Tutorial GitHub](https://github.com/McJty/Tut4_1Basics/tree/1.20.4_neo)
+- [Video](https://youtu.be/BpUbD0NXfp8)
+- [Back to 1.20.4 Tutorial Index](./1.20.4_neo.md)
+- [Tutorial GitHub](https://github.com/McJty/Tut4_1Basics/tree/1.20.4_neo)
 
 ## Introduction
 
@@ -17,23 +17,23 @@ If some code in here is not clear or not complete you can always refer to the Gi
 
 ## Basic Project Setup
 
-To start your own mod the easiest way is to download the latest NeoForge MDK from [the NeoForge site](https://neoforged.net/) and extract it to some temporary folder.
+To start your own mod the easiest way is to download the latest NeoForge MDK from the [NeoForge](https://neoforged.net/) site and extract it to some temporary folder.
 Then make a new directory for your own mod and copy over the following files from the MDK:
 
-* The `gradle` folder
-* The `src` folder
-* `gradlew.bat` and `gradlew`
-* `settings.gradle`, `build.gradle`, and `gradle.properties`
-* `.gitignore`
+- The `gradle` folder
+- The `src` folder
+- `gradlew.bat` and `gradlew`
+- `settings.gradle`, `build.gradle`, and `gradle.properties`
+- `.gitignore`
 
 Then open `build.gradle` in your IDE (IntelliJ for example) as a project(!). Make sure to set the Java to JDK 17!
 
-You probably want to change your modid.
+You probably want to change your `modid`.
 This should be a lowercase identifier containing only characters, digits and possibly an underscore.
-These are the places where you have to change the modid:
+These are the places where you have to change the `modid`:
 
-* `gradle.properties`
-* The main mod file. In the MDK that's called 'ExampleMod' but you can rename it to a better name. Also, probably rename the package
+- `gradle.properties`
+- The main mod file. In the MDK that's called 'ExampleMod' but you can rename it to a better name. Also, probably rename the package
 
 ## gradle.properties
 
@@ -49,8 +49,9 @@ as used in this tutorial.
 Minecraft is distributed in an obfuscated manner. That means that all names of methods, fields, and variables are
 renamed to meaningless names. ForgeGradle can deobfuscate this for you. However, it needs to know which mappings to use.
 For modern Minecraft there are basically two popular ways to do this:
- * _official_: mappings from Mojang
- * _parchment_: mappings from Mojang with additional parameters and documentation
+
+- _official_: mappings from Mojang
+- _parchment_: mappings from Mojang with additional parameters and documentation
 
 Parchment is now supported directly by NeoForge
 
@@ -174,15 +175,15 @@ public class Tutorial1Basics {
 
 In the following image there are three columns:
 
-* `Definitions`: these are objects of which there is only one instance in the game. There is (for example) only one diamond sword. If you have two diamond swords in your inventory they are two different '''ItemStack''' instances referring to the same diamond sword item instance. This is important!
-* `Inventory`: all objects in an inventory (player or other containers) are represented with ItemStacks. An ItemStack is an actual in-game instance of an item. Note: in order to be able to hold blocks in your inventory the block needs a corresponding item
-* `World`: when blocks are placed in the world they are placed as a `BlockState`. A BlockState is a specific configuration of a block. For example, a furnace can have six orientations. Those are six different blockstates. In addition, a furnace can also be powered or not. So that means in total 12 different blockstates. '''Block Entities''' are objects that help extend blocks in the world to be able to hold more information (like inventory) as well as do things (tick).
+- `Definitions`: these are objects of which there is only one instance in the game. There is (for example) only one diamond sword. If you have two diamond swords in your inventory they are two different '''ItemStack''' instances referring to the same diamond sword item instance. This is important!
+- `Inventory`: all objects in an inventory (player or other containers) are represented with ItemStacks. An ItemStack is an actual in-game instance of an item. Note: in order to be able to hold blocks in your inventory the block needs a corresponding item
+- `World`: when blocks are placed in the world they are placed as a `BlockState`. A BlockState is a specific configuration of a block. For example, a furnace can have six orientations. Those are six different blockstates. In addition, a furnace can also be powered or not. So that means in total 12 different blockstates. '''Block Entities''' are objects that help extend blocks in the world to be able to hold more information (like inventory) as well as do things (tick).
 
 ![image](https://i.imgur.com/S1EQwrm.png)
 
 ## Sides
 
-**NeoForge documentation**: https://docs.neoforged.net/docs/concepts/sides
+**NeoForge documentation**: [https://docs.neoforged.net/docs/concepts/sides](https://docs.neoforged.net/docs/concepts/sides)
 
 Minecraft runs on two sides: the client and the server. The client is the side that the
 player sees and interacts with. The server is the side that runs the game logic. Note that
@@ -192,25 +193,25 @@ a very important thing to understand well.
 
 ## Events
 
-**NeoForge documentation**: https://docs.neoforged.net/docs/concepts/events
+**NeoForge documentation**: [https://docs.neoforged.net/docs/concepts/events](https://docs.neoforged.net/docs/concepts/events)
 
 Events are a very important concept in NeoForge. They are used to hook into the Minecraft game
 at various points. There are two main categories of events:
 
- * `Mod` events: these are events that are fired on the `Mod` event bus. This bus is used for listening to lifecycle events in which mods should initialize
- * `NeoForge` events: these are events that are fired on the `NeoForge` event bus. This bus is used for listening to events that happen in the game
+- `Mod` events: these are events that are fired on the `Mod` event bus. This bus is used for listening to lifecycle events in which mods should initialize
+- `NeoForge` events: these are events that are fired on the `NeoForge` event bus. This bus is used for listening to events that happen in the game
 
 Some examples of events are:
 
- * `FMLCommonSetupEvent`: this event is fired when the game is starting up. This is the place where you want to do most of your setup
- * `FMLClientSetupEvent`: this event is fired when the client is starting up. This is the place where you want to do client-side setup
- * `BuildCreativeModeTabContentsEvent`: this event is fired when the creative mode tabs are being built. This is the place where you want to add your items to the creative tabs
+- `FMLCommonSetupEvent`: this event is fired when the game is starting up. This is the place where you want to do most of your setup
+- `FMLClientSetupEvent`: this event is fired when the client is starting up. This is the place where you want to do client-side setup
+- `BuildCreativeModeTabContentsEvent`: this event is fired when the creative mode tabs are being built. This is the place where you want to add your items to the creative tabs
 
 The events above are all fired on the `Mod` event bus. There are also events on the `NeoForge` event bus:
 
- * `ServerStartingEvent`: this event is fired when the server is starting. This is the place where you want to do server-side setup
- * `EntityJoinLevelEvent`: this event is fired when an entity is joining a world
- * `BlockEvent.BreakEvent`: this event is fired when a block is being broken
+- `ServerStartingEvent`: this event is fired when the server is starting. This is the place where you want to do server-side setup
+- `EntityJoinLevelEvent`: this event is fired when an entity is joining a world
+- `BlockEvent.BreakEvent`: this event is fired when a block is being broken
 
 But there are many more events. You can find them in your IDE by looking at the `net.minecraftforge.event` package.
 
@@ -223,10 +224,9 @@ with their events. Often the problem is that their method is static or not stati
 
 ![Events](../assets/tutorials/eventhandler.png)
 
-
 ## Registration and Timing
 
-**NeoForge documentation**: https://docs.neoforged.net/docs/concepts/registries
+**NeoForge documentation**: [https://docs.neoforged.net/docs/concepts/registries](https://docs.neoforged.net/docs/concepts/registries)
 
 NeoForge follows very specific timing rules for when you have to do certain things during mod
 setup. You can't just register stuff at any time that you want. For every kind of thing that
@@ -254,7 +254,7 @@ Later we will show you how you can make your own custom blocks and items using s
 
 ## Data Generation
 
-**NeoForge documentation**: https://docs.neoforged.net/docs/datagen/
+**NeoForge documentation**: [https://docs.neoforged.net/docs/datagen/](https://docs.neoforged.net/docs/datagen/)
 
 If we run our mod now you will see that the blocks and items are not correctly textured and that the blocks don't have a good name.
 To fix that we need to make models and a bunch of other JSON files.
