@@ -4,18 +4,18 @@ const nextConfig = {
   async redirects() {
     return [
       /*{
-        source: '/:path*',
-        destination: 'https://www.mcjty.eu/',
+        source: "/:path*",
+        destination: "https://www.mcjty.eu/",
         permanent: true,
       },*/
       /*{
-        source: '/modding/:path*',
-        destination: 'https://www.mcjty.eu/docs/intro/',
+        source: "/modding/:path*",
+        destination: "https://www.mcjty.eu/docs/intro/",
         permanent: true,
       },*/
       /*{
-        source: '/mods/:path*',
-        destination: 'https://www.mcjty.eu/docs/mods/',
+        source: "/mods/:path*",
+        destination: "https://www.mcjty.eu/docs/mods/",
         permanent: true,
       },*/
     ];
