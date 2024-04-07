@@ -1,5 +1,5 @@
-import type { Config } from "@docusaurus/types";
 import type { Options, ThemeConfig } from "@docusaurus/preset-classic";
+import type { Config } from "@docusaurus/types";
 import { themes } from "prism-react-renderer";
 
 const metadata = {
@@ -39,6 +39,7 @@ const config = {
         },
       };
     },
+    "vercel-analytics",
   ],
   headTags: [
     {
@@ -107,7 +108,7 @@ const config = {
         blog: false /*{
           showReadingTime: true,
           editUrl:
-            'https://github.com/tomheaton/mcjty-website/tree/main/',
+            "https://github.com/tomheaton/mcjty-website/tree/main/"",
         },*/,
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -272,10 +273,10 @@ const config = {
         {
           title: "More",
           items: [
-            /*{
-                label: 'Blog',
-                to: '/blog',
-              },*/
+            // {
+            //   label: "Blog",
+            //   to: "/blog",
+            // },
             {
               label: "Source Code",
               href: "https://github.com/tomheaton/mcjty-website",
