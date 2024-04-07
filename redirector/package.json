@@ -11,17 +11,17 @@
     "clean": "rm -rf node_modules .next"
   },
   "dependencies": {
-    "next": "14.0.4",
+    "next": "14.1.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/node": "20.10.6",
-    "@types/react": "18.2.46",
-    "@types/react-dom": "18.2.18",
-    "eslint": "8.56.0",
-    "eslint-config-next": "14.0.4",
-    "typescript": "5.3.3"
+    "@types/node": "20.12.5",
+    "@types/react": "18.2.74",
+    "@types/react-dom": "18.2.24",
+    "eslint": "9.0.0",
+    "eslint-config-next": "14.1.4",
+    "typescript": "5.4.4"
   },
   "prettier": "../.prettierrc.js"
 }

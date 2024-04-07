@@ -1,11 +1,10 @@
-import type { NextPage } from "next";
-import Head from "next/head";
 import styles from "@/styles/Index.module.css";
-import { useRouter } from "next/router";
+import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-const Mods: NextPage = () => {
+export default function Mods() {
   // TODO: use middleware instead
   const router = useRouter();
 
@@ -91,6 +90,4 @@ const Mods: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default Mods;
+}
