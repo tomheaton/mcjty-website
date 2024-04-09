@@ -218,6 +218,216 @@ A similar example exists for controlling mob spawners:
 * issphere (boolean): true if the spawner/chest is in a city sphere
 * inbiome (string): true if the spawner/chest is in a biome
 
+### Parts
+A part is mostly used as floors of a building. It is made up of an array of slices, which are themselves an array of strings containing characters. Each slice represents a y-level in a part. 
+Each part file _must_ contain the following information:
+
+* **xsize** (integer): must be between 1 to 16. Specifies the width of a slice along the x-axis.
+* **zsize** (integer): must be between 1 to 16. Specifies how many rows in a slice.
+* **slices** (array of arrays): this is where the "schematic" of the building is defined. Each character represents a minecraft block, which is determined by palette files.
+
+An example of a part is shown below (example taken from default lost cities "building1_1.json"):
+
+```json
+{
+  "xsize": 16,
+  "zsize": 16,
+  "slices": [
+    [
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "#######l########",
+      "##########1#####",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################"
+    ],
+    [
+      "#aa@aaaaaaaa@aa#",
+      "a  #        #  a",
+      "a  #F       #  a",
+      "@  #F      L#  @",
+      "a  #D      L#  a",
+      "a  #        #  a",
+      "a              a",
+      "a  #        #  a",
+      "a  #        #  a",
+      "a  #   l    #  a",
+      "a  ##########  a",
+      "a              a",
+      "@              @",
+      "a              a",
+      "a     F        a",
+      "#aa@aaaaaaaa@aa#"
+    ],
+    [
+      "#aa@aaaaaaaa@aa#",
+      "a  #        #  a",
+      "a  #        #  a",
+      "@  #       L#  @",
+      "a  #*      L#  a",
+      "a  #        #  a",
+      "a              a",
+      "a  #        #  a",
+      "a  #        #  a",
+      "a  #   l    #  a",
+      "a  ##########  a",
+      "a       T      a",
+      "@              @",
+      "a              a",
+      "a              a",
+      "#aa@aaaaaaaa@aa#"
+    ],
+    [
+      "#aa@aaaaaaaa@aa#",
+      "a  #        #  a",
+      "a  #        #  a",
+      "@  #        #  @",
+      "a  #        #  a",
+      "a  #        #  a",
+      "a  #        #  a",
+      "a  #        #  a",
+      "a  #        #  a",
+      "a  #   l    #  a",
+      "a  ##########  a",
+      "a              a",
+      "@              @",
+      "a              a",
+      "a              a",
+      "#aa@aaaaaaaa@aa#"
+    ],
+    [
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "#######l########",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################"
+    ],
+    [
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "#######l########",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################",
+      "################"
+    ]
+  ]
+}
+```
+
+A part can also accept more information which help fine tune its own generation:
+
+* **refpalette** (string): the name of the palette that this part will first use when converting the characters to blocks. This is very useful in making sure you don't run out of characters to use in palettes!
+* **meta** (array): an array of tags which are used for special cases. These are:
+
+   * **dontconnect** (boolean): parts with this tag will not generate connecting doorways to adjacent parts.
+   * **support** (character): mainly used in bridges to define the block used for the support pillars underneath bridge parts.
+   * **z1** and/or **z2** (integer): used in stair parts. This will remove the specified length of blocks along the border of the adjacent chunk. For example if z1 = 5 and z2 = 10, in the adjacent chunk, the blocks from the relative chunk co-ordinates (either along the x or the z axis) from 5 to 10 will be removed.
+   * **nowater** (boolean): prevents water generation when the part is underwater. This makes air in the part be replaced with actual air instead of water. Useful for underwater parts where the building should not be flooded inside.
+ 
+Meta tags should be added before the rest of the part data (i.e. before xsize and slices). Each tag contains the key (name of the tag) and the value (boolean, int etc.). The format for meta tags is shown below:
+```json
+{
+ "meta": [
+        {
+            "integer": 5,
+            "key": "z1"
+        },
+        {
+            "integer": 10,
+            "key": "z2"
+        },
+        {
+            "key": "dontconnect",
+            "boolean": true
+        },
+        {
+            "key": "support",
+            "char": "v"
+        }
+    ]
+}
+```
+
+### Buildings
+A building is a collection of parts. Each part is stacked on top of one another in random or specified order.
+A building definition _must_ contain the following data:
+
+* **filler** (character): the character (minecraft block) used as this building's filler.
+* **rubble** (character): the character (minecraft block) used as this building's rubble.
+* **parts** (array): the parts that this building uses. Each element in this array contains the name of the part and its generation conditions (top, cellar, range etc.). Most of which are listed previously.
+
+The format of a building file is show below (example taken from default lost cities "building1.json" and shortened): 
+```json
+{
+  "filler": "#",
+  "rubble": "}",
+  "parts": [
+    {
+      "top": false,
+      "part": "building1_1"
+    },
+    {
+      "top": false,
+      "part": "building1_2"
+    },
+    {
+      "top": false,
+      "part": "building1_3"
+    },
+    {
+      "top": true,
+      "part": "top1x1_1"
+    },
+    {
+      "top": true,
+      "part": "top1x1_2"
+    }
+  ]
+}
+```
+**NOTE** When using conditions, it is important that at least one part can be generated in a building. Otherwise it will cause errors in world generation. 
+
+A building can also accept more information to fine tune its generation:
+
+* **minfloors** (integer): the minimum amount of floors (above ground) that a building can have.
+* **maxfloors** (integer): the maximum amount of floors (above ground) that a building can have.
+* **mincellars** (integer): the minimum amount of cellars (below ground) that a building can have.
+* **maxcellars** (integer): the maximum amount of cellars (below ground) that a building can have.
+* **allowDoors** (boolean): _Under construction_
+* **allowFillers** (boolean): _Under construction_
+* **preferLonely** (float): Value between 0.0 and 1.0. The chance that this building generates "alone". This means that no other building surrounds this building.
+
 ### Citystyle
 
 The city style represents various attributes of a city.
