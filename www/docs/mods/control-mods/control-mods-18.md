@@ -58,6 +58,10 @@ The 1.16.5 version of InControl and FxControl have some important differences wh
 
 Here is a list of all (recent and important) changes to InControl and Fx Control:
 
+* **7 May 2024:**
+  * New 'armorset', 'armormultiply', 'armoradd', 'followrangeset', 'followrangemultiply', and 'followrangeadd' actions to change the armor and follow range of mobs
+  * New 'attackspeedset', 'attackspeedmultiply', 'attackspeedadd', 'armortoughnessset', 'armortoughnessmultiply', and 'armortoughnessadd' actions to change the attack speed and armor toughness of mobs
+  * All actions that modify attributes will now work properly if spread out in multiple rules
 * **1 Jul 2023:**
   * Added 'minlight_full' and 'maxlight_full' keywords. These are similar to 'minlight' and 'maxlight' but they will test the full light level (including the sky light level). 'minlight' and 'maxlight' only test block light level
 * **10 May 2023:**
@@ -544,10 +548,25 @@ For `spawn.json` the following actions are supported:
 * `customname`: allows you to set a custom name for the spawned mob
 * `healthmultiply`: this is a floating point number representing a multiplier for the maximum health of the mob that is spawned. Using 2 here for example would make the spawned mob twice as strong.
 * `healthadd`: this is a floating point number that is added to the maximum health
+* `healthset`: this is a floating point number that is used as the maximum health
 * `speedmultiply`: this is a floating point number representing a multiplier for the speed of the mob
 * `speedadd`: this is a floating point number that is added to the speed
+* `speedset`: this is a floating point number that is used as the speed
 * `damagemultiply`: this is a floating point number representing a multiplier for the damage that the mob does
 * `damageadd`: this is a floating point number that is added to the damage
+* `damageset`: this is a floating point number that is used as the damage
+* `armormultiply`: this is a floating point number representing a multiplier for the armor of the mob
+* `armoradd`: this is a floating point number that is added to the armor
+* `armorset`: this is a floating point number that is used as the armor
+* `armortoughnessmultiply`: this is a floating point number representing a multiplier for the armor toughness of the mob
+* `armortoughnessadd`: this is a floating point number that is added to the armor toughness
+* `armortoughnessset`: this is a floating point number that is used as the armor toughness
+* `attackspeedmultiply`: this is a floating point number representing a multiplier for the speed of the mob
+* `attackspeedadd`: this is a floating point number that is added to the speed
+* `attackspeedset`: this is a floating point number that is used as the speed
+* `followrangemultiply`: this is a floating point number representing a multiplier for the follow range of the mob
+* `followrangeadd`: this is a floating point number that is added to the follow range
+* `followrangeset`: this is a floating point number that is used as the follow range
 * `angry`: this is a boolean that indicates if the mob will be angry at and/or target the nearest player. For zombie pigman this will make them angry at the player immediatelly. Same for enderman and wolves
 * `potion`: this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example "minecraft:invisibility,10,1"
 * `helditem`: this is either a single string or a list of strings. Every string represents a possible item that the spawned mob will carry in its hand. This works only with mobs that allow this like skeletons and zombies. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"

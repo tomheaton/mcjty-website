@@ -58,6 +58,14 @@ The following changes were made:
 
 Here is a list of all (recent and important) changes to InControl and Fx Control:
 
+* **7 May 2024:**
+  * New 'hasstructure' boolean test to test if the current position has any structure
+  * New 'cave' test that tries to see if the position is in a cave
+  * The 'mod' test in item filters was not working at all
+  * Item filters have improved. It's now possible to not have to specify the item but instead match on tag or mod only
+  * New 'armorset', 'armormultiply', 'armoradd', 'followrangeset', 'followrangemultiply', and 'followrangeadd' actions to change the armor and follow range of mobs
+  * New 'attackspeedset', 'attackspeedmultiply', 'attackspeedadd', 'armortoughnessset', 'armortoughnessmultiply', and 'armortoughnessadd' actions to change the attack speed and armor toughness of mobs
+  * All actions that modify attributes will now work properly if spread out in multiple rules
 * **9 March 2024:**
   - The 'structure' test now supports lists
   - New 'structuretags' test to support a (list of) structure tags
@@ -550,9 +558,11 @@ Please scroll horizontally to see all fields.
 | biometags                                                             | `S/[S]`      |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | ONLY for 1.19! This is a biome tag (or list of tags) which will be used to match with the biome. Example tags are: `minecraft:is_ocean`, `minecraft:is_hill`, `minecraft:has_structure/igloo`, `minecraft:allows_surface_slime_spawns`, `forge:is_hot`, `forge:is_cold`, `forge:is_wet`, ... and a LOT more                                                                                           |
 | hostile / passive                                                     | `B`          |         | V     | V      | V    | V   |         |           |            |       |        | matching only hostile or passive mobs                                                                                                                                                                                                                                                                                                                                                                 |
 | seesky                                                                | `B`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | true if the block can see the sky (not in a cave)                                                                                                                                                                                                                                                                                                                                                     |
+| cave                                                                  | `B`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | true if we are in a cave. This is a more expensive test that tries to test if we are in a cave by checking if the block in all six directions is one that can occur in a cave                                                                                                                                                                                                                         |
 | slime                                                                 | `B`          |         | V     | V      |      |     |         |           |            |       |        | true if this is a slime chunk (only for 1.18 or higher)                                                                                                                                                                                                                                                                                                                                               |
 | structure                                                             | `S/[S]`      |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | the name of the structure to test for. This way you can make sure a rule only fires in a village for example. Some examples are `minecraft:mineshaft`, `minecraft:village`, and so on. Modded structures should also work                                                                                                                                                                             |
 | structuretags                                                         | `S/[S]`      |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | the name of the structure tag to test for. This way you can make sure a rule only fires in a village for example. Some examples are `minecraft:mineshaft`, `minecraft:village`, and so on. Modded structures should also work                                                                                                                                                                         |
+| hasstructure                                                          | `B`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | test if we are in any structure                                                                                                                                                                                                                                                                                                                                                                       |
 | mob                                                                   | `S/[S]`      |         | V     | V      | V    | V   |         |           |            |       |        | an ID for a mob like `minecraft:creeper` and so on. Modded mobs should also work                                                                                                                                                                                                                                                                                                                      |
 | mod                                                                   | `S/[S]`      |         | V     | V      | V    | V   |         | V         | V          |       |        | a mod id. By using this you can block spawns of mobs that belong to some mod. Use `minecraft` for vanilla mobs                                                                                                                                                                                                                                                                                        |
 | block                                                                 | `S/[S]/JSON` |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | a block filter as explained above                                                                                                                                                                                                                                                                                                                                                                     |
@@ -600,10 +610,25 @@ For `spawn.json` the following actions are supported:
 * `customname`: allows you to set a custom name for the spawned mob
 * `healthmultiply`: this is a floating point number representing a multiplier for the maximum health of the mob that is spawned. Using 2 here for example would make the spawned mob twice as strong.
 * `healthadd`: this is a floating point number that is added to the maximum health
+* `healthset`: this is a floating point number that is used as the maximum health
 * `speedmultiply`: this is a floating point number representing a multiplier for the speed of the mob
 * `speedadd`: this is a floating point number that is added to the speed
+* `speedset`: this is a floating point number that is used as the speed
 * `damagemultiply`: this is a floating point number representing a multiplier for the damage that the mob does
 * `damageadd`: this is a floating point number that is added to the damage
+* `damageset`: this is a floating point number that is used as the damage
+* `armormultiply`: this is a floating point number representing a multiplier for the armor of the mob
+* `armoradd`: this is a floating point number that is added to the armor
+* `armorset`: this is a floating point number that is used as the armor
+* `armortoughnessmultiply`: this is a floating point number representing a multiplier for the armor toughness of the mob
+* `armortoughnessadd`: this is a floating point number that is added to the armor toughness
+* `armortoughnessset`: this is a floating point number that is used as the armor toughness
+* `attackspeedmultiply`: this is a floating point number representing a multiplier for the speed of the mob
+* `attackspeedadd`: this is a floating point number that is added to the speed
+* `attackspeedset`: this is a floating point number that is used as the speed
+* `followrangemultiply`: this is a floating point number representing a multiplier for the follow range of the mob
+* `followrangeadd`: this is a floating point number that is added to the follow range
+* `followrangeset`: this is a floating point number that is used as the follow range
 * `angry`: this is a boolean that indicates if the mob will be angry at and/or target the nearest player. For zombie pigman this will make them angry at the player immediatelly. Same for enderman and wolves
 * `potion`: this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example "minecraft:invisibility,10,1"
 * `helditem`: this is either a single string or a list of strings. Every string represents a possible item that the spawned mob will carry in its hand. This works only with mobs that allow this like skeletons and zombies. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
