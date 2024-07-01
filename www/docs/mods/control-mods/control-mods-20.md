@@ -1,10 +1,16 @@
-# Control Mods New (1.20+)
+# Control Mods New (1.20 and 1.21)
 
 ## Introduction
 
 :::info Note
 FxControl no longer exists on 1.20. It's functionality has been merged into InControl
 :::
+
+:::danger Warning
+The 1.21 version is still in testing! There are some limitations and bugs as well as upcoming changes. See below
+for more details.
+:::
+
 
 **YouTube Tutorial for 1.16 and higher:** [YouTube Link](https://youtu.be/JTwi89j4c_w?si=Pc85q2Vz4HED8CYR)
 
@@ -41,6 +47,15 @@ Because both mods have a very similar structure the documentation for them is me
 
 * Q: I set the Minecraft time to a certain day but In Control rules don't seem to notice?
     * A: In Control uses an internal day counter which is not the same as the Minecraft day. You can use the `/incontrol days` command to see the current day and also to set it 
+
+## Remarks on the 1.21 version
+
+There are currently some limitations and bugs in the 1.21 version. Here are some of the things that are not working or are limited:
+
+* `biometype` no longer exists. This is not going to change. Use `biometags` instead
+* All NBT checks and commands are going to be reworked in the future. Don't depend on it too much right now. 1.21 has a new system for this which In Control needs to support
+* Gamestage support is not enabled yet
+* Looting has changed considerably in 1.21. In Control tries to adapt as much as possible
 
 ## Differences between the 1.20 version and older
 
