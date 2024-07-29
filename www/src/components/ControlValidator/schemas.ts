@@ -376,10 +376,11 @@ function spawnRefinement(o: any) {
 export const spawnSchema1_20 = z.array(
   spawnRefinement(
     generalSpawnKeywords
-      .replace({
-        structure: z.optional(mcid.or(z.array(mcid))),
+      .omit({
+        structure: true,
       })
       .extend({
+        structure: z.optional(mcid.or(z.array(mcid))),
         when: z.optional(z.enum(["position", "onjoin", "finalize", "despawn"])),
         hasstructure: z.optional(z.boolean()),
         structuretags: z.optional(mcid.or(z.array(mcid))),
@@ -392,10 +393,11 @@ export const spawnSchema1_20 = z.array(
 export const spawnSchema1_19 = z.array(
   spawnRefinement(
     generalSpawnKeywords
-      .replace({
-        structure: z.optional(mcid.or(z.array(mcid))),
+      .omit({
+        structure: true,
       })
       .extend({
+        structure: z.optional(mcid.or(z.array(mcid))),
         onjoin: z.optional(z.boolean()),
         hasstructure: z.optional(z.boolean()),
         structuretags: z.optional(mcid.or(z.array(mcid))),
