@@ -2,7 +2,7 @@ import {
   spawnSchema1_20,
   spawnSchema1_19,
   spawnerSchema,
-  phasesSchema,
+  phasesSchema, spawnSchema1_18,
 } from "./schemas";
 import z from "zod";
 
@@ -27,7 +27,7 @@ export const DATA: DataType = {
     phases: phasesSchema,
   },
   "1.18.2": {
-    spawn: spawnSchema1_19,
+    spawn: spawnSchema1_18,
     spawner: spawnerSchema,
     phases: phasesSchema,
   },

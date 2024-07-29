@@ -265,13 +265,19 @@ export const generalSpawnKeywords = z.object({
   block: z.optional(blockSchema.or(z.array(blockSchema))),
   blockoffset: z.optional(z.object({})), // @TODO: add schema
 
-  armorhelmet: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
-  armorchest: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
-  armorlegs: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
-  armorboots: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  helmet: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  chestplate: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  leggings: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  boots: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  lackhelmet: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  lackchestplate: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  lackleggings: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  lackboots: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
   playerhelditem: z.optional(itemOrIdTest.or(z.array(itemOrIdTest))),
   helditem: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
+  lackhelditem: z.optional(itemOrIdWeighted.or(z.array(itemOrIdWeighted))),
   offhanditem: z.optional(itemOrIdTest.or(z.array(itemOrIdTest))),
+  lackoffhanditem: z.optional(itemOrIdTest.or(z.array(itemOrIdTest))),
   bothhandsitem: z.optional(itemOrIdTest.or(z.array(itemOrIdTest))),
 
   structure: z.optional(mcid),
@@ -307,9 +313,21 @@ export const generalSpawnKeywords = z.object({
   healthset: z.optional(z.number()),
   healthmultiply: z.optional(z.number()),
   healthadd: z.optional(z.number()),
+  armorset: z.optional(z.number()),
+  armormultiply: z.optional(z.number()),
+  armoradd: z.optional(z.number()),
+  followrangeset: z.optional(z.number()),
+  followrangemultiply: z.optional(z.number()),
+  followrangeadd: z.optional(z.number()),
   speedset: z.optional(z.number()),
   speedmultiply: z.optional(z.number()),
   speedadd: z.optional(z.number()),
+  armortoughnessset: z.optional(z.number()),
+  armortoughnessmultiply: z.optional(z.number()),
+  armortoughnessadd: z.optional(z.number()),
+  attackspeedset: z.optional(z.number()),
+  attackspeedmultiply: z.optional(z.number()),
+  attackspeedadd: z.optional(z.number()),
   damageset: z.optional(z.number()),
   damagemultiply: z.optional(z.number()),
   damageadd: z.optional(z.number()),
@@ -358,14 +376,35 @@ function spawnRefinement(o: any) {
 export const spawnSchema1_20 = z.array(
   spawnRefinement(
     generalSpawnKeywords
+      .replace({
+        structure: z.optional(mcid.or(z.array(mcid))),
+      })
       .extend({
         when: z.optional(z.enum(["position", "onjoin", "finalize", "despawn"])),
+        hasstructure: z.optional(z.boolean()),
+        structuretags: z.optional(mcid.or(z.array(mcid))),
+        cave: z.optional(z.boolean()),
       })
       .strict(),
   ),
 );
 
 export const spawnSchema1_19 = z.array(
+  spawnRefinement(
+    generalSpawnKeywords
+      .replace({
+        structure: z.optional(mcid.or(z.array(mcid))),
+      })
+      .extend({
+        onjoin: z.optional(z.boolean()),
+        hasstructure: z.optional(z.boolean()),
+        structuretags: z.optional(mcid.or(z.array(mcid))),
+      })
+      .strict(),
+  ),
+);
+
+export const spawnSchema1_18 = z.array(
   spawnRefinement(
     generalSpawnKeywords
       .extend({
