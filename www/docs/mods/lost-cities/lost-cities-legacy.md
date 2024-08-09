@@ -21,7 +21,7 @@ This page is mostly about the internal structure and configuration about the mod
 In this first section the basic operation of the mod is explained.
 
 The buildings, bridges, subway system, fountains and other structures you find in the world are actually not structures but real worldgen.
-That means that are generated at the very first stage when a chunk is built.
+That means that they are generated at the very first stage when a chunk is built.
 This makes generation very efficient and also allows it to fit much better when the surrounding world.
 
 It is important to note that this mod cannot depend on any specific order of chunk generation.

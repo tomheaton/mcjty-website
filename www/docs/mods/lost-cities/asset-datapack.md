@@ -9,7 +9,7 @@ That means you can replace or add assets like you would with any other datapack.
 The following assets are supported:
 
 * Condition: a condition is basically a randomized string value which can be selected based on various criteria. Currently used for controlling what type of mob a mob spawner has and the loot tables for chests.
-* Worldstyle: from the world style the city style is selected based on biomes. In addition, the worldstyle can also change the chance of cities depending on biomes.
+* Worldstyle: from the world style the city style is selected based on biomes. In addition, the worldstyle can also change the chance of cities depending on biomes and control the appearence of scattered features.
 * Citystyle: a city style represents how a city is generated. It controls the buildings, fountains, parks, stairs, as well as the width of the street, restrictions on building height and depth, and various blocks used by the world generator. The city style also controls the palette style.
 * Style: this is a palette style. It basically combines various palettes and also has the ability to randomize palettes so that different chunks (sharing the same style) may look different anyway.
 * Variants: a variant is a conveniant name for a block with some variations. These can be used by palettes.
@@ -18,8 +18,23 @@ The following assets are supported:
 * Building: a building is generated from a selection of parts. Which parts are chosen depends on a set of conditions. For example, some parts may only be suitable to place on top of the building (roof parts) so they are restricted to generate at the top only. You can also have parts that are used underground or for the first floor and so on.
 * Multibuilding: a multi building is a building that spans multiple chunks. In the current implementation multi buildings are restricted to 2x2 chunks. Every section of a multi building is seen as a building on its own but by using the multi building you can ensure that these building parts are always generated together.
 * Scattered: a scattered structure refers to a (multi) building that can be randomly placed outside cities.
+* Stuff: stuff refers to single block (or small 1x1 tower of blocks) that can be scattered through the city. This is useful for small random features. 
 * Predefined cities: predefined cities (and buildings) are useful for pack makers who want to have specific cities and buildings at specific locations in the world. If you combine this with disabling cities everywhere you can ensure that your world has only the cities that you want and no more.
 * Predefined spheres: predefined spheres allow you to place a city sphere on the landscape if the landscape type supports it
+
+### Basic Structure
+
+This page is mostly about the internal structure and configuration about the mod.
+In this first section the basic operation of the mod is explained.
+
+The buildings, bridges, subway system, fountains and other structures you find in the world are actually not structures but real worldgen.
+This makes generation very efficient and also allows it to fit much better when the surrounding world.
+
+It is important to note that this mod cannot depend on any specific order of chunk generation.
+When generating a chunk it cannot depend on neighbouring chunks already being generated, so it has to be able to calculate things on its own.
+Nevertheless, this mod maintains several world-wide data structures and is able to query information about nearby chunks without actually having to generate the chunk.
+
+Read about it here: [Basic Structure](./structure.md)
 
 ### Tutorial Video
 
@@ -222,13 +237,48 @@ A similar example exists for controlling mob spawners:
 
 The city style represents various attributes of a city.
 Citystyles are selected by the worldstyle which decides it based on biomes.
+
+:::info Note
+Starting with 1.19.2 the streetblocks are only used in a few situations because streets are now
+parts like most of the rest
+:::
+
+Supported city style keywords:
+* ``explosionchance``: an additional chance factor to possibly reduce explosions for some city styles
+* ``style``: this represents the standard style for buildings in this city. The style (as we will see later) controls the palette, in other worlds what blocks are used for buildings
+* ``inherit``: with this a city style can inherit all attributes from another city style
+* ``stuff_tags``: this is a list of tags (tags specific to the 'stuff' system) that can be used to control what 'stuff' should be applied in this city (more on 'stuff' later)
+* ``generalblocks``: in this json object you can control what block (from the palette) to use for 'ironbars', 'glowstone', 'leaves', or 'rubbledirt'
+* ``buildingsettings``: json object for various building related settings ('minfloors', 'mincellars', 'maxfloors', 'maxcellars', and 'buildingchance'). When present these will alter the settings from the profile
+* ``corridorblocks``: is a json object that can contain 'roof' and 'glass' to control what blocks to use for the roof and glass of corridors
+* ``parkblocks``: is a json object that can contain 'elevation' to control what block to use for the elevation of parks as well as 'grass' for the grass block to use in parks
+* ``railblocks``: is a json object that can contain 'railmain' to control what block to use for the main rail block
+* ``sphereblocks``: contains 'inner', 'border', and 'glass' to control the spheres. Currently unused
+* ``streetblocks``: is a json object that can contain 'border', 'wall', 'street', 'streetbase', and 'streetvariant' to control the blocks used for streets. Note that some of these are no longer used in 1.19.2 and later
+* ``streetblocks/parts``: the streetblocks object can now contain an optional 'parts' json object which contains the following fields:
+  * ``full``: the part (or list of parts) to use for a full street (default 'street_full')
+  * ``straight``: the part (or list of parts) to use for a straight street (default 'street_straight')
+  * ``end``: the part (or list of parts) to use for the end of a street (default 'street_end')
+  * ``bend``: the part (or list of parts) to use for a bend street (default 'street_bend')
+  * ``t``: the part (or list of parts) to use for a T shape street (default 'street_t')
+  * ``none``: the part (or list of parts) to use for a street with no connections (default 'street_none')
+  * ``all``: the part (or list of parts) to use for a street with connections in all directions (default `street_all`)
+* ``selectors``: a json object containing various lists of objects that will be used in the city. All these lists have associated factors which controls the rarity of the object relative to the others:
+  * ``buildings``: a list of buildings
+  * ``multibuildings``: a list of multibuildings
+  * ``bridges``: a list of bridges
+  * ``parks``: a list of parks
+  * ``fountains``: a list of fountains
+  * ``stairs``: a list of stairs
+  * ``fronts``: a list of fronts (parts placed in front of some buildings)
+  * ``raildungeons``: a list of dungeons in the rail system
+
 Here is an example city style:
 
 ```json
   {
-  "type": "citystyle",
-  "name": "citystyle_common",
   "inherit": "citystyle_config",
+  "style": "standard",
   "streetblocks": {
     "border": "y",
     "wall": "w",
@@ -246,38 +296,39 @@ Here is an example city style:
   "railblocks": {
     "railmain": "y"
   },
-  "buildings": [
-    {
-      "factor": 0.4,
-      "building": "building1"
-    },
-    {
-      "factor": 0.4,
-      "building": "building2"
-    },
-    {
-      "factor": 0.2,
-      "building": "building3"
-    },
-    {
-      "factor": 0.2,
-      "building": "building4"
-    },
-    {
-      "factor": 0.3,
-      "building": "building5"
-    }
-  ]
+  "selectors": {
+    "buildings": [
+      {
+        "factor": 0.4,
+        "building": "building1"
+      },
+      {
+        "factor": 0.4,
+        "building": "building2"
+      },
+      {
+        "factor": 0.2,
+        "building": "building3"
+      },
+      {
+        "factor": 0.2,
+        "building": "building4"
+      },
+      {
+        "factor": 0.3,
+        "building": "building5"
+      }
+    ]
+  }
 }
 ```
 
 Note the `citystyle_config`. City styles can inherit from other city styles.
-In this case there is a very simple `citystyle_config` where the road width is configured:
+In this case there is a very simple `citystyle_config` where the road width is configured (note:
+road width is no longer a thing in 1.19.2 and later as streets are defined as parts):
 
 ```json
 {
-  "type": "citystyle",
-  "name": "citystyle_config",
   "streetblocks": {
     "width": 8
   }
@@ -287,6 +338,38 @@ In this case there is a very simple `citystyle_config` where the road width is c
 When you want to change the road width you only have to modify this asset and all other city styles will automatically use it.
 
 ### Worldstyle
+
+The world style controls everything related to how cities generate in the entire world. It has the
+following supported keywords:
+* ``outsidestyle``: this is the city style used for the outside of cities
+* ``multisettings``: (new in 1.19.2 and later). This controls how multibuildings are generated. It has the following keywords:
+  * ``areasize``: the world is divided into multichunks of areasize*areasize. For each of these multichunks the system will calculate the multibuildings that can spawn here
+  * ``minimum``: it will try to spawn at least this many multibuildings in each multichunk
+  * ``maximum``: it will try to spawn at most this many multibuildings in each multichunk
+  * ``correctstylefactor``: this is a factor that is used to correct the chance of multibuildings based on the city style. This is used to ensure that the chance of multibuildings is the same for all city styles. A value of 1 makes sure that a multibuilding needs the correct style for each chunk
+  * ``attempts``: how many times the system will try to find room for a multibuilding in a multichunk
+* ``cityspheres``: current unused
+* ``scattered``: this controls scattered buildings in the world. These are buildings that are not part of cities but can spawn outside cities. It has the following keywords:
+  * ``areasize``: the world is divided into multichunks of areasize*areasize. For each of these multichunks the system will calculate the scattered buildings that can spawn here
+  * ``chance``: the chance that a scattered building will spawn in a multichunk (relative to the chances of each individual scattered building, see later)
+  * ``weightnone``: this weight is added to the weights of all scattered buildings so that there is a chance none spawn
+  * ``list``: a list of scattered buildings. Each entry in this list has the following keywords:
+    * ``name``: the name of the scattered building
+    * ``weight``: the weight of this scattered building. The higher the weight the more likely this building will spawn
+    * ``allowvoid``: this is a boolean that controls if this scattered building can spawn in the void
+    * ``biomes``: a biome matcher (more on this later)
+    * ``maxheightdiff``: the maximum height difference between all four corners of the chunk
+* ``parts``: with this object you can control the blocks used for three systems: 
+  * ``monorails``: the blocks used for monorails ('both', 'vertical', and 'station')
+  * ``highways``: the blocks used for highways (these can be a single part or a list of parts) ('tunnel', 'open', 'bridge', 'tunnel_bi', 'open_bi', and 'bridge_bi')
+  * ``railways``: the blocks used for railways (these can be a single part or a list of parts) ('stationunderground', 'stationopen', 'stationopenroof', 'stationundergroundstairs', 'stationstaircase', 'stationstaircasesurface', 'railshorizontal', 'railshorizontalend', 'railshorizontalwater', 'railsvertical', 'railsverticalwater', 'rails3split', 'railsbend', 'railsflat', 'railsdown1', and 'railsdown2')
+* ``citystyles``: a list of citystyles. Each entry in this list has the following keywords:
+  * ``factor``: the factor that is used to calculate the chance of this city style
+  * ``biomes``: a biome matcher (more on this later)
+  * ``citystyle``: the name of the city style
+* ``citybiomemultipliers``: a list of biome multipliers. Each entry in this list has the following keywords:
+  * ``multiplier``: the multiplier to apply to the city chance
+  * ``biomes``: a biome matcher (more on this later)
 
 Here is an example worldstyle where a different citystyle is selected based on some biomes.
 This is done with the 'citystyles' tag.
@@ -340,14 +423,12 @@ It's also possible tp specify scattered buildings (buildings outside the buildin
 }
 ```
 
-### Predefined Cities or Spheres
+### Predefined Cities
 
 Here is an example of a predefined city with a multibuilding in the center:
 
 ```json
   {
-    "type": "city",
-    "name": "Big City",
     "dimension": 0,
     "chunkx": 100,
     "chunkz": 100,
@@ -365,20 +446,3 @@ Here is an example of a predefined city with a multibuilding in the center:
 Having this as an asset will ensure that there is a city at chunk position 100,100 (multiply with 16 to get real coordinates) with radius 200.
 It also places a multi building (the 'center') at the 0,0 location (relative to the center of the city).
 You can also place individual buildings using the 'building' keyword instead of 'multibuilding'.
-
-In landscape types that support city spheres you can also define predefined city spheres (and optionally disable random sphere generation).
-Do this as follows:
-
-```json
-{
-  "type": "sphere",
-  "name": "Big Spheres",
-  "dimension": 0,
-  "chunkx": 100,
-  "chunkz": 100,
-  "centerx": 1608,
-  "centerz": 1608,
-  "radius": 200,
-  "biome": "jungle"
-}
-```
