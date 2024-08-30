@@ -68,6 +68,11 @@ The following changes were made:
 * 'special.json' has been removed. It's functionality has been merged into 'spawn.json' by using the new 'when' field with the 'finalize' value
 * The 'onjoin' keyword has been removed. It's functionality has been merged into 'spawn.json' by using the new 'when' field with the 'onjoin' value
 
+An important consequence of this change is how the 'norestrictions' tag works in 'spawner.json'. If you use that flag it will also bypass the
+'position' check (using 'when': 'position') in 'spawn.json'. This is in contrast with 1.19 or older where 'norestrictions' only made sure
+the mob specific restrictions were not tested. If you want the old behaviour (i.e. allowing a spawn and not calling the mob specific restrictions)
+then don't use 'norestrictions' in 'spawner.json' but use 'result': 'allow' in 'spawn.json' instead. Alternatively you can also use 'when': 'onjoin'
+which is still called even with 'norestrictions'.
 
 ## Changelogs
 
