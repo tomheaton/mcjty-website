@@ -899,7 +899,7 @@ Especially 'dimension' since that is mandatory!
 * `mindist` and `maxdist`: the minimum/maximum distance to the player for controlling the spawn. By default, this is equal to 24/120.
 * `minverticaldist` and `maxverticaldist`: the minimum/maximum vertical distance to the player for controlling the spawn.
 * `minheight` and `maxheight`: the minimum/maximum height of the spawn. By default, this is 1/256
-* `norestrictions`: remove the mob specific (usually light related) restrictions on spawning
+* `norestrictions`: remove the mob specific (usually light related) restrictions on spawning and also prevent 'position' spawn events from firing
 * `inliquid`: if true then allow spawning in any liquid (this will ignore the mob specific restrictions it might have on spawning in liquids)
 * `inwater`: if true then allow spawning in water (this will ignore the mob specific restrictions it might have on spawning in liquids)
 * `inlava`: if true then allow spawning in lava (this will ignore the mob specific restrictions it might have on spawning in liquids)
@@ -1669,27 +1669,34 @@ Using 'norestrictions' should also make them spawn during daylight:
 
 If needed you can then use rules in `spawn.json` to control when and how they spawn. For example,
 let's make them spawn more on the surface and less in caves (but they can still spawn there). Let's
-also say that we don't want to spawn any zombies in the first 5 days after starting the world:
+also say that we don't want to spawn any zombies in the first 5 days after starting the world. We have
+to use "when": "onjoin" in these rules because `norestrictions` in `spawner.json`:
 
 ```json
 [
   {
     "mob": "minecraft:zombie",
     "daycount": "lt(5)",
+    "when": "onjoin",
     "result": "deny"
   },
   {
     "mob": "minecraft:zombie",
     "seesky": true,
+    "when": "onjoin",
     "result": "default"
   },
   {
     "mob": "minecraft:zombie",
     "random": 0.8,
+    "when": "onjoin",
     "result": "deny"
   }
 ]
 ```
+
+Note. If you remove `norestrictions` then you can also use the default `position` check for `when` but in that
+case you should probably use the result `allow` instead of `default` to bypass mob specific restrictions.
 
 ### Making a dangerous world after spawning a wither
 
