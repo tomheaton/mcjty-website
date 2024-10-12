@@ -400,7 +400,7 @@ In this section all possible conditions are explained. Some conditions are not u
 * `mindifficulty`: floating point value representing the local difficulty of the place where the mob will spawn. This is a number between 0 and 4
 * `maxdifficulty`: maximum local difficulty
 * `canspawnhere` (only for `spawn.json`): a check that is specific to the entity implementation. This is called by Minecraft automatically if you return `default` as the result of this rule. For many mobs this check will do the standard light level check
-* `isnotcolliding` (only for `spawn.json`): a check that is specific to the entity implementation. This is called by Minecraft automatically if you return `default` as the result of this rule. For many mobs this check will do a test if the mob would collide with blocks after spawning
+* `notcolliding` (only for `spawn.json`): a check that is specific to the entity implementation. This is called by Minecraft automatically if you return `default` as the result of this rule. For many mobs this check will do a test if the mob would collide with blocks after spawning
 * `difficulty`: a string with one of the following values: easy, normal, hard, peaceful
 * `weather`: a string with one of the following values: rain or thunder
 * `tempcategory`: a string with one of the following values: cold, medium, warm, or ocean. This represents the temperature category of the current biome
