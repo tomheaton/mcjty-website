@@ -28,6 +28,7 @@ Because both mods have a very similar structure the documentation for them is me
 * Q: How can I add spawns using spawn.json?
     * A: You can't. `spawn.json` can only RESTRICT spawns. To add spawns you use the new `spawner.json`
     * A: `spawner.json` is used to ADD spawns. `spawn.json` is used to RESTRICT spawns
+    * A: Even removing restrictions from spawning is considered ADDING spawns and can't be done with `spawn.json` alone. Add rules to `spawner.json` and then use `spawn.json` to refine the conditions
 
 * Q: Why can't I seem to control mobs from mod 'X' using `spawn.json`?
     * A: Occasionally modded mobs don't follow the rules completely. It may help in such situations to use `'onjoin': true` in your rule
@@ -36,8 +37,12 @@ Because both mods have a very similar structure the documentation for them is me
     * A: 'Allow' is standard. With `spawn.json` you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to `spawner.json` (possibly refined with rules in `spawn.json`)
     * A: Having only 'allow' rules in `spawn.json` is (usually) pretty useless as those mobs will spawn anyway (exceptions are if you want to boost mobs). Typically, you want to have 'deny' rules
 
+* Q: I'm trying to deny mobs under certain conditions and allow them under other conditions but it doesn't appear to be working.
+    * A: Keep in mind that order of rules is important. Whenever a mob spawns all rules are evaluated from top to bottom. First rule that matches is executed. For that reason 'allow' rules typically have to be placed BEFORE 'deny' rules
+
 * Q: I'm trying /summon and spawn eggs but my rules don't seem to work?
     * A: In Control only affects natural spawns and spawns done by mob spawners. Eggs and /summon is not affected
+    * A: Note that if you use "onjoin": true then spawn eggs are affected
 
 * Q: How can I get zombies to spawn more often?
     * A: This question is asked so much that it really is considered a FAQ. As I already told you above you can't add spawns using spawn.json alone. You need to add a rule to `spawner.json` and possibly set conditions in `spawn.json`. See the examples at the bottom of this wiki. 

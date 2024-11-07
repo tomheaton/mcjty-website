@@ -31,6 +31,7 @@ Because both mods have a very similar structure the documentation for them is me
 * Q: How can I add spawns using spawn.json?
     * A: You can't. `spawn.json` can only RESTRICT spawns. To add spawns you use the new `spawner.json`
     * A: `spawner.json` is used to ADD spawns. `spawn.json` is used to RESTRICT spawns
+    * A: Even removing restrictions from spawning is considered ADDING spawns and can't be done with `spawn.json` alone. Add rules to `spawner.json` and then use `spawn.json` to refine the conditions
 
 * Q: Why can't I seem to control mobs from mod 'X' using `spawn.json`?
     * A: Occasionally modded mobs don't follow the rules completely. It may help in such situations to use `'when': 'onjoin'` in your rule
@@ -39,11 +40,22 @@ Because both mods have a very similar structure the documentation for them is me
     * A: 'Allow' is standard. With `spawn.json` you can only restrict spawns that were already happening. If you want to add more spawns you'll have to add rules to `spawner.json` (possibly refined with rules in `spawn.json`)
     * A: Having only 'allow' rules in `spawn.json` is (usually) pretty useless as those mobs will spawn anyway (exceptions are if you want to boost mobs). Typically, you want to have 'deny' rules
 
+* Q: I'm trying to deny mobs under certain conditions and allow them under other conditions but it doesn't appear to be working.
+    * A: Keep in mind that order of rules is important. Whenever a mob spawns all rules are evaluated from top to bottom. First rule that matches is executed. For that reason 'allow' rules typically have to be placed BEFORE 'deny' rules 
+
 * Q: I'm trying /summon and spawn eggs but my rules don't seem to work?
     * A: In Control only affects natural spawns and spawns done by mob spawners. Eggs and /summon is not affected
+    * A: Note that if you use "when": "onjoin" then spawn eggs are affected
+
+* Q: I added a `spawner.json` rule using 'norestrictions'. Now my `spawn.json` rules are not working
+    * A: Using 'norestrictions' prevents position type rules in `spawn.json`. You can either get rid of `norestrictions` or else use "when": "onjoin" in `spawn.json`
+    * A: Note that in `spawn.json` you can also bypass mob specific spawn rules and obstruction checks by using result "allow" instead of "default"
 
 * Q: How can I get zombies to spawn more often?
-    * A: This question is asked so much that it really is considered a FAQ. As I already told you above you can't add spawns using spawn.json alone. You need to add a rule to `spawner.json` and possibly set conditions in `spawn.json`. See the examples at the bottom of this wiki. 
+    * A: This question is asked so much that it really is considered a FAQ. As I already told you above you can't add spawns using spawn.json alone. You need to add a rule to `spawner.json` and possibly set conditions in `spawn.json`. See the examples at the bottom of this wiki.
+
+* Q: How can I get zombies to spawn during the day?
+    * A: This is asked a lot but technically this is the wrong question because zombies already spawn during the day. The only restriction is light based and not time based. See the example section for an example on how to spawn zombies unrestricted when it's light
 
 * Q: I set the Minecraft time to a certain day but In Control rules don't seem to notice?
     * A: In Control uses an internal day counter which is not the same as the Minecraft day. You can use the `/incontrol days` command to see the current day and also to set it 
@@ -1499,7 +1511,6 @@ In this example we possibly spawn a wither skeleton when we break a diamond ore 
   }
 ]
 ```
-
 
 ### Spawner: spawn villagers in water
 
