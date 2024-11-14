@@ -23,6 +23,7 @@ are currently 7 possible types of effects:
 * `warp`: allows the player to warp (teleport) somewhere
 * `cure`: removes all negative potion effects on the player
 * `growtick`: do random ticks around the player. Increases growticks
+* `trinketloot`: effect that can modify the loot given by chests or mobs
 
 Effects can also have an associated `toggle` which allows them to be turned on or off
 and effects can also have an associated `hotkey`. A hotkey doesn't imply that the
@@ -259,6 +260,76 @@ increase the speed at which crops grow.
 `blocks` is the number of blocks that will be ticked and `maxdist` is how far it will do
 this horizontally. Vertically it always goes from -3 to 3 around the player.
 
+### `trinketloot`
+
+With this effect a trinket can modify the loot that is given by chests or mobs. Here is an
+example:
+
+```json
+{
+  "params": {
+    "type": "trinketloot",
+    "tags": [
+      "shiny"
+    ],
+    "loot": [
+      {
+        "stack": {
+          "id": "minecraft:diamond"
+        },
+        "chance": 0.3,
+        "min": 1,
+        "max": 2
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_block"
+        },
+        "chance": 0.1,
+        "min": 1,
+        "max": 1
+      }
+    ]
+  }
+}
+```
+
+For this to work loottables need to be modified with a datapack. This is not part of this mod but basically you
+have to add something like this to the loot table json:
+
+```json
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "fancytrinkets:trinket_loot",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 0.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "tags": [
+            "shiny"
+          ],
+          "weight": 14
+        },
+        ...
+      ]
+    }
+  ]
+}
+```
+
+At least one tag from `tags` in the effect should match one of the tags in the loot table.
 
 ## Default effects
 
