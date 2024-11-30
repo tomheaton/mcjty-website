@@ -299,6 +299,9 @@ const config = {
       additionalLanguages: ["gradle", "java"],
     },
   } satisfies ThemeConfig,
+  future: {
+    experimental_faster: true,
+  },
 } satisfies Config;
 
 export default config;
