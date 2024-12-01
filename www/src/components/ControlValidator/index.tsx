@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import z from "zod";
-import Validator from "./Validator";
 import {
   DATA,
   type MinecraftVersion,
   type ValidatorType,
 } from "@site/src/components/ControlValidator/data";
 import clsx from "clsx";
+import { useEffect, useState } from "react";
+import z from "zod";
+import Validator from "./Validator";
 
 type Props = {
   schema?: z.ZodSchema<any>;

@@ -11,7 +11,7 @@
 
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
-const sidebars = {
+export default {
   docs: [
     // TODO: fix sidebar item order
     {
@@ -26,5 +26,3 @@ const sidebars = {
     },
   ],
 } satisfies SidebarsConfig;
-
-export default sidebars;

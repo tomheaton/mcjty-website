@@ -52,7 +52,7 @@ export default function Modding() {
       </Head>
       <main className={styles.main}>
         <h1 className={styles.title}>Modding - McJty Redirector</h1>
-        <Link href={"https://www.mcjty.eu/"}>
+        <Link href="https://www.mcjty.eu/">
           <p className={styles.description}>Redirect to the new site!</p>
         </Link>
         <p>{JSON.stringify(query, null, 2)}</p>

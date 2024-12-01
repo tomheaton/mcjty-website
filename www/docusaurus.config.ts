@@ -13,7 +13,7 @@ const metadata = {
   color: "#36B99F",
 };
 
-const config = {
+export default {
   title: metadata.title,
   tagline: metadata.tagline,
   url: metadata.url,
@@ -303,5 +303,3 @@ const config = {
     experimental_faster: true,
   },
 } satisfies Config;
-
-export default config;

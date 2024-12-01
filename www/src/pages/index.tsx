@@ -1,21 +1,20 @@
-import React from "react";
-import clsx from "clsx";
+import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import ModWidgets from "@site/src/components/ModWidgets";
 import Layout from "@theme/Layout";
+import clsx from "clsx";
 import styles from "./styles.module.css";
-import Link from "@docusaurus/Link";
 
 const HomepageHeader: React.FC = () => {
   const { siteConfig } = useDocusaurusContext();
 
   return (
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
-      <div className={"container"}>
-        <h1 className={"hero__title"} style={{ color: "white" }}>
+      <div className="container">
+        <h1 className="hero__title" style={{ color: "white" }}>
           {siteConfig.title}
         </h1>
-        <p className={"hero__subtitle"} style={{ color: "white" }}>
+        <p className="hero__subtitle" style={{ color: "white" }}>
           {siteConfig.tagline}
         </p>
       </div>
@@ -65,7 +64,7 @@ const Home: React.FC = () => {
           </p>
           <Link
             className="button button--primary button--lg"
-            href={"https://www.curseforge.com/members/romelo333/projects"}
+            href="https://www.curseforge.com/members/romelo333/projects"
           >
             Romelo's Mods
           </Link>

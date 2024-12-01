@@ -1,11 +1,11 @@
+import z from "zod";
 import {
-  spawnSchema1_20,
-  spawnSchema1_19,
-  spawnerSchema,
   phasesSchema,
   spawnSchema1_18,
+  spawnSchema1_19,
+  spawnSchema1_20,
+  spawnerSchema,
 } from "./schemas";
-import z from "zod";
 
 export const MINECRAFT_VERSIONS = [
   "1.16.5",

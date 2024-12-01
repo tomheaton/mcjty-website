@@ -1,7 +1,6 @@
-import React from "react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import Layout from "@theme/Layout";
 import ControlValidator from "@site/src/components/ControlValidator";
+import Layout from "@theme/Layout";
 
 const ControlValidatorPage: React.FC = () => {
   const { siteConfig } = useDocusaurusContext();

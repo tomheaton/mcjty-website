@@ -82,7 +82,7 @@ export default function Mods() {
       <main className={styles.main}>
         <h1 className={styles.title}>Mods - McJty Redirector</h1>
 
-        <Link href={"https://www.mcjty.eu/"}>
+        <Link href="https://www.mcjty.eu/">
           <p className={styles.description}>Redirect to the new site!</p>
         </Link>
 

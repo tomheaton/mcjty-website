@@ -1,7 +1,7 @@
-import React, { type FormEvent, useState } from "react";
-import { DATA, type MinecraftVersion, type ValidatorType } from "./data";
 import JSONParser from "@site/src/components/ControlValidator/jsonParser";
 import { formatErrorLine } from "@site/src/components/ControlValidator/utils";
+import { useState, type FormEvent } from "react";
+import { DATA, type MinecraftVersion, type ValidatorType } from "./data";
 
 type Props = {
   type: ValidatorType;

@@ -17,10 +17,12 @@
   "scripts": {
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
     "clean:all": "pnpm -r clean && rm -rf node_modules",
-    "redirector": "pnpm -f @mcjty-website/redirector",
-    "www": "pnpm -f @mcjty-website/www"
+    "redirector": "pnpm --filter @mcjty-website/redirector",
+    "www": "pnpm --filter @mcjty-website/www"
   },
   "devDependencies": {
-    "prettier": "^3.1.1"
+    "prettier": "^3.1.1",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "prettier-plugin-tailwindcss": "^0.6.9"
   }
 }

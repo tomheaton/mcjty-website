@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 
 const ModWidget: React.FC<{ id: number }> = ({ id }) => {
@@ -6,9 +6,9 @@ const ModWidget: React.FC<{ id: number }> = ({ id }) => {
   return (
     <iframe
       src={`https://www.cfwidget.com/${id}`}
-      width={"100%"}
+      width="100%"
       style={{ border: "none" }}
-      scrolling={"no"}
+      scrolling="no"
     />
   );
 };
