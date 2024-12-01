@@ -1,12 +1,16 @@
-# Dependencies
+# DEPENDENCIES
 node_modules
 
-# env
-.env
+# BUILD
+dist
+build
 
-# IDE
-# .vscode
-# .idea
+# MISC
+.next
+.docusaurus
 
 # macOS
 .DS_Store
+
+# ENV
+.env

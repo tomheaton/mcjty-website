@@ -4,7 +4,7 @@
 root = true
 
 # Unix-style newlines with a newline ending every file
-[*{.js,.jsx,.ts,.tsx,.json,.css}]
+[*.{js,jsx,ts,tsx,json,css,yaml}]
 charset = utf-8
 end_of_line = lf
 indent_size = 2

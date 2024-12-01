@@ -7,7 +7,7 @@ mcjty-website
 install dependencies
 
 ```shell
-yarn
+pnpm install
 ```
 
 ## formatting
@@ -15,5 +15,5 @@ yarn
 format all files
 
 ```shell
-yarn format
+pnpm format
 ```
