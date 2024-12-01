@@ -25,7 +25,6 @@
     "@docusaurus/plugin-vercel-analytics": "^3.2.1",
     "@docusaurus/preset-classic": "3.6.3",
     "@mdx-js/react": "^3.0.1",
-    "@types/node": "20.12.5",
     "clsx": "^2.1.0",
     "prism-react-renderer": "^2.3.1",
     "react": "^18.2.0",
@@ -38,6 +37,7 @@
     "@docusaurus/tsconfig": "^3.2.1",
     "@docusaurus/types": "^3.2.1",
     "@tsconfig/docusaurus": "^2.0.3",
+    "@types/node": "20.17.9",
     "@types/react": "18.2.74",
     "@types/react-dom": "18.2.24",
     "autoprefixer": "^10.4.19",
@@ -58,8 +58,10 @@
       "last 1 safari version"
     ]
   },
+  "engineStrict": true,
   "engines": {
-    "node": ">= 18"
+    "node": ">= 20"
   },
+  "packageManager": "pnpm@9.12.3",
   "prettier": "../.prettierrc.js"
 }
