@@ -4,23 +4,23 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "clean": "rm -rf node_modules .next"
   },
   "dependencies": {
-    "next": "14.1.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "next": "15.0.3",
+    "react": "19.0.0-rc-66855b96-20241106",
+    "react-dom": "19.0.0-rc-66855b96-20241106"
   },
   "devDependencies": {
     "@types/node": "20.17.9",
-    "@types/react": "18.2.74",
-    "@types/react-dom": "18.2.24",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "eslint": "9.0.0",
-    "eslint-config-next": "14.1.4",
+    "eslint-config-next": "15.0.3",
     "typescript": "5.4.4"
   },
   "engineStrict": true,
@@ -28,5 +28,11 @@
     "node": ">= 20"
   },
   "packageManager": "pnpm@9.12.3",
-  "prettier": "../.prettierrc.js"
+  "prettier": "../.prettierrc.js",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "npm:types-react@19.0.0-rc.1",
+      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    }
+  }
 }

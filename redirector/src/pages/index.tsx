@@ -2,7 +2,7 @@ import styles from "@/styles/Index.module.css";
 import Head from "next/head";
 import Link from "next/link";
 
-export default function Index() {
+export default function IndexPage() {
   return (
     <div className={styles.container}>
       <Head>

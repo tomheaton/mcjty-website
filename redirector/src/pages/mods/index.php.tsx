@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function Mods() {
+export default function ModsPage() {
   // TODO: use middleware instead
   const router = useRouter();
 

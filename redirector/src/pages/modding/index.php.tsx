@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function Modding() {
+export default function ModdingPage() {
   // TODO: use middleware instead
   const router = useRouter();
 
@@ -50,11 +50,14 @@ export default function Modding() {
         <meta name="description" content="McJty Redirector" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <main className={styles.main}>
         <h1 className={styles.title}>Modding - McJty Redirector</h1>
+
         <Link href="https://www.mcjty.eu/">
           <p className={styles.description}>Redirect to the new site!</p>
         </Link>
+
         <p>{JSON.stringify(query, null, 2)}</p>
       </main>
     </div>
