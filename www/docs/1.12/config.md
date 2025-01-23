@@ -6,7 +6,7 @@ sidebar_position: 4
 
 Almost all mods need some kind of config file where players can change how your mod is balanced. Adding a config file is very easy. In this tutorial we will show you how you can do this.
 
-More explanation on the config system as well as an alternative way to do configs using annotations can be found here: https://mcforge.readthedocs.io/en/latest/config/annotations/
+More explanation on the config system as well as an alternative way to do configs using annotations can be found here: https://mcforge.readthedocs.io/en/1.12.x/config/annotations/
 
 First we add a 'Config' class that will handle our configuration. In this example it is just a single class. In bigger mods you might want to structure your configuration classes differently and perhaps group them per module. In this example we make a config file with two sections (called categories). One is for general configuration and the other is for dimension configuration (currently unused).
 

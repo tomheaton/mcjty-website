@@ -6,7 +6,7 @@ sidebar_position: 5
 
 In this document you learn how to do your first basic block. i.e. the simplest kind of block you can have: just a block that looks the same on all sides and does not have any other information.
 
-More in-depth information on blocks can be found at the official forge documentation: https://mcforge.readthedocs.io/en/latest/blocks/blocks/
+More in-depth information on blocks can be found at the official forge documentation: https://mcforge.readthedocs.io/en/1.12.x/blocks/blocks/
 
 ```java
 public class FirstBlock extends Block {
