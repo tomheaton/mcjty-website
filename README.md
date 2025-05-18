@@ -57,3 +57,9 @@ pnpm www <command>
 # or
 pnpm redirector <command>
 ```
+
+For example, to run the `dev` command in the `www` sub project, use:
+
+```shell
+pnpm www dev
+```
