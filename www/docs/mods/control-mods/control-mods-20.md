@@ -90,6 +90,14 @@ which is still called even with 'norestrictions'.
 
 Here is a list of all (recent and important) changes to InControl and Fx Control:
 
+* **18 May 2025:**
+  * Fixed the 'area' sphere test. It was incorrect
+  * Much improved caching for counting. This has a great effect on performance
+  * New server config file where you can control this counting cache as well as change the radius used for nearest player tests
+  * TqLxQuanZ added knockbackset/multiply/add as well as knockbackresistanceset/multiply/add
+  * The spawner system (spawner.json) now supports many new conditions to improve performance and make rules easier to write (avoid the need for spawn.json rules). These conditions are encapsulated in a new 'and' block. There is also a 'not' block for negative conditions
+  * New 'spawntype' condition for spawn.json. This will allow you to test what type of spawn it is. Possible values are 'spawn_egg', 'natural', 'chunk_generation', 'structure', 'mob_summoned', 'conversion', ...
+  * New 'potionnoparticles' action for effects.json. This will allow you to do potion effects without particles
 * **11 September 2024:**
   * Fixed a problem with "onjoin" rules where the "incontrol" tag would not work properly
   * Added two new keywords: "inmultibuilding" and "multibuilding" that work similar to the "inbuilding" and "building" keywords but for multi buildings (Lost Cities)
@@ -567,6 +575,7 @@ Please scroll horizontally to see all fields.
 | daycount                                                              | `I/E`        | V       | V     | V      |      |     |         |           |            |       |        | this is true if the day counter is a multiple of the given parameter. It also supports an expression in which case the expression is evaluated (see more on numeric expressions above in this wiki)                                                                                                                                                                                                   |
 | baby                                                                  | `B`          |         | V     |        | V    | V   |         |           |            |       |        | true if this is a baby                                                                                                                                                                                                                                                                                                                                                                                |
 | spawner                                                               | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by a spawner                                                                                                                                                                                                                                                                                                                                                                          |
+| spawntype                                                             | `S/[S]`      |         | V     |        |      |     |         |           |            |       |        | check the reason for the spawn. This can be a value like natural, chunk_generation, spawner, structure, breeding, mob_summoned, jockey, event, conversion, reinforcement, triggered, bucket, spawn_egg, command, dispenser, patrol                                                                                                                                                                    |
 | incontrol                                                             | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by the In Control spawner system (`spawner.json`)                                                                                                                                                                                                                                                                                                                                     |
 | eventspawn                                                            | `B`          |         | V     |        |      |     |         |           |            |       |        | true if spawned by the In Control event system (`events.json`)                                                                                                                                                                                                                                                                                                                                        |
 | area                                                                  | 'S'          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | test if the position is in a certain area (see `areas.json`)                                                                                                                                                                                                                                                                                                                                          |
@@ -665,8 +674,15 @@ For `spawn.json` the following actions are supported:
 * `followrangemultiply`: this is a floating point number representing a multiplier for the follow range of the mob
 * `followrangeadd`: this is a floating point number that is added to the follow range
 * `followrangeset`: this is a floating point number that is used as the follow range
+* `knockbackmultiply`: this is a floating point number representing a multiplier for the knockback resistance of the mob
+* `knockbackadd`: this is a floating point number that is added to the knockback resistance
+* `knockbackset`: this is a floating point number that is used as the knockback resistance
+* `knockbackresistancemultiply`: this is a floating point number representing a multiplier for the knockback resistance of the mob
+* `knockbackresistanceadd`: this is a floating point number that is added to the knockback resistance
+* `knockbackresistanceset`: this is a floating point number that is used as the knockback resistance
 * `angry`: this is a boolean that indicates if the mob will be angry at and/or target the nearest player. For zombie pigman this will make them angry at the player immediatelly. Same for enderman and wolves
 * `potion`: this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example "minecraft:invisibility,10,1"
+* `potionnoparticles`: same as 'potion' but without particles
 * `helditem`: this is either a single string or a list of strings. Every string represents a possible item that the spawned mob will carry in its hand. This works only with mobs that allow this like skeletons and zombies. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
 * `armorboots`: this is either a single string or a list of strings representing random armor that the spawned mob will wear
 * `armorhelmet`: is either a single string or a list of strings representing random armor that the spawned mob will wear
@@ -711,6 +727,7 @@ Then there are a number of actions:
 * `give`: this is either a single string or a list of strings. Every string represents a possible item that the player will get. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: `1=minecraft:diamond_sword`, `2=minecraft:iron_sword`
 * `drop`: this is either a single string or a list of strings. Every string represents a possible item that will be dropped. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: `1=minecraft:diamond_sword`, `2=minecraft:iron_sword`
 * `potion`: this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example `minecraft:invisibility,10,1`
+* `potionnoparticles`: same as 'potion' but without particles
 * `fire`: this is an integer representing the number of seconds that the player should be put on fire
 * `clear`: clear all potion effects
 * `message`: give a message to the player
@@ -882,7 +899,7 @@ The spawning system works per dimension and only attempts to spawn mobs every se
 :::danger Warning
 Warning! `spawner.json` only supports the keywords mentioned here.
 Don't use ANY other keyword here.
-Other conditions (like biome) have to be specified in `spawn.json`.
+Some conditions (like biome) are supported through the new 'and' and 'not' keywords (see below)
 :::
 
 Every spawner rule has two parts:
@@ -928,7 +945,34 @@ Especially 'dimension' since that is mandatory!
 * `maxlocal`: this will cause counting in the spawn box around the player. This is somewhat more expensive so use with care
 * `validspawn`: this will add a stronger check to the possible spawn positions to make sure the block is solid as well as correct light and other mob/block specific conditions.
 * `sturdy`: this will add a stronger check to the possible spawn positions to make sure the block is sturdy (not a slab for example)
+* `and`: an additional set of positive conditions that all have to be valid before the spawn can happen. See below for a list of conditions
+* `not`: an additional set of negative conditions. If one of those is true the spawn will not happen. See below for a list of conditions
 
+Using conditions in `and` and `not` is a preferred as opposed to doing this in `spawn.json` because it's more optimized. 
+Supported conditions in 'and' and 'not':
+
+* `mintime` and  `maxtime`: time constraints. The time is in ticks (0-24000). The default is 0/24000
+* `minlight` and `maxlight`: the minimum/maximum light level for the spawn. The default is 0/15
+* `minlight_full` and `maxlight_full`: the minimum/maximum light level for the spawn (including sky level). The default is 0/15
+* `biome`: a single biome or list of biomes (like 'minecraft:plains')
+* `biometags`: a single biome tag or list of biome tags (like 'minecraft:is_hill')
+* `seesky`: if true then the spawn position must be able to see the sky
+* `cave`: if true then the spawn position must be in a cave
+* `structure`: a single structure or list of structures (like 'minecraft:stronghold')
+* `structuretags`: a single structure tag or list of structure tags (like 'minecraft:is_village')
+* `hasstructure`: if true then the spawn position must be in a structure
+* `incity`: if true then the spawn position must be in a city
+* `inbuilding`: if true then the spawn position must be in a building
+* `inmultibuilding`: if true then the spawn position must be in a multibuilding
+* `building`: a single building or list of buildings (like 'lostcities:building1')
+* `multibuilding`: a single multibuilding or list of multibuildings (like 'lostcities:multibuilding1')
+* `instreet`: if true then the spawn position must be in a street
+* `insphere`: if true then the spawn position must be in a sphere
+* `gamestage`: a gamestage condition
+* `summer`: if true then it must be summer
+* `winter`: if true then it must be winter
+* `spring`: if true then it must be spring
+* `autumn`: if true then it must be autumn
 
 ## Examples
 
@@ -1024,6 +1068,27 @@ All other spawns are prevented:
     "result": "allow"
   },
   {
+    "result": "deny"
+  }
+]
+```
+
+### Spawn: prevent all hostile mob spawns but allow spawn eggs and summon
+
+This example prevents all hostile mob spawns. We use 'onjoin' here which is a much stronger test that normally
+also prevents spawn eggs and summon from working. In this example we specifically allow those first:
+
+```json title="spawn.json"
+[
+  {
+    "hostile": true,
+    "when": "onjoin",
+    "spawntype": ["mob_summoned", "spawn_egg"],
+    "result": "default"
+  },
+  {
+    "hostile": true,
+    "when": "onjoin",
     "result": "deny"
   }
 ]
@@ -1652,6 +1717,41 @@ So let's modify the rules in `spawn.json`:
 
 Basically by adding `"incontrol": true` to the second rule we will only deny spawns outside deserts if they were spawned by In Control.
 All normal mob spawns will stay normal.
+
+### Spawner: extra mobs in deserts on the surface but not in villages 
+
+This example is similar to the previous one, but we demonstrate the usage of the new 'and' and 'not' format. This is more optimized and
+means we no longer need rules in `spawn.json`:
+
+```json title="spawner.json"```
+[
+  {
+    "mob": ["minecraft:skeleton", "minecraft:zombie"],
+    "persecond": 0.5,
+    "attempts": 20,
+    "amount": {
+      "minimum": 2,
+      "maximum": 5
+    },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "mindist": 25,
+      "maxdist": 100,
+      "minheight": 15,
+      "maxheight": 200,
+      "maxthis": 100,
+      "and": {
+        "biome": "minecraft:desert",
+        "seesky": true
+      },
+      "not": {
+        "structuretags": "minecraft:village"
+      }
+    }
+  }
+]
+```
+
 
 ### Getting Zombies to spawn more
 
