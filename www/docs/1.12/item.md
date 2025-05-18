@@ -6,7 +6,7 @@ sidebar_position: 6
 
 In this chapter we show how to make a very basic first item.
 
-More in-depth information on items can be found at the official forge documentation: https://mcforge.readthedocs.io/en/latest/items/items/
+More in-depth information on items can be found at the official forge documentation: https://mcforge.readthedocs.io/en/1.12.x/items/items/
 
 ```java
 public class FirstItem extends Item {
