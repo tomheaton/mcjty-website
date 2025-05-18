@@ -2,6 +2,9 @@
   "name": "@mcjty-website/redirector",
   "description": "@mcjty-website/redirector",
   "version": "1.0.0",
+  "author": "tomheaton",
+  "license": "MIT",
+  "repository": "https://github.com/tomheaton/mcjty-website",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -11,28 +14,22 @@
     "clean": "rm -rf node_modules .next"
   },
   "dependencies": {
-    "next": "15.0.3",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "next": "15.3.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "@types/node": "20.17.9",
-    "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
-    "eslint": "9.0.0",
-    "eslint-config-next": "15.0.3",
-    "typescript": "5.4.4"
+    "@types/node": "22.15.18",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
+    "eslint": "9.27.0",
+    "eslint-config-next": "15.3.2",
+    "typescript": "5.8.3"
   },
   "engineStrict": true,
   "engines": {
-    "node": ">= 20"
+    "node": ">= 22"
   },
   "packageManager": "pnpm@9.12.3",
-  "prettier": "../.prettierrc.js",
-  "pnpm": {
-    "overrides": {
-      "@types/react": "npm:types-react@19.0.0-rc.1",
-      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
-    }
-  }
+  "prettier": "../.prettierrc.js"
 }
