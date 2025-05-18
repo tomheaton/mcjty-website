@@ -1,6 +1,8 @@
-# mcjty-website - www
+# McJty Website - WWW
 
-McJty Website
+This is the main website and wiki.
+
+This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
 ## Installation
 
@@ -29,16 +31,8 @@ To build the website:
 pnpm build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-Then to serve the website:
+Then to start the website:
 
 ```shell
-pnpm serve
+pnpm start
 ```
-
-Which serves the static content from the `build` directory.
-
-## Notes
-
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
