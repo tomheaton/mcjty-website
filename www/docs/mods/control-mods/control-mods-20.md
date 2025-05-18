@@ -1723,7 +1723,7 @@ All normal mob spawns will stay normal.
 This example is similar to the previous one, but we demonstrate the usage of the new 'and' and 'not' format. This is more optimized and
 means we no longer need rules in `spawn.json`:
 
-```json title="spawner.json"```
+```json title="spawner.json"
 [
   {
     "mob": ["minecraft:skeleton", "minecraft:zombie"],
