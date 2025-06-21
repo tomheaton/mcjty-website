@@ -90,6 +90,8 @@ which is still called even with 'norestrictions'.
 
 Here is a list of all (recent and important) changes to InControl and Fx Control:
 
+* **21 Jun 2025:**
+  * New 'command' action for events. This is a json array of commands that will be executed when the event happens
 * **18 May 2025:**
   * Fixed the 'area' sphere test. It was incorrect
   * Much improved caching for counting. This has a great effect on performance
@@ -191,7 +193,7 @@ The following rule files are currently supported:
 * `rightclicks.json`: with this file you can add effects to the player or world when the player right-clicks a block (and also prevent interaction)
 * `leftclicks.json`: with this file you can add effects to the player or world when the player left-clicks a block (and also prevent interaction)
 * `areas.json`: with this file you can define named areas that can be used by the rules
-* `events.json`: with this file you can define events that allow you to spawn mobs whenever something happens. Currently implemented 'mob_killed', 'block_broken', and 'custom' events
+* `events.json`: with this file you can define events that allow you to spawn mobs whenever something happens. Currently implemented 'mob_killed', 'block_broken', 'command', and 'custom' events
 
 #### spawn.json
 
@@ -839,7 +841,7 @@ Check the example below to see how you can define an area. You can also use the 
 
 ## Events
 
-Events are a new powerful system that allows you to spawn mobs when something happens. Currently the `block_broken`, `mob_killed`, and `custom` events are supported.
+Events are a new powerful system that allows you to spawn mobs when something happens. Currently the `block_broken`, `mob_killed`, `command`, and `custom` events are supported.
 
 Events are defined in `events.json` and have the following structure:
 
@@ -867,6 +869,7 @@ Events are defined in `events.json` and have the following structure:
 * `number`: this is an optional JSON object with the following structure:
   * `name`: the name of the number to change
   * `value`: this is a value in a special format. See below for more information
+* `command`: this is an optional JSON array of strings representing commands that will be executed when the event is triggered. The @p will be replaced with the player name if applicable
 
 The value as used in the number action is a string which basically represents a series of operators
 and operands. This is explained in the section about numbers above.
