@@ -90,6 +90,16 @@ which is still called even with 'norestrictions'.
 
 Here is a list of all (recent and important) changes to InControl and Fx Control:
 
+* **26 Aug 2025:**
+  * New 'ai' command for spawn.json to change the ai of mobs. This is currently still experimental
+  * Attempt to make parsing spawner.json more robust on foreign language systems
+  * Thanks to Goodbird from CustomNPCs InControl now has support for CustomNPCs. You can use the 'npc' condition to test for NPCs and you can spawn npbs with spawner.json or events.json
+  * New 'minlight_sky' and 'maxlight_sky' keywords to specifically test for skylight
+  * Also added 'minlight_sky' and 'maxlight_sky' to the spawner 'and' and 'not' blocks
+  * Added new vertical 'cylinder' type for areas. x and z are the horizonal circumference and y is height
+  * The 'mob' keyword for spawn.json now also understands mob tag id's (starting with '#')
+  * New 'blocktest' keyword which adds a much more flexible way to test for blocks above or under the spawn position
+  * The 'incontrol info' command now also shows the block light, sky light and full light at the player position. In addition it shows the current day time and day count
 * **21 Jun 2025:**
   * New 'command' action for events. This is a json array of commands that will be executed when the event happens
 * **18 May 2025:**
@@ -195,57 +205,12 @@ The following rule files are currently supported:
 * `areas.json`: with this file you can define named areas that can be used by the rules
 * `events.json`: with this file you can define events that allow you to spawn mobs whenever something happens. Currently implemented 'mob_killed', 'block_broken', 'command', and 'custom' events
 
-#### spawn.json
+### spawn.json
 
 With this rule file you can control various aspects of when a mob should spawn (or despawn). Note that
 you cannot use this file to add new mobs to the game. For that you need to use `spawner.json` too.
-
-Rules in this file are essentially split into four different categories:
-* `position`: this is used to check if a mob is allowed to spawn in general. It's called by vanilla whenever a mob is about to spawn
-* `onjoin`: rules in this category are checked whenever a mob joins the world. This is a stronger check because it's also fired for spawn eggs and when a mob enters another dimension
-* `finalize`: this is the final step in spawning a mob. Rules in this category can change stats or equipment of the mob. You can also still cancel the spawn here
-* `despawn`: this is called whenever a mob is about to despawn. You can use this to prevent despawning
-
-The category of a spawn rule is set with the new `when` keyword. This keyword is optional and defaults to `position`.
-
-Some additional notes about spawn.json. Each rule has a result which can be `allow`, `default`, `deny`, or `deny_with_actions`.
-In case of `deny` the spawn will simply be canceled. The difference between `allow` and `default` is that with `default`
-some simple vanilla spawn restrictions (like not spawn inside a block) are still tested. When `when`
-is equal to `finalize` then the difference between `default` and `allow` is that `default` will still let
-the vanilla finalize operation do its job (for example, skeletons will still get their bow). If you
-use `allow` then only your own actions will be executed.
-
-The difference between `deny` and `deny_with_actions` is that with `deny` no actions will be executed.
-
-In addition, each rule can have a `continue` keyword. This will cause a matching rule to work but then continue
-processing potential different rules (remember! Rules are executed in order)
-
-:::danger Warning
-Rules are executed in order PER category! For every spawn that happens every rule is evalulated from top to bottom.
-The first rule that matches ALL the conditions will be executed and the rest is ignored (unless
-you use the `continue` keyword).
-:::
-
-:::danger Warning
-This does also mean that a rule of one category that is executed will not stop the execution of rules in other categories.
-:::
-
-:::danger Warning
-Some modded mobs don't do the proper events in all cases so it is possible you have
-to do use the `onjoin` category to get the desired effect (set `when` to `onjoin`).
-:::
-
-## Rule Structure
-
-Every rule has three parts:
-
-* `Conditions`: This represents tests that have to be true before the rule can be considered for execution. All conditions in a rule have to be true before the rule will be executed
-* `Actions`: This represents things that will be done when the rule is executed
-* `Extra`: Some rules need extra things to work and some conditions/actions have extra modifiers that can alter how they work
-
-Whenever something happens the corresponding rules are evaluated from top to bottom.
-In most cases the first rule that matches will be executed and further rules are ignored (the rules in `spawner.json` and `loot.json` are an exception to that.
-For these all matching rules are executed)
+* 
+* More info on [this page](./control-mods-20-spawn.md)
 
 ### Expressions
 
@@ -585,6 +550,7 @@ Please scroll horizontally to see all fields.
 | height                                                                | `E`          | V       | V     | V      | V    | V   | V       | V         | V          | V     | V      | uses a numeric expression to test the height at which the mob will spawn                                                                                                                                                                                                                                                                                                                              |
 | minlight / maxlight                                                   | `I`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | value between `0` and `15` indicating the minimum and maximum block light level on the given block                                                                                                                                                                                                                                                                                                    |
 | minlight_full / maxlight_full                                         | `I`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | value between `0` and `15` indicating the minimum and maximum full (combined block and sky) light level on the given block                                                                                                                                                                                                                                                                            |
+| minlight_sky / maxlight_sky                                           | `I`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | value between `0` and `15` indicating the minimum and maximum sky light level on the given block                                                                                                                                                                                                                                                                 |
 | light                                                                 | `E`          |         | V     | V      | V    | V   | V       | V         | V          | V     | V      | uses a numeric expression to test the light level on the given block                                                                                                                                                                                                                                                                                                                                  |
 | mincount / maxcount                                                   | `S/I/JSON`   |         | V     | V      |      |     |         |           |            |       |        | string value that is either a number in which case it will count how many mobs of the given class are already in the world or else of the form `<amount>,<mob>` to count the number of mobs of that type. That way you can have a rule file based on the number of mobs already present. Note that instead of this syntax you can also use the JSON mob counter syntax as explained above             |
 | maxthis / maxtotal / maxpeaceful / maxhostile / maxneutral / maxlocal | `I`          | V       |       |        |      |     |         |           |            |       |        | the maximum amount of mobs of this type, in total, passive, hostile, neutral or local (spawn box around the player, as this is more expensive use this with care)                                                                                                                                                                                                                                     |
@@ -649,47 +615,6 @@ The following actions are possible in all rules:
 * `customevent`: this is a string representing a custom event that will be fired. See the event system section for more information
 
 #### Spawn and SummonAid
-
-For `spawn.json` the following actions are supported:
-
-* `result`: this is either 'deny', 'allow', 'default', or not specified. If you don't specify a result then whatever other mob control mods have decided is preserved. If you specify a result then In Control will take over (since the In Control rule will fire last). Use 'deny' to block the spawn. If 'allow' is used then the spawn will be allowed even if vanilla would normally disallow it (i.e. too much light). If 'default' is used then it is possible the spawn can still be denied if there is not enough light for example. Unless 'deny' is used then you can use any of the following actions:
-* `nbt`: allows you to add NBT to a spawned mob
-* `customname`: allows you to set a custom name for the spawned mob
-* `healthmultiply`: this is a floating point number representing a multiplier for the maximum health of the mob that is spawned. Using 2 here for example would make the spawned mob twice as strong.
-* `healthadd`: this is a floating point number that is added to the maximum health
-* `healthset`: this is a floating point number that is used as the maximum health
-* `speedmultiply`: this is a floating point number representing a multiplier for the speed of the mob
-* `speedadd`: this is a floating point number that is added to the speed
-* `speedset`: this is a floating point number that is used as the speed
-* `damagemultiply`: this is a floating point number representing a multiplier for the damage that the mob does
-* `damageadd`: this is a floating point number that is added to the damage
-* `damageset`: this is a floating point number that is used as the damage
-* `armormultiply`: this is a floating point number representing a multiplier for the armor of the mob
-* `armoradd`: this is a floating point number that is added to the armor
-* `armorset`: this is a floating point number that is used as the armor
-* `armortoughnessmultiply`: this is a floating point number representing a multiplier for the armor toughness of the mob
-* `armortoughnessadd`: this is a floating point number that is added to the armor toughness
-* `armortoughnessset`: this is a floating point number that is used as the armor toughness
-* `attackspeedmultiply`: this is a floating point number representing a multiplier for the speed of the mob
-* `attackspeedadd`: this is a floating point number that is added to the speed
-* `attackspeedset`: this is a floating point number that is used as the speed
-* `followrangemultiply`: this is a floating point number representing a multiplier for the follow range of the mob
-* `followrangeadd`: this is a floating point number that is added to the follow range
-* `followrangeset`: this is a floating point number that is used as the follow range
-* `knockbackmultiply`: this is a floating point number representing a multiplier for the knockback resistance of the mob
-* `knockbackadd`: this is a floating point number that is added to the knockback resistance
-* `knockbackset`: this is a floating point number that is used as the knockback resistance
-* `knockbackresistancemultiply`: this is a floating point number representing a multiplier for the knockback resistance of the mob
-* `knockbackresistanceadd`: this is a floating point number that is added to the knockback resistance
-* `knockbackresistanceset`: this is a floating point number that is used as the knockback resistance
-* `angry`: this is a boolean that indicates if the mob will be angry at and/or target the nearest player. For zombie pigman this will make them angry at the player immediatelly. Same for enderman and wolves
-* `potion`: this is either a single string or a list of strings. Every string represents a potion effect which is indicated like this: `<potion>,<duration>,<amplifier>`. For example "minecraft:invisibility,10,1"
-* `potionnoparticles`: same as 'potion' but without particles
-* `helditem`: this is either a single string or a list of strings. Every string represents a possible item that the spawned mob will carry in its hand. This works only with mobs that allow this like skeletons and zombies. You can also specify a weight with this by adding `<number>=` in front of the string. Like this: "1=minecraft:diamond_sword", "2=minecraft:iron_sword"
-* `armorboots`: this is either a single string or a list of strings representing random armor that the spawned mob will wear
-* `armorhelmet`: is either a single string or a list of strings representing random armor that the spawned mob will wear
-* `armorlegs`: is either a single string or a list of strings representing random armor that the spawned mob will wear
-* `armorchest`: is either a single string or a list of strings representing random armor that the spawned mob will wear
 
 In addition, `gamestage`, `playerhelditem`, and related tags (which are tied to a player) are also supported.
 In that case the nearest player will be used as the basis for deciding the rule.
