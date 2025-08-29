@@ -205,16 +205,9 @@ The following rule files are currently supported:
 * `areas.json`: with this file you can define named areas that can be used by the rules
 * `events.json`: with this file you can define events that allow you to spawn mobs whenever something happens. Currently implemented 'mob_killed', 'block_broken', 'command', and 'custom' events
 
-### spawn.json
-
-With this rule file you can control various aspects of when a mob should spawn (or despawn). Note that
-you cannot use this file to add new mobs to the game. For that you need to use `spawner.json` too.
-* 
-* More info on [this page](./control-mods-20-spawn.md)
-
 ### Expressions
 
-In some of the conditions it is possible to use expressions.
+In some of the conditions it is possible to use expressions. These are used in item filters for example.
 An expression is basically a string specifying some test to do on an integer value.
 
 Here are a few examples:
@@ -253,6 +246,14 @@ To clarify this. Here are a few examples:
 ```json
 "daycount": "repeat(10,3,4)"
 ```
+
+### spawn.json
+
+With this rule file you can control various aspects of when a mob should spawn (or despawn). Note that
+you cannot use this file to add new mobs to the game. For that you need to use `spawner.json` too.
+
+* More info on [this page](./control-mods-20-spawn.md)
+
 
 ### Item filters
 

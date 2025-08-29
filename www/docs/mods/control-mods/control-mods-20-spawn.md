@@ -61,6 +61,19 @@ For these all matching rules are executed)
 This is a list of all supported conditions for `spawn.json`. When you use several conditions in a rule
 then ALL conditions have to be true before the rule will be executed.
 
+**Possible types for conditions are:**
+
+* `S`: a string
+* `B`: a boolean (true/false)
+* `I`: an integer
+* `F`: floating point number
+* `E`: is a string describing a numeric expression (see the 'Numeric Expressions' section for information on those)
+* `JSON`: a JSON in a specific format explained elsewhere
+* `[<type>]`: a list of type (for example, `[S]` is a list of strings)
+* `<type1>/<type2>`: either type1 or type2 (for example, `S/[S]` is either a string or a list of strings)
+
+**Conditions:**
+
 * `phase`: 'S/[S]' - all phases that must be active for this rule to work. Phases are defined in `phases.json`. Putting conditions in a phase is more efficient and cleaner
 * `number`: `JSON` - A json describing a numeric condition that must be valid before this rule can work. See the section on the numeric system for more information
 * `when`: `S` - can be equal to 'position', 'finalize', 'onjoin', or 'despawn'. Default is 'position'
@@ -87,8 +100,7 @@ then ALL conditions have to be true before the rule will be executed.
 * `notcolliding`: `B` - a check that is specific to the entity implementation. This is called by Minecraft automatically if you return `default` as the result of this rule. For many mobs this check will do a test if the mob would collide with blocks after spawning
 * `difficulty`: `S` - one of the following values: easy, normal, hard, peaceful
 * `weather`: `S` - rain or thunder
-* `category`: `S/[S]` - NOT for 1.19! One of the following values: none, taiga, extreme_hills, jungle, mesa, plains, savanna, icy, the_end, beach, forest, ocean, desert, river, swamp, mushroom, nether. This represents the category of the current biome
-* `biometags`: `S/[S]` - ONLY for 1.19! This is a biome tag (or list of tags) which will be used to match with the biome. Example tags are: `minecraft:is_ocean`, `minecraft:is_hill`, `minecraft:has_structure/igloo`, `minecraft:allows_surface_slime_spawns`, `forge:is_hot`, `forge:is_cold`, `forge:is_wet`, ... and a LOT more
+* `biometags`: `S/[S]` - This is a biome tag (or list of tags) which will be used to match with the biome. Example tags are: `minecraft:is_ocean`, `minecraft:is_hill`, `minecraft:has_structure/igloo`, `minecraft:allows_surface_slime_spawns`, `forge:is_hot`, `forge:is_cold`, `forge:is_wet`, ... and a LOT more
 * `hostile / passive`: `B` - matching only hostile or passive mobs
 * `seesky`: `B` - true if the block can see the sky (not in a cave)
 * `cave`: `B` - true if we are in a cave. This is a more expensive test that tries to test if we are in a cave by checking if the block in all six directions is one that can occur in a cave
@@ -96,15 +108,14 @@ then ALL conditions have to be true before the rule will be executed.
 * `structure`: `S/[S]` - the name of the structure to test for. This way you can make sure a rule only fires in a village for example. Some examples are `minecraft:mineshaft`, `minecraft:village`, and so on. Modded structures should also work
 * `structuretags`: `S/[S]` - the name of the structure tag to test for. This way you can make sure a rule only fires in a village for example. Some examples are `minecraft:mineshaft`, `minecraft:village`, and so on. Modded structures should also work
 * `hasstructure`: `B` - test if we are in any structure
-* `mob`: `S/[S]` - an ID for a mob like `minecraft:creeper` and so on. Modded mobs should also work
+* `mob`: `S/[S]` - an ID for a mob like `minecraft:creeper` and so on. Modded mobs should also work. It is also possible to use mob tags starting with `#` like `#minecraft:skeletons` for example
 * `mod`: `S/[S]` - a mod id. By using this you can block spawns of mobs that belong to some mod. Use `minecraft` for vanilla mobs
 * `block`: `S/[S]/JSON` - (**deprecated, use blocktest**) a block filter as explained above
 * `blockoffset`: `JSON` - (**deprecated, use blocktest**) modify the position of the block that is being used by the block test (or the setblock action). This JSON can contain tags like `x`, `y`, or `z` which will be added (as offset) to the original block position or else the boolean tag look in which case the position will be the position the player is looking at (only in case there is a player involved which isn't the case for `spawn.json`)
-* `blocktest`: `JSON` - a more advanced block test. This JSON can contain the following tags:
-  * `pos`: `JSON` - this is a position object that indicates the position of the block to test. This can be a position relative to the spawn position (like `{x:0,y:-1,z:0}` for the block below the spawn position) or it can be an absolute position (like `{x:100,y:64,z:-300}`) or it can be a position relative to the closest player (like `{x:0,y:1,z:0,relativeTo:"player"}` for the block above the closest player)
-  * `filter`: `S/[S]/JSON` - this is a block filter as explained above
-  * `condition`: `S` - this is either 'any' or 'all'. If 'any' is used then the rule will match if ANY of the blocks in the filter match. If 'all' is used then ALL blocks in the filter must match
-  * `replacewith`: `S/[S]/JSON` - this is optional and if given then the block(s) that matched will be replaced with this block (or one of these blocks if a list is given). This works like the setblock action explained below
+* `blocktest`: `JSON` - a more advanced block test. This will test if a given block is present in a range below and above the spawn position. This JSON is a block filter (see there for more info). In addition the following tags are supported:
+  * `distabove`: `I` - this is the distance above the given position to test. Default is `0`
+  * `distbelow`: `I` - this is the distance below the given position to test. Default is `1`
+  * `onlyair`: `B` - if true then only air blocks are allowed between the spawn position and the block to test. Default is false
 * `biome`: `S/[S]` - the biome of the current block (like `minecraft:plains` for example)
 * `biometype`: `S/[S]` - the biome type (from the biome dictionary). Examples are `WARN`, `COLD`, `ICY`, `DESERT`, and `DESERT_LEGACY`
 * `dimension`: `S/[S]` - the dimension of the current block or player (for example `minecraft:overworld`)
@@ -117,7 +128,9 @@ then ALL conditions have to be true before the rule will be executed.
 * `inbuilding / inmultibuilding (Lost Cities)`: `B` - check if the current position is in a building or multibuilding
 * `building / multibuilding (Lost Cities)`: `S/[S]` - check if the current position is in a specific building or multibuilding
 * `gamestage (Gamestages)`: `S` - the current game stage. When a player is not really present (like with spawn.json) the closest player is used
-* `npc (CustomNPCs)`: `JSON` - this is a filter for NPCs. This is a JSON that should contain a 'cloneTab' and a 'cloneName' to test for an NPC from CustomNPCs
+* `npc (CustomNPCs)`: `JSON` - this is a filter for NPCs. This is a JSON that should contain a 'cloneTab' and a 'cloneName' to test for an NPC from CustomNPCs:
+  * `cloneTab`: `I` - the tab of the NPC
+  * `cloneName`: `S` - the name of the NPC
 * `winter / summer / spring / autumn (Serene Seasons)`: `B` - check the current season (NOT IMPLEMENTED IN 1.16)
 * `amulet / ring / belt / trinket / charm / body / head (Baubles)`: `S/[S]/JSON` - check if an item is in a bauble slot (NOT IMPLEMENTED YET IN 1.16)
 * `state (EnigmaScript)`: `S` - this can be used to test the value of a (player) state with a string like this `state=value` (NOT IMPLEMENTED YET IN 1.16)
