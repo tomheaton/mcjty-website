@@ -5,7 +5,7 @@ export default async function Page({
 }: {
   searchParams: Promise<{ title: string | undefined }>;
 }) {
-  const title = (await searchParams).title;
+  const { title } = await searchParams;
 
   const redirectUrl = getRedirectUrl(title);
 

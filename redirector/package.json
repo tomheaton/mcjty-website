@@ -1,35 +1,35 @@
 {
   "name": "@mcjty-website/redirector",
-  "description": "@mcjty-website/redirector",
   "version": "1.0.0",
-  "author": "tomheaton",
-  "license": "MIT",
-  "repository": "https://github.com/tomheaton/mcjty-website",
   "private": true,
+  "description": "@mcjty-website/redirector",
+  "repository": "https://github.com/tomheaton/mcjty-website",
+  "license": "MIT",
+  "author": "tomheaton",
   "scripts": {
-    "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "clean": "rm -rf node_modules .next"
+    "clean": "rm -rf node_modules .next",
+    "dev": "next dev",
+    "lint": "eslint .",
+    "start": "next start"
   },
+  "prettier": "../.prettierrc.js",
   "dependencies": {
-    "next": "15.3.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "next": "16.0.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "@types/node": "22.15.18",
-    "@types/react": "19.1.4",
-    "@types/react-dom": "19.1.5",
-    "eslint": "9.27.0",
-    "eslint-config-next": "15.3.2",
-    "typescript": "5.8.3"
+    "@types/node": "22.19.1",
+    "@types/react": "19.2.6",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.1",
+    "eslint-config-next": "16.0.3",
+    "typescript": "5.9.3"
   },
-  "engineStrict": true,
+  "packageManager": "pnpm@9.12.3",
   "engines": {
     "node": ">= 22"
   },
-  "packageManager": "pnpm@9.12.3",
-  "prettier": "../.prettierrc.js"
+  "engineStrict": true
 }
