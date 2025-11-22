@@ -11,7 +11,8 @@
     "clean": "rm -rf node_modules .next",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "tsc"
   },
   "prettier": "../.prettierrc.js",
   "dependencies": {

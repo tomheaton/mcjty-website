@@ -1,4 +1,4 @@
-/** @type {import("prettier").Config} */
+/** @type {import("prettier").Config & import("prettier-plugin-tailwindcss").PluginOptions} */
 const config = {
   trailingComma: "all",
   tabWidth: 2,
@@ -9,6 +9,7 @@ const config = {
   printWidth: 80,
   endOfLine: "lf",
   plugins: ["prettier-plugin-tailwindcss", "prettier-plugin-organize-imports"],
+  tailwindConfig: "./www/tailwind.config.ts",
 };
 
 module.exports = config;

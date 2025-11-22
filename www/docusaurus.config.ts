@@ -19,7 +19,11 @@ export default {
   url: metadata.url,
   baseUrl: "/",
   onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
+  },
   favicon: "img/favicon.ico",
   organizationName: "tomheaton",
   projectName: "mcjty-website",
@@ -300,6 +304,6 @@ export default {
     },
   } satisfies ThemeConfig,
   future: {
-    experimental_faster: true,
+    // experimental_faster: true,
   },
 } satisfies Config;

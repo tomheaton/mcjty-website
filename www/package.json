@@ -1,49 +1,23 @@
 {
   "name": "@mcjty-website/www",
-  "description": "@mcjty-website/www",
   "version": "1.0.0",
-  "author": "tomheaton",
-  "license": "MIT",
-  "repository": "https://github.com/tomheaton/mcjty-website",
   "private": true,
+  "description": "@mcjty-website/www",
+  "repository": "https://github.com/tomheaton/mcjty-website",
+  "license": "MIT",
+  "author": "tomheaton",
   "scripts": {
-    "docusaurus": "docusaurus",
-    "dev": "docusaurus start",
     "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
+    "clean": "rm -rf node_modules .docusaurus .build",
     "clear": "docusaurus clear",
+    "deploy": "docusaurus deploy",
+    "dev": "docusaurus start",
+    "docusaurus": "docusaurus",
     "start": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
+    "swizzle": "docusaurus swizzle",
     "typecheck": "tsc",
-    "clean": "rm -rf node_modules .docusaurus .build"
-  },
-  "dependencies": {
-    "@docusaurus/core": "^3.7.0",
-    "@docusaurus/faster": "^3.7.0",
-    "@docusaurus/plugin-vercel-analytics": "^3.7.0",
-    "@docusaurus/preset-classic": "^3.7.0",
-    "@mdx-js/react": "^3.1.0",
-    "clsx": "^2.1.1",
-    "prism-react-renderer": "^2.4.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "zod": "^3.24.4"
-  },
-  "devDependencies": {
-    "@docusaurus/eslint-plugin": "^3.7.0",
-    "@docusaurus/module-type-aliases": "^3.7.0",
-    "@docusaurus/tsconfig": "^3.7.0",
-    "@docusaurus/types": "^3.7.0",
-    "@tsconfig/docusaurus": "^2.0.3",
-    "@types/node": "22.15.18",
-    "@types/react": "19.1.4",
-    "@types/react-dom": "19.1.5",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3"
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "write-translations": "docusaurus write-translations"
   },
   "browserslist": {
     "production": [
@@ -57,10 +31,36 @@
       "last 1 safari version"
     ]
   },
-  "engineStrict": true,
+  "prettier": "../.prettierrc.js",
+  "dependencies": {
+    "@docusaurus/core": "^3.9.2",
+    "@docusaurus/faster": "^3.9.2",
+    "@docusaurus/plugin-vercel-analytics": "^3.9.2",
+    "@docusaurus/preset-classic": "^3.9.2",
+    "@mdx-js/react": "^3.1.1",
+    "clsx": "^2.1.1",
+    "prism-react-renderer": "^2.4.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@docusaurus/eslint-plugin": "^3.9.2",
+    "@docusaurus/module-type-aliases": "^3.9.2",
+    "@docusaurus/tsconfig": "^3.9.2",
+    "@docusaurus/types": "^3.9.2",
+    "@tsconfig/docusaurus": "^2.0.7",
+    "@types/node": "22.19.1",
+    "@types/react": "19.2.6",
+    "@types/react-dom": "19.2.3",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@9.12.3",
   "engines": {
     "node": ">= 22"
   },
-  "packageManager": "pnpm@9.12.3",
-  "prettier": "../.prettierrc.js"
+  "engineStrict": true
 }
