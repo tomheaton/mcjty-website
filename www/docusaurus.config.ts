@@ -18,6 +18,9 @@ export default {
   tagline: metadata.tagline,
   url: metadata.url,
   baseUrl: "/",
+  organizationName: "tomheaton",
+  projectName: "mcjty-website",
+  trailingSlash: false,
   onBrokenLinks: "warn",
   markdown: {
     hooks: {
@@ -25,8 +28,6 @@ export default {
     },
   },
   favicon: "img/favicon.ico",
-  organizationName: "tomheaton",
-  projectName: "mcjty-website",
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
