@@ -17,7 +17,7 @@ export default {
   title: metadata.title,
   tagline: metadata.tagline,
   url: metadata.url,
-  baseUrl: "/",
+  baseUrl: process.env.BASE_URL || "/",
   organizationName: "tomheaton",
   projectName: "mcjty-website",
   trailingSlash: false,
