@@ -24,5 +24,10 @@
   "engines": {
     "node": ">= 22"
   },
-  "engineStrict": true
+  "engineStrict": true,
+  "pnpm": {
+    "overrides": {
+      "node-forge@<1.3.2": ">=1.3.2"
+    }
+  }
 }
