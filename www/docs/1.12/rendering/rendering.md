@@ -7,7 +7,7 @@ sidebar_position: 11
 In the earlier tutorials you saw how to make a basic block and item, but it looked very ugly.
 In this chapter we will demonstrate various techniques available to you for making your items and blocks look nice.
 
-The official Forge documentation has a lot of detailed information on models so beyond the examples given in this chapter be sure to read that too: https://mcforge.readthedocs.io/en/latest/models/introduction/
+The official Forge documentation has a lot of detailed information on models so beyond the examples given in this chapter be sure to read that too: https://mcforge.readthedocs.io/en/1.12.x/models/introduction/
 
 * [Rendering of a basic item](./item.md)
 * [Rendering of an item based on NBT or damage](./item-nbt.md)
