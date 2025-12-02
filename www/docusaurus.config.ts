@@ -20,7 +20,8 @@ export default {
   baseUrl: process.env.BASE_URL || "/",
   organizationName: "tomheaton",
   projectName: "mcjty-website",
-  trailingSlash: false,
+  // Vercel needs undefined to allow anchor tags to work correctly
+  trailingSlash: process.env.BASE_URL ? false : undefined,
   onBrokenLinks: "warn",
   markdown: {
     hooks: {
