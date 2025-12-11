@@ -53,6 +53,7 @@ Because both mods have a very similar structure the documentation for them is me
 
 * Q: How can I get zombies to spawn more often?
     * A: This question is asked so much that it really is considered a FAQ. As I already told you above you can't add spawns using spawn.json alone. You need to add a rule to `spawner.json` and possibly set conditions in `spawn.json`. See the examples at the bottom of this wiki.
+    * A: Check the 'Zombie apocalypse world' scenario in the examples section. It explains how you can setup a zombie apocalypse type world with In Control.
 
 * Q: How can I get zombies to spawn during the day?
     * A: This is asked a lot but technically this is the wrong question because zombies already spawn during the day. The only restriction is light based and not time based. See the example section for an example on how to spawn zombies unrestricted when it's light
@@ -92,7 +93,7 @@ These mods have various commands that allow you to debug and tweak what is going
 * `incontrol reload`: after editing the rule files you can use this command to reload it and reapply the new rules
 * `incontrol debug`: dumps debug info about spawning in the log. Warning! This can produce a lot of output
 * `incontrol show`: show all entities and their names that can be used in spawn.json for mob names
-* `incontrol kill`: kill all entities of a given type. Possible types are: 'all', 'hostile', 'passive', or 'entity'. It is also possible to give the name of an entity instead of a type (like 'minecraft:enderman'). There is also an optional extra parameter for a dimension ID
+* `incontrol kill`: kill all entities of a given type. Possible types are: 'all', 'hostile', 'passive', or 'entity'
 * `incontrol list`: list all current mobs present in the current dimension (and how many there are of each type)
 * `incontrol days`: without parameters it shows the current day. You can also change the current day using this command
 * `incontrol phases`: this shows all currently active phases

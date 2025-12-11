@@ -981,3 +981,203 @@ Then in `spawner.json` we add spawning of wither skeletons as soon as the number
   }
 ]
 ```
+
+## Scenario: Zombie apocalypse world
+
+This example shows how to make a world where only zombies can spawn. For the first two days no zombies can spawn at all. After two days, zombies start spawning even on the sunlit surface (they get helmets so they don’t burn), but not inside player houses or other well‑lit places (we’ll use block light for that). After day 5 the zombies get stronger, and after day 10 they get even stronger. We’ll also set up a safe zone around world spawn that is always safe.
+Note that this is just an example. There are many more possibilities and options provided by this mod. Also if you have a mod that makes zombies not burn in daylight you don't even have to use the helmets.
+
+We’ll use phases.json, areas.json, spawner.json and spawn.json.
+
+1) phases.json — keep track of time milestones we care about
+
+:::info Note
+These phases defined here keep track of the days that have passed. Keep in mind that In Control does NOT use the regular Minecraft
+time for this but instead counts the number of night->day transitions. Use the 'incontrol days' command to view and set this.
+:::
+
+:::info Note
+Because every phase uses 'mindaycount' as a condition it means that the 'after_day2' phase will also be active even if we are after day 5.
+That's something that has to be taken into account in the future rules.
+:::
+
+The "safe_time" rule is the opposite of "after_day2" but it is used to make defining some rules easier. Not that 'maxdaycount' is not inclusive.
+
+```json title="phases.json"
+[
+  {
+    "name": "safe_time",
+    "conditions": {
+      "maxdaycount": 3
+    }
+  },
+  {
+    "name": "after_day2",
+    "conditions": {
+      "mindaycount": 2
+    }
+  },
+  {
+    "name": "after_day5",
+    "conditions": {
+      "mindaycount": 5
+    }
+  },
+  {
+    "name": "after_day10",
+    "conditions": {
+      "mindaycount": 10
+    }
+  }
+]
+```
+
+2) areas.json — define a safe zone around spawn
+
+```json title="areas.json"
+[
+  {
+    "dimension": "minecraft:overworld",
+    "name": "spawn_safe",
+    "type": "box",
+    "x": 0,
+    "y": 60,
+    "z": 0,
+    "dimx": 50,
+    "dimy": 40,
+    "dimz": 50
+  }
+]
+```
+
+3) spawner.json — actively spawn zombies on the surface in daylight
+
+With spawner.json we spawn zombies unrestricted (due to the "norestrictions" tag).
+Note: the safe zone is enforced in spawn.json.
+If the 'after_day10' phase is active the second rule in spawner.json will also fire which will add up to the total amount of spawns and
+make zombies spawn faster and closer to the player. Note that the first rule will still be active then. Both rules will contribute
+to spawning zombies after day 10.
+
+```json title="spawner.json"
+[
+  {
+    "mob": "minecraft:zombie",
+    "persecond": 0.5,
+    "attempts": 20,
+    "amount": { "minimum": 1, "maximum": 3 },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "norestrictions": true,
+      "mindist": 30,
+      "maxdist": 100,
+      "minheight": 10,
+      "maxheight": 200,
+      "maxthis": 100
+    }
+  },
+  {
+    "phase": "after_day10",
+    "mob": "minecraft:zombie",
+    "persecond": 1,
+    "attempts": 20,
+    "amount": { "minimum": 2, "maximum": 5 },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "norestrictions": true,
+      "mindist": 20,
+      "maxdist": 100,
+      "minheight": 10,
+      "maxheight": 200,
+      "maxthis": 200
+    }
+  }
+]
+```
+
+4) spawn.json — enforce “only zombies”, delay the apocalypse 2 days, keep houses safe, and scale difficulty over time
+
+Because spawner.json uses "norestrictions", we must use "when": "onjoin" for allow/deny positioning rules. "norestrictions" makes it
+so that regular rules in spawn.json don't fire. But they will fire with "onjoin" and "finalize".
+We use "when": "finalize" to equip helmets and to buff zombies based on phases.
+
+The first four rules happen in "when": "onjoin" which means they happen first. If the fourth rule denies a spawn the "finalize" rules also will not happen.
+
+- First rule will deny all hostile mob spawns in the safe zone.
+- The second rule denies all zombie spawns for the safe time which is for the first two days.
+- After day 2: allow zombies with block light 0 or 1. This will allow zombies to spawn at the surface during the day (because we only look at block light) and also in caves
+- Then deny all hostile spawns
+
+The rules after the first four are done in the 'finalize' phase and they will enhance whatever zombie ends up spawning depending on the current active phase. Remember that
+when the phase 'after_day10' is active, the phases 'after_day5' and 'after_day2' will also be active. For that reason we put the rule for 'after_day10' first so that
+the other rules will not get activated (rules are executed in order, first rule that matches will fire).
+
+Note about the first "finalize" rule. This one gives a small boost to health to all zombies that spawn at night. Because it uses "continue": true this rule will also
+not stop execution of further rules. Which means that at night zombies will get that health boost in addition to the helmet and other boosts that are applied later.
+
+Let's clarify "when" a bit ('onjoin' and 'finalize'). Every zombie that spawns will go through this file at least three times. The first time is called only for
+natural spawning ("when": "position") but we don't use that here. Note that because we use "norestrictions" in spawner.json the zombies that are spawn there will not
+even go through the 'position' setup). The second time is when the zombie is added to the world ("when": "onjoin"). Here is where we do the majority of the work
+checking if the spawn should go through or not. The final time is when the zombie has succesfullly been added to the world. Here we set up equipment and stats.
+
+```json title="spawn.json"
+[
+  {
+    "hostile": true,
+    "area": "spawn_safe",
+    "when": "onjoin",
+    "result": "deny"
+  },
+  {
+    "mob": "minecraft:zombie",
+    "phase": "safe_time",
+    "when": "onjoin",
+    "result": "deny"
+  },
+  {
+    "mob": "minecraft:zombie",
+    "phase": "after_day2",
+    "maxlight": 1,
+    "when": "onjoin",
+    "result": "allow"
+  },
+  {
+    "hostile": true,
+    "when": "onjoin",
+    "result": "deny"
+  },
+  {
+    "mob": "minecraft:zombie",
+    "when": "finalize",
+    "mintime": 13000,
+    "maxtime": 23000,
+    "healthadd": 10,
+    "continue": true
+  },
+  {
+    "mob": "minecraft:zombie",
+    "phase": "after_day10",
+    "when": "finalize",
+    "result": "allow",
+    "healthmultiply": 3.0,
+    "damagemultiply": 2.5,
+    "speedmultiply": 1.3,
+    "armorhelmet": ["minecraft:iron_helmet", "minecraft:golden_helmet"]
+  },
+  {
+    "mob": "minecraft:zombie",
+    "phase": "after_day5",
+    "when": "finalize",
+    "result": "allow",
+    "healthmultiply": 2.0,
+    "damagemultiply": 1.5,
+    "speedmultiply": 1.15,
+    "armorhelmet": ["minecraft:iron_helmet", "minecraft:golden_helmet"]
+  },
+  {
+    "mob": "minecraft:zombie",
+    "when": "finalize",
+    "result": "allow",
+    "armorhelmet": ["minecraft:iron_helmet", "minecraft:golden_helmet"]
+  }
+]
+```
