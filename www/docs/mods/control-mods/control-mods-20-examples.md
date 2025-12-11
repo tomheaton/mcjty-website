@@ -1057,6 +1057,8 @@ Note: the safe zone is enforced in spawn.json.
 If the 'after_day10' phase is active the second rule in spawner.json will also fire which will add up to the total amount of spawns and
 make zombies spawn faster and closer to the player. Note that the first rule will still be active then. Both rules will contribute
 to spawning zombies after day 10.
+The last rule is a special addition that also spawns even more zombies in mountains. This rule uses "and" for additional conditions
+that are not part of the regular "conditions" block. This is just example, remove or modify as needed.
 
 ```json title="spawner.json"
 [
@@ -1089,6 +1091,24 @@ to spawning zombies after day 10.
       "minheight": 10,
       "maxheight": 200,
       "maxthis": 200
+    }
+  },
+  {
+    "mob": "minecraft:zombie",
+    "persecond": 1,
+    "attempts": 20,
+    "amount": { "minimum": 1, "maximum": 2 },
+    "conditions": {
+      "dimension": "minecraft:overworld",
+      "norestrictions": true,
+      "mindist": 20,
+      "maxdist": 50,
+      "minheight": 100,
+      "maxheight": 300,
+      "maxthis": 200,
+      "and": {
+        "biometags": "minecraft:is_mountain"
+      }
     }
   }
 ]
