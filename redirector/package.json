@@ -16,21 +16,21 @@
   },
   "prettier": "../.prettierrc.js",
   "dependencies": {
-    "next": "16.0.7",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "next": "16.1.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@types/node": "22.19.1",
-    "@types/react": "19.2.6",
+    "@types/node": "24.10.4",
+    "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "eslint": "9.39.1",
-    "eslint-config-next": "16.0.3",
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.1.1",
     "typescript": "5.9.3"
   },
   "packageManager": "pnpm@9.12.3",
   "engines": {
-    "node": ">= 22"
+    "node": ">= 24"
   },
   "engineStrict": true
 }

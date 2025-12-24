@@ -16,7 +16,7 @@ The project is divided into two main parts:
 
 ## Setup
 
-Make sure you have the correct Node.js version installed (v22).
+Make sure you have the correct Node.js version installed (v24).
 
 This can be made easy by using [nvm](https://github.com/nvm-sh/nvm) (or on Windows [nvm-windows](https://github.com/coreybutler/nvm-windows)).
 
