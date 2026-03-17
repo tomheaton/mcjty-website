@@ -19,7 +19,8 @@
     "domains": {
       "test": "recommended",
       "project": "recommended",
-      "react": "recommended"
+      "react": "recommended",
+      "next": "recommended"
     },
     "rules": {
       "recommended": true,
