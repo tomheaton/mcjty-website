@@ -1,6 +1,6 @@
 import JSONParser from "@site/src/components/ControlValidator/jsonParser";
 import { formatErrorLine } from "@site/src/components/ControlValidator/utils";
-import { useState, type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 import { DATA, type MinecraftVersion, type ValidatorType } from "./data";
 
 type Props = {
@@ -68,7 +68,7 @@ const Validator: React.FC<Props> = (props) => {
   return (
     <form
       onSubmit={handleValidation}
-      className="w-full flex justify-center gap-y-4 gap-x-4 h-full md:flex-row flex-col"
+      className="flex h-full w-full flex-col justify-center gap-x-4 gap-y-4 md:flex-row"
     >
       {/* TODO: add syntax highlighting */}
       <div className="w-full">
@@ -77,10 +77,10 @@ const Validator: React.FC<Props> = (props) => {
           onChange={(e) => props.setText(e.target.value)}
           placeholder={`Enter ${props.type} schema for ${props.version} here...`}
           required
-          className="w-full h-[400px] font-mono rounded p-2"
+          className="h-[400px] w-full rounded p-2 font-mono"
         />
       </div>
-      <div className="w-full flex justify-center h-full flex-col">
+      <div className="flex h-full w-full flex-col justify-center">
         <button
           type="submit"
           className="button button--primary button--lg"
@@ -90,12 +90,12 @@ const Validator: React.FC<Props> = (props) => {
         </button>
         <br />
         {parseError && (
-          <pre className="whitespace-pre-wrap w-full">
+          <pre className="w-full whitespace-pre-wrap">
             <span style={{ color: "red" }}>{parseError}</span>
           </pre>
         )}
         {zodErrors.length > 0 && (
-          <pre className="whitespace-pre-wrap w-full">
+          <pre className="w-full whitespace-pre-wrap">
             {zodErrors.map((error, index) => (
               <span key={index} style={{ color: error.color }}>
                 {error.message}
@@ -105,7 +105,7 @@ const Validator: React.FC<Props> = (props) => {
           </pre>
         )}
         {success && (
-          <pre className="whitespace-pre-wrap w-full">
+          <pre className="w-full whitespace-pre-wrap">
             <span style={{ color: "green" }}>Success!</span>
           </pre>
         )}

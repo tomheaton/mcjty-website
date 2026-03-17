@@ -5,14 +5,14 @@ import {
 } from "@site/src/components/ControlValidator/data";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import z from "zod";
+import type z from "zod";
 import Validator from "./Validator";
 
 type Props = {
   schema?: z.ZodSchema<any>;
 };
 
-const ControlValidator: React.FC<Props> = ({}) => {
+const ControlValidator: React.FC<Props> = () => {
   const [version, setVersion] = useState<MinecraftVersion>("1.20");
   const [tab, setTab] = useState<ValidatorType | null>(
     // TODO: clean this mess up
@@ -37,7 +37,7 @@ const ControlValidator: React.FC<Props> = ({}) => {
 
   return (
     <div style={{ width: "100%" }}>
-      <div className="flex flex-col md:flex-row p-4 w-2/3 mx-auto gap-x-8">
+      <div className="mx-auto flex w-2/3 flex-col gap-x-8 p-4 md:flex-row">
         <select
           value={version}
           onChange={(e) => setVersion(e.target.value as MinecraftVersion)}
@@ -69,7 +69,7 @@ const ControlValidator: React.FC<Props> = ({}) => {
         </ul>
       </div>
       <br />
-      <div className="md:w-2/3 mx-auto">
+      <div className="mx-auto md:w-2/3">
         <Validator
           type={tab as ValidatorType}
           version={version}

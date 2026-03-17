@@ -5,6 +5,7 @@ const ModWidget: React.FC<{ id: number }> = ({ id }) => {
   // TODO: fix mobile styling
   return (
     <iframe
+      title={`CurseForge widget for mod ${id}`}
       src={`https://www.cfwidget.com/${id}`}
       width="100%"
       style={{ border: "none" }}

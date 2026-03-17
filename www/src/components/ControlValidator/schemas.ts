@@ -42,28 +42,28 @@ const testExpression = z
   .or(
     z.string().refine((v) => {
       if (v.startsWith(">=")) {
-        return !isNaN(Number.parseInt(v.slice(2)));
+        return !Number.isNaN(Number.parseInt(v.slice(2), 10));
       }
       if (v.startsWith("<=")) {
-        return !isNaN(Number.parseInt(v.slice(2)));
+        return !Number.isNaN(Number.parseInt(v.slice(2), 10));
       }
       if (v.startsWith(">")) {
-        return !isNaN(Number.parseInt(v.slice(1)));
+        return !Number.isNaN(Number.parseInt(v.slice(1), 10));
       }
       if (v.startsWith("<")) {
-        return !isNaN(Number.parseInt(v.slice(1)));
+        return !Number.isNaN(Number.parseInt(v.slice(1), 10));
       }
       if (v.startsWith("=")) {
-        return !isNaN(Number.parseInt(v.slice(1)));
+        return !Number.isNaN(Number.parseInt(v.slice(1), 10));
       }
       if (v.startsWith("!=") || v.startsWith("<>")) {
-        return !isNaN(Number.parseInt(v.slice(2)));
+        return !Number.isNaN(Number.parseInt(v.slice(2), 10));
       }
       if (v.includes("-")) {
-        const range = v.split("-").map((v) => Number.parseInt(v.trim()));
+        const range = v.split("-").map((v) => Number.parseInt(v.trim(), 10));
         return range.length === 2 && range[0] <= range[1];
       }
-      return !isNaN(Number.parseInt(v));
+      return !Number.isNaN(Number.parseInt(v, 10));
     }),
   );
 
@@ -90,105 +90,105 @@ const expression = z.string().refine((v) => {
     const range = val
       .slice(6, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 2 && range[0] <= range[1];
   }
   if (val.startsWith("outsiderange(")) {
     const range = val
       .slice(13, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 2 && range[0] <= range[1];
   }
   if (val.startsWith("greater(")) {
     const range = val
       .slice(8, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("gt(")) {
     const range = val
       .slice(3, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("smaller(")) {
     const range = val
       .slice(8, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("lt(")) {
     const range = val
       .slice(3, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("greaterorequal(")) {
     const range = val
       .slice(15, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("ge(")) {
     const range = val
       .slice(3, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("smallerorequal(")) {
     const range = val
       .slice(15, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("le(")) {
     const range = val
       .slice(3, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("equal(")) {
     const range = val
       .slice(6, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("eq(")) {
     const range = val
       .slice(3, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("notequal(")) {
     const range = val
       .slice(9, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("ne(")) {
     const range = val
       .slice(3, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 1;
   }
   if (val.startsWith("repeat(")) {
     const range = val
       .slice(7, -1)
       .split(",")
-      .map((v) => parseInt(v.trim()));
+      .map((v) => parseInt(v.trim(), 10));
     return range.length === 3;
   }
 }, "Invalid range expression");
@@ -356,7 +356,7 @@ export const generalSpawnKeywords = z.object({
 function spawnRefinement(o: any) {
   return o
     .refine(
-      (v) => !((v.result === "allow" || v.result == "default") && v.mincount),
+      (v) => !((v.result === "allow" || v.result === "default") && v.mincount),
       "Warning: result=allow and mincount are probably not what you want",
     )
     .refine(
@@ -364,7 +364,7 @@ function spawnRefinement(o: any) {
       "Warning: result=deny and maxcount are probably not what you want",
     )
     .refine(
-      (v) => !((v.result === "allow" || v.result == "default") && v.minlight),
+      (v) => !((v.result === "allow" || v.result === "default") && v.minlight),
       "Warning: result=allow and minlight are probably not what you want",
     )
     .refine(

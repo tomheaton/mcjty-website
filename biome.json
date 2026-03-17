@@ -1,0 +1,72 @@
+{
+  "$schema": "node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": ["**", "!.idea", "!.vscode"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "test": "recommended",
+      "project": "recommended",
+      "react": "recommended"
+    },
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "useKeyWithClickEvents": "warn",
+        "noLabelWithoutControl": "warn",
+        "noStaticElementInteractions": "warn"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": {
+          "fix": "none",
+          "level": "warn"
+        }
+      },
+      "style": {
+        "noUnusedTemplateLiteral": "error",
+        "useConsistentObjectDefinitions": "error"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "warn"
+      },
+      "nursery": {
+        "useSortedClasses": {
+          "level": "error",
+          "options": {
+            "functions": ["cn"]
+          }
+        }
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  }
+}

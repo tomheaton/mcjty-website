@@ -129,7 +129,7 @@ export default class JSONParser {
       const pair = this.parsePair();
 
       // Prevent duplicate keys
-      const exists = obj.hasOwnProperty(pair.key);
+      const exists = Object.hasOwn(obj, pair.key);
       if (exists) {
         throw new Error(`Duplicate key '${pair.key}' at position ${this.pos}`);
       }
@@ -279,10 +279,11 @@ export default class JSONParser {
       // If the escape sequence is a double quote, backslash, or forward slash, return the corresponding character
       case '"':
       case "\\":
-      case "/":
+      case "/": {
         const c = this.currentToken();
         this.consume();
         return c;
+      }
       // If the escape sequence is a backspace, return the corresponding character
       case "b":
         this.consume();
@@ -304,11 +305,11 @@ export default class JSONParser {
         this.consume();
         return "\t";
       // If the escape sequence is a Unicode code point, parse it and return the corresponding character
-      case "u":
+      case "u": {
         this.consume();
         const code = parseInt(this.input.substr(this.pos, 4), 16);
 
-        if (isNaN(code)) {
+        if (Number.isNaN(code)) {
           throw new Error(
             `Invalid Unicode escape sequence at position ${this.pos}`,
           );
@@ -317,6 +318,7 @@ export default class JSONParser {
         this.pos += 4;
 
         return String.fromCharCode(code);
+      }
       // Otherwise, the JSON escape sequence is invalid
       default:
         throw new Error(`Invalid escape sequence at position ${this.pos}`);

@@ -1,4 +1,4 @@
-import { type ZodIssue } from "zod";
+import type { ZodIssue } from "zod";
 
 export function formatErrorLine(item: ZodIssue) {
   console.log(item);
@@ -11,7 +11,7 @@ export function formatErrorLine(item: ZodIssue) {
   if (item.message === "Invalid input") {
     return (
       "Rule " +
-      (parseInt(item.path[0].toString()) + 1) +
+      (parseInt(item.path[0].toString(), 10) + 1) +
       ": Expected " +
       item.path[2] +
       " in " +
@@ -22,16 +22,14 @@ export function formatErrorLine(item: ZodIssue) {
   if (item.message === "Required") {
     return (
       "Rule " +
-      (parseInt(item.path[0].toString()) + 1) +
+      (parseInt(item.path[0].toString(), 10) + 1) +
       ": Expected " +
       item.path[1] +
       " with values " +
-      // @ts-ignore
+      // @ts-expect-error
       item.expected
     );
   }
 
-  return (
-    "Rule " + (parseInt(item.path[0].toString()) + 1) + ": " + item.message
-  );
+  return `Rule ${parseInt(item.path[0].toString(), 10) + 1}: ${item.message}`;
 }

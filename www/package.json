@@ -31,7 +31,6 @@
       "last 1 safari version"
     ]
   },
-  "prettier": "../.prettierrc.js",
   "dependencies": {
     "@docusaurus/core": "^3.9.2",
     "@docusaurus/faster": "^3.9.2",

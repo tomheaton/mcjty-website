@@ -32,6 +32,9 @@ jobs:
         run: pnpm install --frozen-lockfile
         working-directory: ./www
 
+      - name: Run lint
+        run: pnpm run lint:ci
+
       - name: Build website
         run: pnpm run build
         working-directory: ./www

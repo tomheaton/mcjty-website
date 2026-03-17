@@ -34,7 +34,7 @@ export default {
     locales: ["en"],
   },
   plugins: [
-    async function TailwindPlugin(context, options) {
+    async function TailwindPlugin(_context, _options) {
       return {
         name: "docusaurus-tailwindcss",
         configurePostCss(postcssOptions) {
