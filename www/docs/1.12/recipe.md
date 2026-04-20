@@ -8,7 +8,7 @@ The recipe system has changed a lot in 1.12.
 This is not a complete tutorial but should show you a few basics.
 The information here is not yet included in the ModTut GitHub and needs to be worked out more.
 
-More information on recipes can be found at the official forge documentation: https://mcforge.readthedocs.io/en/latest/utilities/recipes/
+More information on recipes can be found at the official forge documentation: https://mcforge.readthedocs.io/en/1.12.x/utilities/recipes/
 
 Recipes are now handled through JSON. Here is how you can define a simple recipe (no code changes are required).
 Simply place this JSON (name doesn't matter) in `assets/modname/recipes`, and it will work:
