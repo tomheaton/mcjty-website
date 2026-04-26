@@ -268,7 +268,7 @@ In addition, zombies and skeleton on the surface spawn with helmets, so they don
 ]
 ```
 
-Make all zombies slower but have more health:
+Make all zombies have more health and be able to jump higher:
 
 ```json title="spawn.json"
 [
@@ -278,17 +278,17 @@ Make all zombies slower but have more health:
     "when": "finalize",
     "healthmultiply": 2,
     "nbt": {
-      "Attributes": [
+      "attributes": [
         {
-          "Base": 0.23,
-          "Modifiers": [
+          "id": "minecraft:generic.jump_strength",
+          "base": 0.6,
+          "modifiers": [
             {
-              "Operation": 2,
-              "Amount": -0.5,
-              "Name": "effect.moveSlowdown 0"
+              "amount": 1.0,
+              "id": "minecraft:generic.jump_strength",
+              "operation": "add_value"
             }
-          ],
-          "Name": "generic.movementSpeed"
+          ]
         }
       ]
     }
