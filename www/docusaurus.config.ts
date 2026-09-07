@@ -223,6 +223,10 @@ export default {
           title: "Tutorials",
           items: [
             {
+              label: "1.21.1 and 26.2 NeoForge",
+              to: "/docs/1.21.1_26.2",
+            },
+            {
               label: "1.19",
               to: "/docs/1.19",
             },
