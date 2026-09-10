@@ -7,7 +7,7 @@ sidebar_position: 12
 This document talks about simple networking as well as key handling.
 In this example we are going to listen to a key press on the client side (`t`) and then send a packet to the server so that the server can do some processing on it.
 
-The official Forge documentation has more detailed information on networking as well: https://mcforge.readthedocs.io/en/latest/networking/
+The official Forge documentation has more detailed information on networking as well: https://mcforge.readthedocs.io/en/1.12.x/networking/
 
 First we need to register our key bindings.
 This can be done like this. This code basically registers a new key and assigns it to `t` by default.
