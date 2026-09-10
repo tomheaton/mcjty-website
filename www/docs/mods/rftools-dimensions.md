@@ -2,55 +2,231 @@
 
 ## Introduction
 
-In this wiki a few things are clarified that are not made clear in the in-game manual.
-Note that this wiki is for the 1.10.2 version of Minecraft.
-For the 1.7.10 version you should look at the original wiki: [Original RFTools Wiki](https://github.com/McJty/RFTools/wiki/RFTools-Blocks).
+RFTools Dimensions lets players create dimensions from dimlets. The current
+dimlet configuration system uses **dimlet packages**: JSON files containing the
+available dimlets and their costs.
 
-### The Dimlet Config file
+This page describes the system used by the Minecraft 1.20.1 version. The old
+`dimlets.json` rule system from Minecraft 1.10.2 and earlier is no longer used.
 
-The dimlet system in RFTools Dimensions has been completely changed compared to the 1.7.10 version.
-In 1.10.2 all configuration happens within the `dimlets.json` config file.
-This config file has two parts which are seperated by this line:
+## Dimlet packages
 
-> "Everything below this line will be regenerated from defaults every time.
-> Remove this line if you do not want that",
+RFTools Dimensions includes packages for its base dimlets, vanilla content,
+and several other mods. A server owner can add another package to introduce
+new dimlets or override settings from an earlier package.
 
-The rules below that line are the defaults from RFTools Dimensions itself.
-You cannot make changes to that part.
-Every change you make will be reset when the mod starts.
-So if you want to add new rules or override existing rules you have to place your own rules above that line.
+Packages are loaded only when the server starts. The order is significant: if
+two packages contain the same `type` and `key`, the entry in the package listed
+later wins.
 
-### Rules
+### Adding a custom package
 
-Rules are evaluated from top to bottom and the first rule that matches will be taken.
-If a rule matches no other rules that would possibly match are considered.
+Adding a JSON file to the config directory is not enough. Its filename **must
+also be added to the `dimletPackages` server config list**.
 
-Every rule has a filter and a settings section:
+1. Stop the server.
+2. Create the package directory if it does not exist, then place the package at
+   `config/rftoolsdim/<filename>.json`. This is the instance's global `config`
+   directory, not the world's `serverconfig` directory.
+3. Open the active world's `serverconfig/rftoolsdim-server.toml` file. On a
+   dedicated server this is normally
+   `<world>/serverconfig/rftoolsdim-server.toml`; in single-player it is
+   `saves/<world>/serverconfig/rftoolsdim-server.toml`.
+4. Under `[dimlets]`, append the filename to `dimletPackages`. Keep the existing
+   entries unless you intentionally want to stop loading them. For example, the
+   default Minecraft 1.20.1 list with `my_dimlets.json` appended is:
 
-#### Filter
+   ```toml
+   [dimlets]
+   dimletPackages = [
+     "base.json",
+     "vanilla_blocks.json",
+     "vanilla_tags.json",
+     "vanilla_fluids.json",
+     "vanilla_biomes.json",
+     "vanilla_structures.json",
+     "rftools.json",
+     "appliedenergistics2.json",
+     "biggerreactors.json",
+     "bigreactors.json",
+     "botania.json",
+     "immersiveengineering.json",
+     "mekanism.json",
+     "powah.json",
+     "quark.json",
+     "tconstruct.json",
+     "thermal.json",
+     "biomesoplenty.json",
+     "emendatusenigmatica.json",
+     "my_dimlets.json"
+   ]
+   ```
+5. Start the server. The log reports each package and the number of valid
+   dimlets read from it.
 
-When RFTools Dimensions constructs dimlets it will scan all blocks, fluids, mobs, and biomes in the game and tries to see if there is a rule for that specific thing.
-The filter is what is used to match all these Minecraft concepts.
-You can use the following tags in a filter:
+For modpacks, put a prepared `rftoolsdim-server.toml` in `defaultconfigs` to
+apply its `dimletPackages` list to newly created worlds. Existing worlds retain
+their own file in `serverconfig`.
 
-* `mod`: match on modid
-* `name`: match on a name. The name depends on what the object is you're matching against. For mobs this is (on 1.10.2) a string ID and on 1.11.2 it is something in the form `<modid>:<name>`. For materials and liquids this will be the registry name. And for biomes the name of the biome. For all other dimlets this name will be a name chosen by RFTools Dimensions itself.
-* `type`: the type of the dimlet ('material', 'liquid', 'sky', ...)
-* `feature`: this allows you to filter based on some features blocks have. The current supported features are: `oredict`, `falling`, `tileentity`, `plantable`, and `nofullblock`.
-* `meta`: the metadata for this block
-* `property`: if this block has a certain property. The value of this tag will be another map containing property names and their values
+Package names are resolved in this order:
 
-#### Settings
+1. `config/rftoolsdim/<filename>`
+2. the package bundled inside RFTools Dimensions with that filename
 
-The settings section decides what to do if the rule matches.
-The two most important tags here are:
+Consequently, a config file with the same name as a built-in package replaces
+that entire built-in file. Usually it is safer to use a unique filename and
+place it at the end of `dimletPackages`, which lets it override only the entries
+it contains.
 
-* `worldgen`: if this is enabled then this feature can be generated randomly in dimensions
-* `dimlet`: if this is enabled then there will be a dimlet that the player can find/create
+### Package format
 
-Then there are a few tags for setting some dimlet attributes:
+A package is a JSON array. Each object in the array describes one dimlet. This
+example adds a block dimlet and changes the settings of the vanilla water fluid
+dimlet:
 
-* `rarity`: how rare is this dimlet. This decides the type of dimlet parts you need
-* `create`: creation cost in RF/t
-* `maintain`: maintenance cost in RF/t
-* `ticks`: the amount of ticks to add to the total dimension creation time
+```json
+[
+  {
+    "type": "block",
+    "key": "examplemod:polished_example",
+    "rarity": "uncommon",
+    "create": 250,
+    "maintain": 100,
+    "ticks": 80,
+    "worldgen": true,
+    "dimlet": true
+  },
+  {
+    "type": "fluid",
+    "key": "minecraft:water",
+    "rarity": "rare",
+    "create": 500,
+    "maintain": 300,
+    "ticks": 150,
+    "worldgen": true,
+    "dimlet": true,
+    "essence": {
+      "item": "minecraft:water_bucket"
+    }
+  }
+]
+```
+
+Use valid JSON: comments and trailing commas are not allowed. Except for
+`essence`, all fields shown above should be present on every entry.
+
+### Entry fields
+
+| Field | Meaning |
+| --- | --- |
+| `type` | Dimlet type. See the supported names below. |
+| `key` | The content identifier. Blocks, fluids, biomes, structures, and tags normally use a namespaced ID such as `minecraft:stone`. |
+| `rarity` | `common`, `uncommon`, `rare`, or `legendary`. Rarity determines the tier of dimlet parts needed. |
+| `create` | RF/t added while the Dimension Builder creates the dimension. |
+| `maintain` | RF/t added while the dimension is maintained. |
+| `ticks` | Ticks added to the dimension's creation time. |
+| `worldgen` | Whether this entry may be selected for randomly generated dimension descriptors and random dimlet loot. |
+| `dimlet` | Whether the content is enabled for dimlet creation. In particular, block and fluid absorbers reject entries for which this is `false`. |
+| `essence` | Optional item stack used as the crafting essence instead of the normal absorber or type default. |
+
+The supported full type names are:
+
+- `admin`
+- `attribute`
+- `biome`
+- `biome_category`
+- `biome_controller`
+- `block`
+- `digit`
+- `feature`
+- `fluid`
+- `sky`
+- `structure`
+- `tag`
+- `terrain`
+- `time`
+
+The mod also understands internal abbreviated type names, but package authors
+should use the full names above. For registry-backed content, use the registry
+ID, not a translated display name. A block or fluid must exist and be usable as
+a placed block, and a biome must exist in the active registry; invalid entries
+are skipped. Values for system types such as `terrain`, `feature`, `attribute`,
+and `biome_controller` must be values understood by RFTools Dimensions. Refer
+to the built-in `base.json` package for those keys rather than inventing new
+ones.
+
+The optional `essence` object has this form:
+
+```json
+"essence": {
+  "item": "minecraft:diamond",
+  "amount": 2,
+  "nbt": "{CustomModelData:1}"
+}
+```
+
+`item` is required when `essence` is present. `amount` defaults to `1`, and
+`nbt` is optional.
+
+### Overriding an existing dimlet
+
+An entry is identified by the combination of `type` and `key`. To change an
+existing dimlet, repeat that pair in a custom package and specify all of its
+settings. Put the custom filename after the package that originally defines the
+entry in `dimletPackages`.
+
+For example, a final package containing this entry makes the stone block dimlet
+legendary and more expensive:
+
+```json
+[
+  {
+    "type": "block",
+    "key": "minecraft:stone",
+    "rarity": "legendary",
+    "create": 2000,
+    "maintain": 1500,
+    "ticks": 400,
+    "worldgen": true,
+    "dimlet": true
+  }
+]
+```
+
+Package entries replace complete settings objects; fields are not merged with
+the earlier entry.
+
+### Generating a starting package for a mod
+
+The server command below writes a package into `config/rftoolsdim` containing
+the mod's structures, blocks, fluids, and biomes that are not already present
+in the loaded dimlet dictionary:
+
+```text
+/rftoolsdim config <filename> <modid>
+```
+
+For example:
+
+```text
+/rftoolsdim config examplemod.json examplemod
+```
+
+The `/dim` alias can be used instead of `/rftoolsdim`. Generated entries use
+generic defaults, so review their rarity, costs, flags, and optional essence
+before using the file. The command only creates the JSON file; you must still
+add its filename to `dimletPackages` and restart the server.
+
+### Troubleshooting
+
+- If the package is ignored, check that its exact filename is present under
+  `[dimlets].dimletPackages` in the active world's server config.
+- If startup reports `Can't find dimlet package`, check the spelling and make
+  sure the file is under `config/rftoolsdim`, not `serverconfig`.
+- If the log says that fewer valid dimlets were found than expected, verify the
+  registry IDs and make sure the corresponding mods are installed.
+- If the server fails while reading the package, validate that the root is a
+  JSON array and that every entry has all required fields with the correct
+  value types.
+- Restart the server after changing either a package or `dimletPackages`; there
+  is no live reload for this dictionary.
