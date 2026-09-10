@@ -132,7 +132,7 @@ So they are local to that router. In fact one router is enough to connect differ
 You can publish channels from the red and green networks and connect them with each other.
 However, there is also a yellow network connected to router B.
 That's a remote network from the perspective of router A.
-To make channels available to other controllers you must publish them (give them a published name) in the router that they are connected too.
+To make channels from different controllers interact with each other give them the same name in the router that they are connected to.
 Additionally, the channel must also have a name in the controller.
 
 ## The Future
